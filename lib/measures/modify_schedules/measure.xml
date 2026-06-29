@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>modify_schedules</name>
+  <uid>07afe5e0-73f2-4161-bb9e-05e5744d7f83</uid>
+  <version_id>e581be8d-608d-4872-bd37-1491e38fae68</version_id>
+  <version_modified>2026-04-14T14:59:07Z</version_modified>
+  <xml_checksum>F732B557</xml_checksum>
+  <class_name>ModifySchedules</class_name>
+  <display_name>Modify Schedules</display_name>
+  <description>Create or replace OpenStudio schedules from BuildingSync-aligned schedule detail payloads and bind them to occupancy, lighting, plug loads, gas equipment, HVAC availability, and optional additional end uses.</description>
+  <modeler_description>Accepts BuildingSync-style schedule payloads with day types, start/end times, and partial operation percentages. Builds ScheduleRulesets, assigns them to building and space type default schedule sets, resets explicit internal load schedules when requested, applies HVAC availability schedules to air loops, supports a dedicated gas equipment schedule, and retains extensible additional targets such as service water.</modeler_description>
+  <arguments>
+    <argument>
+      <name>replace_existing</name>
+      <display_name>Replace Existing Matching Schedules</display_name>
+      <description>Overwrite existing ScheduleRulesets with matching names when true. Keep matching schedules when false.</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>default_schedule_set_name</name>
+      <display_name>Default Schedule Set Name</display_name>
+      <description>Name of the building-level default schedule set that receives imported occupancy, lighting, and equipment schedules.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Modified Schedule Set</default_value>
+    </argument>
+    <argument>
+      <name>occupancy_schedule_json</name>
+      <display_name>Occupancy Schedule Payload</display_name>
+      <description>BuildingSync schedule payload. Supports either JSON or compact BuildingSync text using semicolon-separated records like name=...;schedule_category=Occupied;Weekday|06:00:00|07:00:00|11.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>name=Modified Occupancy Schedule;schedule_category=Occupied;Weekday|00:00:00|06:00:00|0;Weekday|06:00:00|07:00:00|11;Weekday|07:00:00|08:00:00|21;Weekday|08:00:00|12:00:00|100;Weekday|12:00:00|13:00:00|53;Weekday|13:00:00|17:00:00|100;Weekday|17:00:00|18:00:00|32;Weekday|18:00:00|22:00:00|11;Weekday|22:00:00|23:00:00|5;Weekday|23:00:00|23:59:59|0;Weekend|00:00:00|23:59:59|0;Holiday|00:00:00|23:59:59|0</default_value>
+    </argument>
+    <argument>
+      <name>lighting_schedule_json</name>
+      <display_name>Lighting Schedule Payload</display_name>
+      <description>BuildingSync schedule payload for lighting. Supports JSON or compact semicolon-separated BuildingSync text.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>name=Modified Lighting Schedule;schedule_category=Lighting;Weekday|00:00:00|05:00:00|18;Weekday|05:00:00|07:00:00|23;Weekday|07:00:00|08:00:00|42;Weekday|08:00:00|12:00:00|90;Weekday|12:00:00|13:00:00|80;Weekday|13:00:00|17:00:00|90;Weekday|17:00:00|18:00:00|61;Weekday|18:00:00|20:00:00|42;Weekday|20:00:00|22:00:00|32;Weekday|22:00:00|23:00:00|23;Weekday|23:00:00|23:59:59|18;Weekend|00:00:00|23:59:59|18;Holiday|00:00:00|23:59:59|18</default_value>
+    </argument>
+    <argument>
+      <name>electric_equipment_schedule_json</name>
+      <display_name>Plug Load Schedule Payload</display_name>
+      <description>BuildingSync schedule payload for plug or electric equipment schedules. Supports JSON or compact semicolon-separated BuildingSync text.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>name=Modified Plug Load Schedule;schedule_category=Miscellaneous equipment;Weekday|00:00:00|08:00:00|50;Weekday|08:00:00|12:00:00|100;Weekday|12:00:00|13:00:00|94;Weekday|13:00:00|17:00:00|100;Weekday|17:00:00|18:00:00|50;Weekday|18:00:00|23:59:59|20;Weekend|00:00:00|23:59:59|20;Holiday|00:00:00|23:59:59|20</default_value>
+    </argument>
+    <argument>
+      <name>gas_equipment_schedule_json</name>
+      <display_name>Gas Equipment Schedule Payload</display_name>
+      <description>BuildingSync schedule payload for gas equipment schedules. Supports JSON or compact semicolon-separated BuildingSync text.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>hvac_availability_schedule_json</name>
+      <display_name>HVAC Availability Schedule Payload</display_name>
+      <description>BuildingSync schedule payload for HVAC availability schedules. Supports JSON or compact semicolon-separated BuildingSync text.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>name=Modified HVAC Availability Schedule;schedule_category=HVAC equipment;Weekday|00:00:00|06:00:00|0;Weekday|06:00:00|07:00:00|60;Weekday|07:00:00|12:00:00|100;Weekday|12:00:00|13:00:00|80;Weekday|13:00:00|18:00:00|100;Weekday|18:00:00|20:00:00|60;Weekday|20:00:00|23:59:59|0;Weekend|00:00:00|23:59:59|0;Holiday|00:00:00|23:59:59|0</default_value>
+    </argument>
+    <argument>
+      <name>additional_schedules_json</name>
+      <display_name>Additional Schedule Payloads</display_name>
+      <description>JSON array or compact semicolon-separated payloads for extensible categories such as service water or other custom schedules.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>[]</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Whole Building.Space Types</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CD7F5672</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>9D7FF3ED</checksum>
+    </file>
+    <file>
+      <filename>README.md.erb</filename>
+      <filetype>erb</filetype>
+      <usage_type>readmeerb</usage_type>
+      <checksum>F1C26127</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>FC3B0AC2</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D6BD40D0</checksum>
+    </file>
+    <file>
+      <filename>modify_schedules_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>82938F74</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>67DE0AEA</checksum>
+    </file>
+  </files>
+</measure>

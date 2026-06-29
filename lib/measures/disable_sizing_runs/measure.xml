@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>disable_sizing_runs</name>
+  <uid>0c507b3f-4c95-4b4d-bd6a-128b77b7191c</uid>
+  <version_id>15cde9ee-c8fc-420a-bda6-e8650e1d559b</version_id>
+  <version_modified>2026-04-14T15:44:58Z</version_modified>
+  <xml_checksum>359A34E2</xml_checksum>
+  <class_name>DisableSizingRuns</class_name>
+  <display_name>Disable Sizing Runs</display_name>
+  <description>Disable design sizing-period simulation to allow weather-run-only simulation when no design days are present.</description>
+  <modeler_description>Disable design sizing-period simulation to allow weather-run-only simulation when no design days are present.</modeler_description>
+  <arguments />
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Whole Building.Space Types</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  <attribute><name>Intended Software Tool</name><value>Apply Measure Now</value><datatype>string</datatype></attribute><attribute><name>Intended Software Tool</name><value>OpenStudio Application</value><datatype>string</datatype></attribute><attribute><name>Intended Software Tool</name><value>Parametric Analysis Tool</value><datatype>string</datatype></attribute></attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CD7F5672</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>47851920</checksum>
+    </file>
+    <file>
+      <filename>README.md.erb</filename>
+      <filetype>erb</filetype>
+      <usage_type>readmeerb</usage_type>
+      <checksum>F1C26127</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>A623A6C9</checksum>
+    </file>
+    <file>
+      <filename>disable_sizing_runs_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>B08614D3</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D6BD40D0</checksum>
+    </file>
+  </files>
+</measure>
