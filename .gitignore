@@ -1,56 +1,38 @@
-*.gem
-*.rbc
-/.config
+/.bundle/
+/.yardoc
+/.ruby-version
+/.python-version
+/Gemfile.lock
+/gems
+/_yardoc/
 /coverage/
-/InstalledFiles
+/doc/
 /pkg/
 /spec/reports/
-/spec/examples.txt
-/test/tmp/
-/test/version_tmp/
+/spec/test/
+/spec/openstudio/core/output/*
 /tmp/
+/test/
+/lib/measures/test_results
+/lib/measures/.rubocop*
+/lib/measures/staged
+/lib/measures/staged/*
+.DS_Store
 
-# Used by dotenv library to load environment variables.
-# .env
+# rspec failure tracking
+.rspec_status
 
-# Ignore Byebug command history file.
-.byebug_history
+# Ignore IDE files
+/.idea
+*.rubocop-http*
 
-## Specific to RubyMotion:
-.dat*
-.repl_history
-build/
-*.bridgesupport
-build-iPhoneOS/
-build-iPhoneSimulator/
+# measures tests
+lib/measures/.rubocop.yml
+lib/measures/test_results/*
 
-## Specific to RubyMotion (use of CocoaPods):
-#
-# We recommend against adding the Pods directory to your .gitignore. However
-# you should judge for yourself, the pros and cons are mentioned at:
-# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
-#
-# vendor/Pods/
+# runner conf
+runner.conf
+runner.conf.bak
 
-## Documentation cache and generated files:
-/.yardoc/
-/_yardoc/
-/doc/
-/rdoc/
-
-## Environment normalization:
-/.bundle/
-/vendor/bundle
-/lib/bundler/man/
-
-# for a library or gem, you might want to ignore these files since the code is
-# intended to run in multiple environments; otherwise, check them in:
-# Gemfile.lock
-# .ruby-version
-# .ruby-gemset
-
-# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
-.rvmrc
-
-# Used by RuboCop. Remote config files pulled in from inherit_from directive.
-# .rubocop-https?--*
+# Sizing run made as part of spec that tests typical_building_from_model method
+SR1
