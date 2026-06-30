@@ -1,0 +1,546 @@
+<?xml version='1.0' encoding='utf-8'?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>modify_hvac</name>
+  <uid>c85512f5-3394-4bbc-b40d-6a57903c32a7</uid>
+  <version_id>0ef8a7d4-76c4-4675-b6a4-6e780dc1bf2b</version_id>
+  <version_modified>2026-04-22T17:53:03Z</version_modified>
+  <xml_checksum>359A34E2</xml_checksum>
+  <class_name>ModifyHvac</class_name>
+  <display_name>Modify Hvac</display_name>
+  <description>L2 HVAC audit translation measure. Modifies or synthesizes HVAC across all 18 BuildingSync PrincipalHVACSystemType enums plus a radiant extension (19 types). Applies audit efficiencies/COPs, supply air temps, economizer controls, ERV effectiveness, and metadata. Synthesizes missing systems via openstudio-standards.</description>
+  <modeler_description>Per-type dispatcher covering BuildingSync PrincipalHVACSystemType values. Plant-level args apply globally; zone-equipment args scoped by target_zone_names.</modeler_description>
+  <arguments>
+    <argument>
+      <name>hvac_system_type</name>
+      <display_name>HVAC System Type</display_name>
+      <description>BuildingSync PrincipalHVACSystemType (snake_cased) + radiant extension. 'other', 'unknown', 'existing_unknown_mixed_system' leave HVAC unchanged.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>vav_with_hot_water_reheat</default_value>
+      <choices>
+        <choice>
+          <value>packaged_terminal_air_conditioner</value>
+          <display_name>packaged_terminal_air_conditioner</display_name>
+        </choice>
+        <choice>
+          <value>packaged_terminal_heat_pump</value>
+          <display_name>packaged_terminal_heat_pump</display_name>
+        </choice>
+        <choice>
+          <value>four_pipe_fan_coil_unit</value>
+          <display_name>four_pipe_fan_coil_unit</display_name>
+        </choice>
+        <choice>
+          <value>packaged_rooftop_air_conditioner</value>
+          <display_name>packaged_rooftop_air_conditioner</display_name>
+        </choice>
+        <choice>
+          <value>packaged_rooftop_heat_pump</value>
+          <display_name>packaged_rooftop_heat_pump</display_name>
+        </choice>
+        <choice>
+          <value>packaged_rooftop_vav_hot_water_reheat</value>
+          <display_name>packaged_rooftop_vav_hot_water_reheat</display_name>
+        </choice>
+        <choice>
+          <value>packaged_rooftop_vav_electric_reheat</value>
+          <display_name>packaged_rooftop_vav_electric_reheat</display_name>
+        </choice>
+        <choice>
+          <value>vav_with_hot_water_reheat</value>
+          <display_name>vav_with_hot_water_reheat</display_name>
+        </choice>
+        <choice>
+          <value>vav_with_electric_reheat</value>
+          <display_name>vav_with_electric_reheat</display_name>
+        </choice>
+        <choice>
+          <value>warm_air_furnace</value>
+          <display_name>warm_air_furnace</display_name>
+        </choice>
+        <choice>
+          <value>ventilation_only</value>
+          <display_name>ventilation_only</display_name>
+        </choice>
+        <choice>
+          <value>dedicated_outdoor_air_system</value>
+          <display_name>dedicated_outdoor_air_system</display_name>
+        </choice>
+        <choice>
+          <value>water_loop_heat_pump</value>
+          <display_name>water_loop_heat_pump</display_name>
+        </choice>
+        <choice>
+          <value>ground_source_heat_pump</value>
+          <display_name>ground_source_heat_pump</display_name>
+        </choice>
+        <choice>
+          <value>vrf_terminal_unit</value>
+          <display_name>vrf_terminal_unit</display_name>
+        </choice>
+        <choice>
+          <value>chilled_beam</value>
+          <display_name>chilled_beam</display_name>
+        </choice>
+        <choice>
+          <value>radiant_system</value>
+          <display_name>radiant_system</display_name>
+        </choice>
+        <choice>
+          <value>other</value>
+          <display_name>other</display_name>
+        </choice>
+        <choice>
+          <value>unknown</value>
+          <display_name>unknown</display_name>
+        </choice>
+        <choice>
+          <value>existing_unknown_mixed_system</value>
+          <display_name>existing_unknown_mixed_system</display_name>
+        </choice>
+        <choice>
+          <value>vav_with_boiler_and_central_chiller</value>
+          <display_name>vav_with_boiler_and_central_chiller</display_name>
+        </choice>
+        <choice>
+          <value>fan_coil_with_central_plant</value>
+          <display_name>fan_coil_with_central_plant</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>target_air_loop_name</name>
+      <display_name>Target Air Loop Name</display_name>
+      <description>Exact air loop name. Blank = all.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value />
+    </argument>
+    <argument>
+      <name>target_zone_names</name>
+      <display_name>Target Zone Names</display_name>
+      <description>Comma-separated thermal zone names for zone-equipment scoping. Blank = all. Plant-level args still apply globally.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value />
+    </argument>
+    <argument>
+      <name>synthesize_if_missing</name>
+      <display_name>Synthesize Missing Equipment</display_name>
+      <description>If true, use openstudio-standards to add the system when absent, then tune.</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>economizer_control_type</name>
+      <display_name>Economizer Control Type</display_name>
+      <description>OA economizer strategy (air-loop types only).</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>FixedDryBulb</default_value>
+      <choices>
+        <choice>
+          <value>NoEconomizer</value>
+          <display_name>NoEconomizer</display_name>
+        </choice>
+        <choice>
+          <value>FixedDryBulb</value>
+          <display_name>FixedDryBulb</display_name>
+        </choice>
+        <choice>
+          <value>FixedEnthalpy</value>
+          <display_name>FixedEnthalpy</display_name>
+        </choice>
+        <choice>
+          <value>DifferentialDryBulb</value>
+          <display_name>DifferentialDryBulb</display_name>
+        </choice>
+        <choice>
+          <value>DifferentialEnthalpy</value>
+          <display_name>DifferentialEnthalpy</display_name>
+        </choice>
+        <choice>
+          <value>ElectronicEnthalpy</value>
+          <display_name>ElectronicEnthalpy</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>economizer_high_limit_dry_bulb_temperature_c</name>
+      <display_name>Econ High Limit DB (C)</display_name>
+      <description>Dry-bulb lockout (C).</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>24</default_value>
+    </argument>
+    <argument>
+      <name>economizer_high_limit_enthalpy_j_kg</name>
+      <display_name>Econ High Limit Enthalpy (J/kg)</display_name>
+      <description>Enthalpy lockout (J/kg).</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>64000</default_value>
+    </argument>
+    <argument>
+      <name>central_cooling_supply_air_temperature_c</name>
+      <display_name>Central Cooling SAT (C)</display_name>
+      <description>Air-loop cooling design SAT.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>12.8</default_value>
+    </argument>
+    <argument>
+      <name>central_heating_supply_air_temperature_c</name>
+      <display_name>Central Heating SAT (C)</display_name>
+      <description>Air-loop heating design SAT.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>32</default_value>
+    </argument>
+    <argument>
+      <name>doas_supply_air_temperature_c</name>
+      <display_name>DOAS SAT (C)</display_name>
+      <description>DOAS neutral-air supply temp (C). Used by DOAS / ventilation_only / chilled_beam.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>18.3</default_value>
+    </argument>
+    <argument>
+      <name>erv_sensible_effectiveness</name>
+      <display_name>ERV Sensible Effectiveness</display_name>
+      <description>Target sensible effectiveness (0-1). 0 = leave unchanged.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>erv_latent_effectiveness</name>
+      <display_name>ERV Latent Effectiveness</display_name>
+      <description>Target latent effectiveness (0-1). 0 = leave unchanged.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>design_heating_capacity_kw</name>
+      <display_name>Design Heating Capacity (kW)</display_name>
+      <description>Fallback for boiler capacity.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>design_cooling_capacity_tons</name>
+      <display_name>Design Cooling Capacity (tons)</display_name>
+      <description>Fallback for chiller capacity.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>boiler_capacity_kw</name>
+      <display_name>Boiler Capacity (kW)</display_name>
+      <description>0 = autosize preserved.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>boiler_nominal_thermal_efficiency</name>
+      <display_name>Boiler Efficiency</display_name>
+      <description>BoilerHotWater nominal thermal efficiency (0-1).</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.85</default_value>
+    </argument>
+    <argument>
+      <name>chiller_capacity_tons</name>
+      <display_name>Chiller Capacity (tons)</display_name>
+      <description>0 = autosize preserved.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>chiller_reference_cop</name>
+      <display_name>Chiller COP</display_name>
+      <description>ChillerElectricEIR reference COP (&gt;0).</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>5.5</default_value>
+    </argument>
+    <argument>
+      <name>dx_cooling_cop</name>
+      <display_name>DX Cooling COP</display_name>
+      <description>CoilCoolingDX rated COP. Used by PTAC / PSZ-AC / Pkg RTU VAV (both).</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>3.5</default_value>
+    </argument>
+    <argument>
+      <name>gas_furnace_thermal_efficiency</name>
+      <display_name>Gas Furnace Efficiency</display_name>
+      <description>CoilHeatingGas burner efficiency (0-1).</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.8</default_value>
+    </argument>
+    <argument>
+      <name>heat_pump_cooling_cop</name>
+      <display_name>HP Cooling COP</display_name>
+      <description>DX HP / VRF / WSHP rated cooling COP.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>3.5</default_value>
+    </argument>
+    <argument>
+      <name>heat_pump_heating_cop</name>
+      <display_name>HP Heating COP</display_name>
+      <description>DX HP / VRF / WSHP rated heating COP.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>3.2</default_value>
+    </argument>
+    <argument>
+      <name>backup_resistance_efficiency</name>
+      <display_name>Backup Resistance Efficiency</display_name>
+      <description>CoilHeatingElectric efficiency (0-1).</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>1</default_value>
+    </argument>
+    <argument>
+      <name>radiant_chilled_water_supply_temperature_c</name>
+      <display_name>Radiant CHW Supply (C)</display_name>
+      <description>Low-temp radiant CHW supply.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>15.6</default_value>
+    </argument>
+    <argument>
+      <name>radiant_hot_water_supply_temperature_c</name>
+      <display_name>Radiant HW Supply (C)</display_name>
+      <description>Low-temp radiant HW supply.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>43.3</default_value>
+    </argument>
+    <argument>
+      <name>chilled_beam_primary_air_fraction</name>
+      <display_name>Chilled Beam Primary Air Fraction</display_name>
+      <description>Metadata only.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.3</default_value>
+    </argument>
+    <argument>
+      <name>year_installed</name>
+      <display_name>Year Installed</display_name>
+      <description>Audit metadata (1950-2100).</description>
+      <type>Integer</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>2015</default_value>
+    </argument>
+    <argument>
+      <name>condition_assessment</name>
+      <display_name>Condition Assessment</display_name>
+      <description>Audit metadata.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>average</default_value>
+      <choices>
+        <choice>
+          <value>excellent</value>
+          <display_name>excellent</display_name>
+        </choice>
+        <choice>
+          <value>good</value>
+          <display_name>good</display_name>
+        </choice>
+        <choice>
+          <value>average</value>
+          <display_name>average</display_name>
+        </choice>
+        <choice>
+          <value>poor</value>
+          <display_name>poor</display_name>
+        </choice>
+        <choice>
+          <value>unknown</value>
+          <display_name>unknown</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>control_type_audit</name>
+      <display_name>Control Type (Audit)</display_name>
+      <description>Audit metadata.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>direct_digital_control</default_value>
+      <choices>
+        <choice>
+          <value>pneumatic</value>
+          <display_name>pneumatic</display_name>
+        </choice>
+        <choice>
+          <value>direct_digital_control</value>
+          <display_name>direct_digital_control</display_name>
+        </choice>
+        <choice>
+          <value>unknown</value>
+          <display_name>unknown</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>zone_control_strategy</name>
+      <display_name>Zone Control Strategy</display_name>
+      <description>Audit metadata.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>core_perimeter</default_value>
+      <choices>
+        <choice>
+          <value>core_perimeter</value>
+          <display_name>core_perimeter</display_name>
+        </choice>
+        <choice>
+          <value>all_zones</value>
+          <display_name>all_zones</display_name>
+        </choice>
+        <choice>
+          <value>space_types</value>
+          <display_name>space_types</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>preserve_existing_sizing</name>
+      <display_name>Preserve Existing Sizing</display_name>
+      <description>If true, keep autosized capacities; only apply efficiencies/COPs.</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Whole Building.Space Types</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  <attribute><name>Intended Software Tool</name><value>Apply Measure Now</value><datatype>string</datatype></attribute><attribute><name>Intended Software Tool</name><value>OpenStudio Application</value><datatype>string</datatype></attribute><attribute><name>Intended Software Tool</name><value>Parametric Analysis Tool</value><datatype>string</datatype></attribute></attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CD7F5672</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>0224CC0A</checksum>
+    </file>
+    <file>
+      <filename>README.md.erb</filename>
+      <filetype>erb</filetype>
+      <usage_type>readmeerb</usage_type>
+      <checksum>F1C26127</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>10E48165</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D6BD40D0</checksum>
+    </file>
+    <file>
+      <filename>modify_hvac_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>7E728FCC</checksum>
+    </file>
+  </files>
+</measure>

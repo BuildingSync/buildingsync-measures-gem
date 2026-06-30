@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>modify_envelope_insulation</name>
+  <uid>db94103e-ac4a-4135-8745-c866fc7c64df</uid>
+  <version_id>1540987b-a07a-4fe5-93ac-d310b94ca9e5</version_id>
+  <version_modified>2026-04-10T17:41:32Z</version_modified>
+  <xml_checksum>F732B557</xml_checksum>
+  <class_name>ModifyEnvelopeInsulation</class_name>
+  <display_name>Set Envelope Construction R-Values and U-Values</display_name>
+  <description>Sets target R-values (or U-values) for exterior walls, roofs, and floors by modifying insulation material thickness in construction assemblies. Accepts either R-value targets or U-value targets, which are automatically converted (R = 1/U).</description>
+  <modeler_description>Modifies construction layer insulation thickness to achieve target overall R-values for exterior opaque surfaces. Supports both R-value and U-value inputs. When U-values are provided, they are converted to R-values. Operates on StandardOpaqueMaterial layers within exterior wall, roof, and floor constructions.</modeler_description>
+  <arguments>
+    <argument>
+      <name>wall_target_rvalue</name>
+      <display_name>Exterior Wall Target R-value</display_name>
+      <description>Target overall R-value for exterior walls (m²K/W). Leave 0 to skip walls.</description>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>roof_target_rvalue</name>
+      <display_name>Roof/Ceiling Target R-value</display_name>
+      <description>Target overall R-value for roofs and ceilings (m²K/W). Leave 0 to skip roofs.</description>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>floor_target_rvalue</name>
+      <display_name>Floor/Foundation Target R-value</display_name>
+      <description>Target overall R-value for floors and foundations (m²K/W). Leave 0 to skip floors.</description>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>wall_target_uvalue</name>
+      <display_name>Exterior Wall Target U-value (Alternative)</display_name>
+      <description>Target overall U-value for exterior walls (W/m²K). Automatically converted to R-value (R = 1/U). Leave 0 to use R-value target instead.</description>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>roof_target_uvalue</name>
+      <display_name>Roof/Ceiling Target U-value (Alternative)</display_name>
+      <description>Target overall U-value for roofs and ceilings (W/m²K). Automatically converted to R-value (R = 1/U). Leave 0 to use R-value target instead.</description>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>floor_target_uvalue</name>
+      <display_name>Floor/Foundation Target U-value (Alternative)</display_name>
+      <description>Target overall U-value for floors and foundations (W/m²K). Automatically converted to R-value (R = 1/U). Leave 0 to use R-value target instead.</description>
+      <type>Double</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Whole Building.Space Types</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CD7F5672</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>CECF01E2</checksum>
+    </file>
+    <file>
+      <filename>README.md.erb</filename>
+      <filetype>erb</filetype>
+      <usage_type>readmeerb</usage_type>
+      <checksum>F1C26127</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>B510BF14</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D6BD40D0</checksum>
+    </file>
+    <file>
+      <filename>modify_envelope_insulation_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>12411676</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>1CE57878</checksum>
+    </file>
+  </files>
+</measure>
