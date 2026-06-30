@@ -10,6 +10,9 @@ jobs:
       BUILD_NUMBER: ${{ github.run_number }}
       DEPLOY_PATH: ${{ github.repository }}/${{ github.ref_name }}/${{ github.run_number }} # Path for S3 deployment
       S3_BUCKET: ext-gem-dashboard
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     container: # Define the Docker container for the job. All subsequent steps run inside it.
       image: nrel/openstudio:3.10.0
@@ -76,14 +79,16 @@ jobs:
           find ./lib/measures -type d -name test_results -print
 
       - name: Configure AWS Credentials
+        if: env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != ''
         # This step is crucial for authenticating with AWS S3
         uses: aws-actions/configure-aws-credentials@v4 # Use v4 for updated features
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Assuming this is your secret name
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }} # Replace with your AWS region, e.g., us-east-1
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Sync files to S3 with branch and build in path
+        if: env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != ''
         id: sync_test_results
         shell: bash
         run: |
@@ -103,8 +108,13 @@ jobs:
           echo "S3 sync complete."
           echo "https://${{ env.S3_BUCKET }}.s3.amazonaws.com/${{ env.DEPLOY_PATH }}/dashboard/index.html"
 
+      - name: Skip S3 sync when AWS credentials are unavailable
+        if: env.AWS_ACCESS_KEY_ID == '' || env.AWS_SECRET_ACCESS_KEY == ''
+        shell: bash
+        run: echo "AWS credentials are not configured; skipping S3 sync."
+
       - name: Archive static site as artifact
-        if: steps.sync_test_results.outputs.dir_name != ''
+        if: env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && steps.sync_test_results.outputs.dir_name != ''
         uses: actions/upload-artifact@v4
         with:
           name: static-html-artifact
