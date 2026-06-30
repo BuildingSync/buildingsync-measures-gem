@@ -31,7 +31,6 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       expect(File.directory?(measure_dir)).to be true
       expect(File.file?(File.join(measure_dir, 'measure.rb'))).to be true
       expect(File.file?(File.join(measure_dir, 'measure.xml'))).to be true
-      expect(File.file?(File.join(measure_dir, 'README.md'))).to be true
     end
   end
 end

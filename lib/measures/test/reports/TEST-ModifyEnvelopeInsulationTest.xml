@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites>
-  <testsuite name="ModifyEnvelopeInsulationTest" filepath="modify_envelope_insulation/tests/modify_envelope_insulation_test.rb" skipped="0" failures="0" errors="0" tests="2" assertions="9" time="0.2373851000002105">
-    <testcase name="test_good_argument_values" lineno="24" classname="ModifyEnvelopeInsulationTest" assertions="8" time="0.12314030000015919">
-    </testcase>
-    <testcase name="test_number_of_arguments" lineno="17" classname="ModifyEnvelopeInsulationTest" assertions="1" time="0.11424480000005133">
-    </testcase>
-  </testsuite>
-</testsuites>
