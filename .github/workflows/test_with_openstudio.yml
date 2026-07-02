@@ -11,8 +11,6 @@ jobs:
       DEPLOY_PATH: ${{ github.repository }}/${{ github.ref_name }}/${{ github.run_number }} # Path for S3 deployment
       S3_BUCKET: ext-gem-dashboard
       AWS_REGION: us-east-1
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     container: # Define the Docker container for the job. All subsequent steps run inside it.
       image: nrel/openstudio:3.10.0
@@ -78,17 +76,30 @@ jobs:
           echo "Looking for generated test_results directories..."
           find ./lib/measures -type d -name test_results -print
 
+      - name: Check AWS credentials availability
+        id: aws_credentials_available
+        shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Configure AWS Credentials
-        if: env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != ''
+        if: steps.aws_credentials_available.outputs.available == 'true'
         # This step is crucial for authenticating with AWS S3
         uses: aws-actions/configure-aws-credentials@v4 # Use v4 for updated features
         with:
-          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Sync files to S3 with branch and build in path
-        if: env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != ''
+        if: steps.aws_credentials_available.outputs.available == 'true'
         id: sync_test_results
         shell: bash
         run: |
@@ -109,12 +120,12 @@ jobs:
           echo "https://${{ env.S3_BUCKET }}.s3.amazonaws.com/${{ env.DEPLOY_PATH }}/dashboard/index.html"
 
       - name: Skip S3 sync when AWS credentials are unavailable
-        if: env.AWS_ACCESS_KEY_ID == '' || env.AWS_SECRET_ACCESS_KEY == ''
+        if: steps.aws_credentials_available.outputs.available != 'true'
         shell: bash
         run: echo "AWS credentials are not configured; skipping S3 sync."
 
       - name: Archive static site as artifact
-        if: env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && steps.sync_test_results.outputs.dir_name != ''
+        if: steps.aws_credentials_available.outputs.available == 'true' && steps.sync_test_results.outputs.dir_name != ''
         uses: actions/upload-artifact@v4
         with:
           name: static-html-artifact
