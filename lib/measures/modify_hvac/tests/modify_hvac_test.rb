@@ -69,7 +69,7 @@ class ModifyHvacTest < Minitest::Test
     end
     measure.run(model, runner, argument_map)
     result = runner.result
-    result.showOutput
+    show_output(result)
     assert_equal('Success', result.value.valueName)
   end
 end

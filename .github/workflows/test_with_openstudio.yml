@@ -112,7 +112,7 @@ jobs:
             exit 0
           fi
           # It must match the output directory from the 'Run Measures' step.
-          aws s3 sync $dir_name s3://${{ env.S3_BUCKET }}/${{ env.DEPLOY_PATH }}/ \
+          aws s3 sync "$dir_name" s3://${{ env.S3_BUCKET }}/${{ env.DEPLOY_PATH }}/ \
             --delete \
             --acl public-read \
             --cache-control "max-age=0, no-cache, no-store, must-revalidate"
