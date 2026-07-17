@@ -12,7 +12,7 @@ or synthesizes missing systems via `openstudio-standards`
 (`Standard.build('90.1-2019').model_add_hvac_system`). It covers all 18
 BuildingSync `PrincipalHVACSystemType` enums plus a `radiant_system` extension
 (19 types total). Refer to
-[modify_hvac_measure.md](modify_hvac_measure.md) for the full argument and
+[README.md](README.md) for the full argument and
 implementation reference and
 [l2-hvac-audit-translation-plan.md](l2-hvac-audit-translation-plan.md) for the
 architectural roadmap.
