@@ -220,7 +220,7 @@ Once schedules are imported, the measure applies them to the model as follows:
 ### Occupancy Schedules
 - Added to building-level DefaultScheduleSet as occupancy schedule
 - Applied to all People objects via the default schedule set
-- If `replace_existing=true`, explicit people activity schedules are cleared
+- If `replace_existing=true`, explicit people number-of-people schedules are cleared
 
 ### Lighting Schedules
 - Added to building-level DefaultScheduleSet as lighting schedule
