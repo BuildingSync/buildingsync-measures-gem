@@ -354,10 +354,10 @@ The measure includes comprehensive integration tests:
 
 To run tests locally:
 
-```bash
+~~~bash
 cd /repo
-RUN_OPENSTUDIO_INTEGRATION=1 pytest tests/test_measure_authoring.py -k "modify_schedules" -v
-```
+bundle exec ruby lib/measures/modify_schedules/tests/modify_schedules_test.rb
+~~~
 
 ## Technical Notes
 
