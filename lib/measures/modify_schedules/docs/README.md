@@ -46,7 +46,7 @@ Each schedule payload follows this pattern:
       "day_type": "Weekday|Weekend|Holiday",
       "start_time": "HH:MM:SS",
       "end_time": "HH:MM:SS",
-      "value_percent": 0–100
+      "value_percent": 0
     }
   ]
 }
