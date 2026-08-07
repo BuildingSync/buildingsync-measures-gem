@@ -365,7 +365,7 @@ RUN_OPENSTUDIO_INTEGRATION=1 pytest tests/test_measure_authoring.py -k "modify_s
 
 - All times are stored as total seconds from midnight (0–86,400)
 - OpenStudio `Time` objects are constructed from (days=0, hours, minutes, seconds) components
-- Timestamps are clamped to 23:59:59 maximum; 24:00:00 is converted to 23:59:59
+- Timestamps are clamped to 24:00:00 maximum; 24:00:00 is allowed and 23:59:59 is promoted to 24:00:00 to close out the day
 
 ### Schedule Type Limits
 
