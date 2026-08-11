@@ -98,47 +98,6 @@ Arguments group into four property clusters plus scoping and metadata.
 - `control_type_audit` — pneumatic / direct_digital_control / unknown
 - `zone_control_strategy` — core_perimeter / all_zones / space_types
 
-## BuildingSync Reader Mapping
-
-This table follows the BOSS README mapping style. The `set by function in BuildingSyncReader` column is a placeholder until reader methods are finalized. Several rows are candidate mappings because the measure consumes normalized HVAC arguments that may be derived from equipment, controls, nameplate, linked-premises, or workflow policy data.
-
-Read `.../Facility` as `/BuildingSync/Facilities/Facility`, `.../Systems` as `/BuildingSync/Facilities/Facility/Systems`, `.../Site` as `/BuildingSync/Facilities/Facility/Sites/Site`, and `.../Building` as `/BuildingSync/Facilities/Facility/Sites/Site/Buildings/Building`.
-
-| Measure | Argument | set by function in BuildingSyncReader | Read from BuildingSync |
-|---|---|---|---|
-| modify_hvac |  |  |  |
-|  | `hvac_system_type` | TBD | `.../Systems/HVACSystems/HVACSystem/PrincipalHVACSystemType` or `PrimaryHVACSystemType`; map the BuildingSync enum to the measure snake_case value. |
-|  | `target_air_loop_name` | TBD | Candidate derived from `.../Systems/HVACSystems/HVACSystem/SystemName`, HVAC system ID, or linked model-object naming; blank means all. |
-|  | `target_zone_names` | TBD | Candidate derived from HVAC system linked premises or served-zone identifiers; blank means all zones. |
-|  | `synthesize_if_missing` | TBD | Workflow policy; likely hard-coded/defaulted unless the reader detects that the seed model lacks the described HVAC system. |
-|  | `economizer_control_type` | TBD | Candidate economizer/control fields under `.../Systems/HVACSystems/HVACSystem`, especially air-side economizer type or outdoor-air control strategy. |
-|  | `economizer_high_limit_dry_bulb_temperature_c` | TBD | Candidate economizer dry-bulb lockout/high-limit value under HVAC controls/economizer data in `.../Systems/HVACSystems/HVACSystem`. |
-|  | `economizer_high_limit_enthalpy_j_kg` | TBD | Candidate economizer enthalpy lockout/high-limit value under HVAC controls/economizer data in `.../Systems/HVACSystems/HVACSystem`. |
-|  | `central_cooling_supply_air_temperature_c` | TBD | Candidate cooling supply-air or discharge-air temperature from HVAC controls or air distribution data under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `central_heating_supply_air_temperature_c` | TBD | Candidate heating supply-air or discharge-air temperature from HVAC controls or air distribution data under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `doas_supply_air_temperature_c` | TBD | Candidate DOAS/ventilation-system supply-air temperature under `.../Systems/HVACSystems/HVACSystem`, for DOAS or ventilation-only systems. |
-|  | `erv_sensible_effectiveness` | TBD | Candidate heat/energy recovery sensible effectiveness under HVAC ventilation, heat recovery, or ERV fields in `.../Systems/HVACSystems/HVACSystem`. |
-|  | `erv_latent_effectiveness` | TBD | Candidate heat/energy recovery latent effectiveness under HVAC ventilation, heat recovery, or ERV fields in `.../Systems/HVACSystems/HVACSystem`. |
-|  | `design_heating_capacity_kw` | TBD | Candidate heating capacity from HVAC system or heating equipment capacity under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `design_cooling_capacity_tons` | TBD | Candidate cooling capacity from HVAC system or cooling equipment capacity under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `boiler_capacity_kw` | TBD | Candidate boiler nameplate/rated capacity from boiler/heating plant data under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `boiler_nominal_thermal_efficiency` | TBD | Candidate boiler thermal efficiency or combustion efficiency from boiler/heating plant data under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `chiller_capacity_tons` | TBD | Candidate chiller rated capacity from chiller/cooling plant data under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `chiller_reference_cop` | TBD | Candidate chiller COP/efficiency from chiller/cooling plant data under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `dx_cooling_cop` | TBD | Candidate packaged/DX cooling efficiency from HVAC cooling equipment efficiency fields under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `gas_furnace_thermal_efficiency` | TBD | Candidate furnace/heating coil thermal efficiency from heating equipment fields under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `heat_pump_cooling_cop` | TBD | Candidate heat pump cooling COP/efficiency under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `heat_pump_heating_cop` | TBD | Candidate heat pump heating COP/efficiency under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `backup_resistance_efficiency` | TBD | Candidate supplemental/backup electric resistance efficiency; often hard-coded to `1.0` if not explicitly available. |
-|  | `radiant_chilled_water_supply_temperature_c` | TBD | Candidate radiant cooling loop supply-water temperature under HVAC/radiant system data in `.../Systems/HVACSystems/HVACSystem`. |
-|  | `radiant_hot_water_supply_temperature_c` | TBD | Candidate radiant heating loop supply-water temperature under HVAC/radiant system data in `.../Systems/HVACSystems/HVACSystem`. |
-|  | `chilled_beam_primary_air_fraction` | TBD | Candidate chilled-beam primary-air fraction or design airflow ratio under terminal/distribution data in `.../Systems/HVACSystems/HVACSystem`; may be an analyst assumption. |
-|  | `year_installed` | TBD | Candidate HVAC equipment year installed/manufactured from `.../Systems/HVACSystems/HVACSystem` metadata. |
-|  | `condition_assessment` | TBD | Candidate condition, remaining life, or assessment field from HVAC system audit metadata under `.../Systems/HVACSystems/HVACSystem`. |
-|  | `control_type_audit` | TBD | Candidate control type/BAS/DDC/pneumatic field under HVAC controls data in `.../Systems/HVACSystems/HVACSystem`. |
-|  | `zone_control_strategy` | TBD | Candidate zoning/control strategy from thermostat, controls, or linked-premises data under `.../Systems/HVACSystems/HVACSystem`; may be derived. |
-|  | `preserve_existing_sizing` | TBD | Workflow policy; likely hard-coded/defaulted based on whether nameplate capacities are trusted. |
-
 ## OpenStudio SDK Setters Used
 
 Grouped by the object they touch.

@@ -15,24 +15,6 @@ This measure enables users to:
 
 BuildingSync schedule data is organized using the `ScheduleDetail` structure, which defines fractional value profiles across different day types and operating hours.
 
-### BuildingSync Reader Mapping
-
-This table follows the BOSS README mapping style. The `set by function in BuildingSyncReader` column is a placeholder until reader methods are finalized.
-
-Read `.../Facility` as `/BuildingSync/Facilities/Facility`, `.../Systems` as `/BuildingSync/Facilities/Facility/Systems`, `.../Site` as `/BuildingSync/Facilities/Facility/Sites/Site`, and `.../Building` as `/BuildingSync/Facilities/Facility/Sites/Site/Buildings/Building`.
-
-| Measure | Argument | set by function in BuildingSyncReader | Read from BuildingSync |
-|---|---|---|---|
-| modify_schedules |  |  |  |
-|  | `replace_existing` | TBD | Workflow policy; likely hard-coded/defaulted. |
-|  | `default_schedule_set_name` | TBD | Workflow/model naming policy; may be hard-coded. |
-|  | `occupancy_schedule_json` | TBD | Candidate `.../Facility/Schedules/Schedule` with an occupancy category and `ScheduleDetails/ScheduleDetail/{DayType, DayStartTime, DayEndTime, PartialOperationPercentage}`. |
-|  | `lighting_schedule_json` | TBD | Candidate `.../Facility/Schedules/Schedule` linked to lighting systems, or `.../Systems/LightingSystems/LightingSystem` schedule link; details from `ScheduleDetail`. |
-|  | `electric_equipment_schedule_json` | TBD | Candidate `.../Facility/Schedules/Schedule` linked to plug/process loads, or `.../Systems/PlugLoads/PlugLoad` schedule link; details from `ScheduleDetail`. |
-|  | `gas_equipment_schedule_json` | TBD | Candidate `.../Facility/Schedules/Schedule` linked to gas/process equipment; details from `ScheduleDetail`. |
-|  | `hvac_availability_schedule_json` | TBD | Candidate `.../Facility/Schedules/Schedule` linked to HVAC systems, or `.../Systems/HVACSystems/HVACSystem` schedule link; details from `ScheduleDetail`. |
-|  | `additional_schedules_json` | TBD | Candidate additional `.../Facility/Schedules/Schedule` entries for service water or other end uses, with `ScheduleDetail` records. |
-
 ### BuildingSync Payload Structure
 
 Each schedule payload follows this pattern:

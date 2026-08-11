@@ -1,123 +1,47 @@
-# Semantic Mapping: modify_envelope_insulation to ASHRAE Standard 211 Level 2 Audit
+# Modify Envelope Insulation
 
 ## Purpose
 
-This document maps the `modify_envelope_insulation` OpenStudio measure to the envelope-related information needs typically associated with an ASHRAE Standard 211 Level 2 (L2) energy audit workflow.
+Set target thermal performance for exterior walls, roofs, and exterior floors by increasing the insulation layer in each applicable OpenStudio construction.
 
-The intent is semantic alignment, not a claim of full ASHRAE 211 compliance. This measure is a model transformation tool that applies envelope thermal-performance assumptions to an OpenStudio model. An L2 audit still requires field data collection, engineering review, economic analysis, and reporting outside this measure.
+## Summary
 
-## ASHRAE 211 Reference
+- Supply an R-value or U-factor for each surface category; use `0` to skip it.
+- If both values are positive for one category, the R-value wins and the U-factor is ignored.
+- The measure expects SI units: R in m²·K/W and U in W/m²·K.
+- It changes only surfaces with `OutsideBoundaryCondition == 'Outdoors'` and only increases modeled resistance; it does not reduce insulation.
+- One argument value is applied to every construction in that category. If XML links multiple systems, the reader must select or aggregate them before calling the measure.
 
-- ASHRAE Standard 211, Section 6.2.1.2, Building Envelope
+## Reference
 
-## Measure Summary
+- ASHRAE 211 L2 context: [ASHRAE_211_L2_SEMANTIC_MAPPING.md](ASHRAE_211_L2_SEMANTIC_MAPPING.md)
+- Implementation: [../measure.rb](../measure.rb)
 
-The measure modifies exterior opaque envelope constructions by increasing insulation performance to user-specified overall assembly targets. It supports:
+## Quick Use
 
-- Exterior walls
-- Roofs and ceilings
-- Floors and foundations
+1. Follow each section reference (`WallID`, `RoofID`, or `ExteriorFloorID`) to its system under `Facility/Systems`.
+2. Prefer the assembly R-value. Use the U-factor only when R is unavailable or the workflow explicitly chooses U.
+3. Convert BuildingSync 2.7.0 IP values to the SI units expected by the measure.
+4. If multiple linked systems exist, choose an explicit policy—for example, the proposed system, the dominant-area system, or an area-weighted value.
 
-For each surface category, the user can provide either:
+The paths below omit the XML namespace prefix and use:
 
-- Target R-value
-- Target U-value, which the measure converts to R-value using `R = 1 / U`
-
-The measure does not let the user directly edit full construction makeup, layer ordering, material properties by name, area-weighted assembly metadata, or component-by-component audit records.
-
-Instead, it updates the most likely insulation layer in each applicable construction by changing:
-
-- `StandardOpaqueMaterial` thickness, or
-- `MasslessOpaqueMaterial` thermal resistance
-
-In other words, the user-facing capability is limited to overall opaque assembly R-value or U-value targets for walls, roofs, and floors. Construction-level handling and reporting in this document refer only to how the measure infers existing assembly thermal resistance from the OpenStudio model and logs what it changed during execution.
-
-## Semantic Mapping
-
-| Measure concept | Measure implementation | ASHRAE 211 L2 audit concept | Mapping interpretation |
-| --- | --- | --- | --- |
-| Exterior wall target thermal performance | `wall_target_rvalue` or `wall_target_uvalue` | Opaque wall assembly thermal characteristics identified during building envelope review | Represents a normalized modeling input for wall insulation improvement scenarios derived from audit findings or ECM assumptions. |
-| Roof/ceiling target thermal performance | `roof_target_rvalue` or `roof_target_uvalue` | Roof and ceiling thermal characteristics documented in envelope assessment | Represents modeled post-retrofit or proposed-condition roof insulation performance. |
-| Floor/foundation target thermal performance | `floor_target_rvalue` or `floor_target_uvalue` | Slab, floor, or foundation thermal boundary characteristics | Represents modeled improvement assumptions for below-grade or exposed floor assemblies where insulation upgrades are considered. |
-| R-value / U-value dual input path | Priority logic uses R-value first, otherwise converts U-value to R-value | Audit data may be documented using either U-factor or R-value depending on source documentation | Normalizes different audit data formats into a single internal thermal resistance basis for simulation. |
-| Current construction evaluation | Sums thermal resistance across material layers in each construction | Existing condition characterization of envelope assemblies | Approximates baseline envelope thermal performance from model construction definitions so the measure can compare current overall assembly R-value against the requested target. |
-| Insulation layer adjustment | Changes insulation thickness or massless thermal resistance | Energy conservation measure definition for envelope insulation upgrade | Encodes a candidate retrofit action in the simulation model so the ECM can be analyzed. |
-| Exterior-only filtering | Applies only to exterior surfaces with `OutsideBoundaryCondition == 'Outdoors'` | Audit focus on the building thermal boundary | Aligns changes to envelope elements that affect heat transfer to outdoor conditions. |
-| Unique construction-based modification | Modifies each distinct construction once per applicable surface type | Audit analysis at assembly/system level rather than per individual polygon | Keeps the ECM representation consistent across surfaces sharing the same assembly. |
-| Informational reporting | Registers initial condition, per-construction actions, warnings, and final condition in the OpenStudio runner output | Audit traceability and documentation of assumptions | Provides lightweight run-time traceability only; it is not a structured envelope report and does not produce ASHRAE 211 reporting deliverables. |
+- `SYS` = `/BuildingSync/Facilities/Facility/Systems`
+- `BLDG` = `/BuildingSync/Facilities/Facility/Sites/Site/Buildings/Building`
 
 ## BuildingSync Reader Mapping
 
-This table follows the BOSS README mapping style. The `set by function in BuildingSyncReader` column is a placeholder until reader methods are finalized. The BuildingSync paths are candidate sources because this measure consumes derived wall, roof, and floor thermal-performance targets rather than full construction records.
-
-Read `.../Facility` as `/BuildingSync/Facilities/Facility`, `.../Systems` as `/BuildingSync/Facilities/Facility/Systems`, `.../Site` as `/BuildingSync/Facilities/Facility/Sites/Site`, and `.../Building` as `/BuildingSync/Facilities/Facility/Sites/Site/Buildings/Building`.
-
-| Measure | Argument | set by function in BuildingSyncReader | Read from BuildingSync |
+| Argument | Candidate BuildingSync XML field | Selection and conversion rule | BuildingSyncReader function |
 |---|---|---|---|
-| modify_envelope_insulation |  |  |  |
-|  | `wall_target_rvalue` | TBD | Candidate wall assembly thermal resistance from envelope/opaque-wall assembly data under `.../Building` envelope systems or ECM target data. |
-|  | `wall_target_uvalue` | TBD | Candidate wall assembly U-factor/U-value from envelope/opaque-wall assembly data under `.../Building` envelope systems or ECM target data. |
-|  | `roof_target_rvalue` | TBD | Candidate roof/ceiling assembly thermal resistance from roof/ceiling envelope data under `.../Building` envelope systems or ECM target data. |
-|  | `roof_target_uvalue` | TBD | Candidate roof/ceiling assembly U-factor/U-value from roof/ceiling envelope data under `.../Building` envelope systems or ECM target data. |
-|  | `floor_target_rvalue` | TBD | Candidate floor/foundation assembly thermal resistance from floor/foundation/slab envelope data under `.../Building` envelope systems or ECM target data. |
-|  | `floor_target_uvalue` | TBD | Candidate floor/foundation assembly U-factor/U-value from floor/foundation/slab envelope data under `.../Building` envelope systems or ECM target data. |
+| `wall_target_rvalue` | `SYS/WallSystems/WallSystem[@ID=$wall_ref]/WallRValue`; `$wall_ref` comes from `BLDG/Sections/Section/Sides/Side/WallID/@IDref` or `.../WallIDs/WallID/@IDref` | Preferred wall input. Convert IP R to SI: `R_SI = R_IP × 0.176110`. If several wall IDs are used, select one target or area-weight using each `WallID/WallArea`. A possible fallback is `WallInsulations/WallInsulation/WallInsulationRValue`, but that is insulation-only and requires an assembly-level derivation. | TBD |
+| `wall_target_uvalue` | `SYS/WallSystems/WallSystem[@ID=$wall_ref]/WallUFactor` | Convert `U_SI = U_IP × 5.678263`. Set this only when `wall_target_rvalue` is `0`; R wins if both are positive. | TBD |
+| `roof_target_rvalue` | `SYS/RoofSystems/RoofSystem[@ID=$roof_ref]/RoofRValue`; `$roof_ref` comes from `BLDG/Sections/Section/RoofID/@IDref` | Preferred roof input. Convert `R_SI = R_IP × 0.176110`. For multiple sections, select or area-weight using `RoofID/RoofArea`. `RoofInsulations/RoofInsulation/RoofInsulationRValue` is an insulation-only fallback. | TBD |
+| `roof_target_uvalue` | `SYS/RoofSystems/RoofSystem[@ID=$roof_ref]/RoofUFactor` | Convert `U_SI = U_IP × 5.678263`. Set this only when `roof_target_rvalue` is `0`. | TBD |
+| `floor_target_rvalue` | `SYS/ExteriorFloorSystems/ExteriorFloorSystem[@ID=$floor_ref]/ExteriorFloorRValue`; `$floor_ref` comes from `BLDG/Sections/Section/ExteriorFloorID/@IDref` | Preferred exposed-floor input. Convert `R_SI = R_IP × 0.176110`. For multiple sections, select or area-weight using `ExteriorFloorID/ExteriorFloorArea`. Foundation/slab R-values are possible engineering alternatives, but this measure only changes OpenStudio surfaces exposed to outdoors. | TBD |
+| `floor_target_uvalue` | `SYS/ExteriorFloorSystems/ExteriorFloorSystem[@ID=$floor_ref]/ExteriorFloorUFactor` | Convert `U_SI = U_IP × 5.678263`. Set this only when `floor_target_rvalue` is `0`. | TBD |
 
-## What This Measure Supports in an L2 Audit Workflow
+BuildingSync R-values exclude air films, while its assembly U-factors include boundary films. Review the chosen conversion/target basis before mixing R-derived and U-derived targets.
 
-This measure is best understood as supporting the analysis phase of an L2 audit, especially for envelope-related energy conservation measures.
+## Example
 
-More specifically, it supports parameterizing overall opaque assembly performance targets in an energy model. It does not support detailed envelope inventory authoring or comprehensive audit reporting.
-
-It helps translate audit outputs such as:
-
-- Existing envelope assembly descriptions already represented in the baseline OpenStudio model
-- Proposed insulation upgrade targets for walls, roofs, or floors
-- Manufacturer, code, or design targets expressed as R-values or U-values
-
-Into simulation-ready changes that can be used to estimate:
-
-- Energy impact
-- End-use impact
-- Utility cost impact when paired with tariff assumptions
-- Relative savings between baseline and improved envelope cases
-
-It should not be interpreted as a measure that directly manages all envelope construction attributes described in audit documentation.
-
-## L2 Requirements Not Covered by This Measure
-
-This measure does not itself perform the broader ASHRAE 211 Level 2 audit functions below:
-
-- Site inspection or field verification of envelope conditions
-- Infrared thermography, destructive investigation, or moisture assessment
-- Documentation of assembly area, orientation, observed deterioration, or installation quality
-- Ventilation, infiltration, and air leakage diagnostics
-- Fenestration assessment for windows, skylights, and shading systems
-- Economic screening, life-cycle cost analysis, or payback calculation
-- Prioritization of ECMs across interacting systems
-- Final audit report generation
-
-## Practical Interpretation for This Repository
-
-Within this repository, the measure should be treated as an envelope ECM implementation component.
-
-Recommended semantic role:
-
-- Audit input source: ASHRAE 211 L2 field findings and engineering assumptions
-- Translation layer: this measure converts those findings into model-ready envelope targets
-- Analysis output: downstream workflow compares baseline and modified runs to quantify impact
-
-## Suggested Data Handoff from Audit to Measure
-
-To use this measure consistently in an ASHRAE 211 L2 style workflow, the audit process should hand off at least:
-
-- Envelope component type: wall, roof, or floor
-- Existing condition description
-- Proposed insulation target as R-value or U-value
-- Basis for target: observed condition, design intent, code target, or ECM recommendation
-- Modeling notes for exclusions, assumptions, and applicability
-
-Door and window upgrades are intentionally excluded from this measure and should be handled in a separate fenestration-focused measure.
-
-## Conclusion
-
-The `modify_envelope_insulation` measure aligns most closely with the envelope ECM analysis portion of an ASHRAE 211 Level 2 audit. It does not satisfy the full audit standard on its own, but it provides a clear mechanism for turning envelope upgrade recommendations into repeatable OpenStudio model changes for energy analysis.
+A linked `WallSystem` with `WallRValue = 13` yields `wall_target_rvalue ≈ 2.289 m²·K/W`; set `wall_target_uvalue = 0` so the R target is unambiguous.

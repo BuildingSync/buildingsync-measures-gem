@@ -46,22 +46,6 @@ In other words, the user-facing capability is limited to overall opaque assembly
 | Unique construction-based modification | Modifies each distinct construction once per applicable surface type | Audit analysis at assembly/system level rather than per individual polygon | Keeps the ECM representation consistent across surfaces sharing the same assembly. |
 | Informational reporting | Registers initial condition, per-construction actions, warnings, and final condition in the OpenStudio runner output | Audit traceability and documentation of assumptions | Provides lightweight run-time traceability only; it is not a structured envelope report and does not produce ASHRAE 211 reporting deliverables. |
 
-## BuildingSync Reader Mapping
-
-This table follows the BOSS README mapping style. The `set by function in BuildingSyncReader` column is a placeholder until reader methods are finalized. The BuildingSync paths are candidate sources because this measure consumes derived wall, roof, and floor thermal-performance targets rather than full construction records.
-
-Read `.../Facility` as `/BuildingSync/Facilities/Facility`, `.../Systems` as `/BuildingSync/Facilities/Facility/Systems`, `.../Site` as `/BuildingSync/Facilities/Facility/Sites/Site`, and `.../Building` as `/BuildingSync/Facilities/Facility/Sites/Site/Buildings/Building`.
-
-| Measure | Argument | set by function in BuildingSyncReader | Read from BuildingSync |
-|---|---|---|---|
-| modify_envelope_insulation |  |  |  |
-|  | `wall_target_rvalue` | TBD | Candidate wall assembly thermal resistance from envelope/opaque-wall assembly data under `.../Building` envelope systems or ECM target data. |
-|  | `wall_target_uvalue` | TBD | Candidate wall assembly U-factor/U-value from envelope/opaque-wall assembly data under `.../Building` envelope systems or ECM target data. |
-|  | `roof_target_rvalue` | TBD | Candidate roof/ceiling assembly thermal resistance from roof/ceiling envelope data under `.../Building` envelope systems or ECM target data. |
-|  | `roof_target_uvalue` | TBD | Candidate roof/ceiling assembly U-factor/U-value from roof/ceiling envelope data under `.../Building` envelope systems or ECM target data. |
-|  | `floor_target_rvalue` | TBD | Candidate floor/foundation assembly thermal resistance from floor/foundation/slab envelope data under `.../Building` envelope systems or ECM target data. |
-|  | `floor_target_uvalue` | TBD | Candidate floor/foundation assembly U-factor/U-value from floor/foundation/slab envelope data under `.../Building` envelope systems or ECM target data. |
-
 ## What This Measure Supports in an L2 Audit Workflow
 
 This measure is best understood as supporting the analysis phase of an L2 audit, especially for envelope-related energy conservation measures.

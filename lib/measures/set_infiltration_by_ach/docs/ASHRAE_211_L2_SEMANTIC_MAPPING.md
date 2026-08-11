@@ -36,19 +36,6 @@ Behavior summary:
 | Bulk object update | Iterates all infiltration objects in the model | Standardized baseline/proposed scenario treatment | Applies a consistent ACH assumption across modeled infiltration objects unless object-level differentiation is handled elsewhere. |
 | Input validation and traceability | Positive-value checks and runner initial/final info | QA/QC and assumption traceability in analysis workflow | Improves transparency for simulation runs, but is not a full audit artifact. |
 
-## BuildingSync Reader Mapping
-
-This table follows the BOSS README mapping style. The `set by function in BuildingSyncReader` column is a placeholder until reader methods are finalized.
-
-Read `.../Facility` as `/BuildingSync/Facilities/Facility`, `.../Systems` as `/BuildingSync/Facilities/Facility/Systems`, `.../Site` as `/BuildingSync/Facilities/Facility/Sites/Site`, and `.../Building` as `/BuildingSync/Facilities/Facility/Sites/Site/Buildings/Building`.
-
-| Measure | Argument | set by function in BuildingSyncReader | Read from BuildingSync |
-|---|---|---|---|
-| set_infiltration_by_ach |  |  |  |
-|  | `input_type` | TBD | Candidate derived from available infiltration representation: ACH50-style test data versus natural ACH assumption. Possible source near `.../Building` envelope/infiltration or air-leakage audit fields. |
-|  | `ach_value` | TBD | Candidate ACH value from envelope air leakage or infiltration audit data, such as an ACH50 test result or natural ACH assumption associated with `.../Building`. |
-|  | `n_factor` | TBD | Candidate engineering assumption, not always explicit in BuildingSync; may be hard-coded/defaulted or read from analyst notes/measure metadata. |
-
 ## What This Measure Supports in an L2 Audit Workflow
 
 This measure supports the L2 analysis phase by translating ACH-based infiltration assumptions into simulation-ready model inputs.
