@@ -19,7 +19,7 @@ Set target thermal performance for exterior walls, roofs, and exterior floors by
 
 ## Quick Use
 
-1. Follow each section reference (`WallID`, `RoofID`, or `ExteriorFloorID`) to its system under `Facility/Systems`.
+1. Follow each section reference (`WallID`, `RoofID`, or `FoundationID`) to its system under `Facility/Systems`.
 2. Prefer the assembly R-value. Use the U-factor only when R is unavailable or the workflow explicitly chooses U.
 3. Convert BuildingSync 2.7.0 IP values to the SI units expected by the measure.
 4. If multiple linked systems exist, choose an explicit policy—for example, the proposed system, the dominant-area system, or an area-weighted value.
@@ -33,12 +33,12 @@ The paths below omit the XML namespace prefix and use:
 
 | Argument | Candidate BuildingSync XML field | Selection and conversion rule | BuildingSyncReader function |
 |---|---|---|---|
-| `wall_target_rvalue` | `SYS/WallSystems/WallSystem[@ID=$wall_ref]/WallRValue`; `$wall_ref` comes from `BLDG/Sections/Section/Sides/Side/WallID/@IDref` or `.../WallIDs/WallID/@IDref` | Preferred wall input. Convert IP R to SI: `R_SI = R_IP × 0.176110`. If several wall IDs are used, select one target or area-weight using each `WallID/WallArea`. A possible fallback is `WallInsulations/WallInsulation/WallInsulationRValue`, but that is insulation-only and requires an assembly-level derivation. | TBD |
+| `wall_target_rvalue` | `SYS/WallSystems/WallSystem[@ID=$wall_ref]/WallRValue`; `$wall_ref` comes from `BLDG/Sections/Section/Sides/Side/WallIDs/WallID/@IDref` | Preferred wall input. Convert IP R to SI: `R_SI = R_IP × 0.176110`. If several wall IDs are used, select one target or area-weight using each `WallID/WallArea`. A possible fallback is `WallInsulations/WallInsulation/WallInsulationRValue`, but that is insulation-only and requires an assembly-level derivation. | TBD |
 | `wall_target_uvalue` | `SYS/WallSystems/WallSystem[@ID=$wall_ref]/WallUFactor` | Convert `U_SI = U_IP × 5.678263`. Set this only when `wall_target_rvalue` is `0`; R wins if both are positive. | TBD |
-| `roof_target_rvalue` | `SYS/RoofSystems/RoofSystem[@ID=$roof_ref]/RoofRValue`; `$roof_ref` comes from `BLDG/Sections/Section/RoofID/@IDref` | Preferred roof input. Convert `R_SI = R_IP × 0.176110`. For multiple sections, select or area-weight using `RoofID/RoofArea`. `RoofInsulations/RoofInsulation/RoofInsulationRValue` is an insulation-only fallback. | TBD |
+| `roof_target_rvalue` | `SYS/RoofSystems/RoofSystem[@ID=$roof_ref]/RoofRValue`; `$roof_ref` comes from `BLDG/Sections/Section/Roofs/Roof/RoofID/@IDref` | Preferred roof input. Convert `R_SI = R_IP × 0.176110`. For multiple sections, select or area-weight using `RoofID/RoofArea`. `RoofInsulations/RoofInsulation/RoofInsulationRValue` is an insulation-only fallback. | TBD |
 | `roof_target_uvalue` | `SYS/RoofSystems/RoofSystem[@ID=$roof_ref]/RoofUFactor` | Convert `U_SI = U_IP × 5.678263`. Set this only when `roof_target_rvalue` is `0`. | TBD |
-| `floor_target_rvalue` | `SYS/ExteriorFloorSystems/ExteriorFloorSystem[@ID=$floor_ref]/ExteriorFloorRValue`; `$floor_ref` comes from `BLDG/Sections/Section/ExteriorFloorID/@IDref` | Preferred exposed-floor input. Convert `R_SI = R_IP × 0.176110`. For multiple sections, select or area-weight using `ExteriorFloorID/ExteriorFloorArea`. Foundation/slab R-values are possible engineering alternatives, but this measure only changes OpenStudio surfaces exposed to outdoors. | TBD |
-| `floor_target_uvalue` | `SYS/ExteriorFloorSystems/ExteriorFloorSystem[@ID=$floor_ref]/ExteriorFloorUFactor` | Convert `U_SI = U_IP × 5.678263`. Set this only when `floor_target_rvalue` is `0`. | TBD |
+| `floor_target_rvalue` | `SYS/FoundationSystems/FoundationSystem[@ID=$foundation_ref]/GroundCouplings/GroundCoupling/SlabOnGrade/SlabRValue` or `.../Crawlspace/CrawlspaceVenting/Ventilated/FloorRValue`; `$foundation_ref` comes from `BLDG/Sections/Section/FoundationID/@IDref` | Use the field from the applicable ground-coupling branch. Convert `R_SI = R_IP × 0.176110`. For multiple sections, select or area-weight using `FoundationID/FoundationArea`. | TBD |
+| `floor_target_uvalue` | `SYS/FoundationSystems/FoundationSystem[@ID=$foundation_ref]/GroundCouplings/GroundCoupling/SlabOnGrade/SlabUFactor` or `.../Crawlspace/CrawlspaceVenting/Ventilated/FloorUFactor` | Use the field paired with the selected foundation branch. Convert `U_SI = U_IP × 5.678263`. Set this only when `floor_target_rvalue` is `0`. | TBD |
 
 BuildingSync R-values exclude air films, while its assembly U-factors include boundary films. Review the chosen conversion/target basis before mixing R-derived and U-derived targets.
 
