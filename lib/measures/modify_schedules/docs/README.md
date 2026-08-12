@@ -27,31 +27,7 @@ Create OpenStudio schedules from BuildingSync schedule records and assign them t
 2. Select by `ScheduleCategory` and, when available, by an IDref from a premise/system (for example `OccupancyScheduleID`, `HVACScheduleID`, or `LinkedScheduleID`).
 3. Build a payload from the selected `ScheduleDetails/ScheduleDetail` records.
 4. Pass it only to the matching measure argument; omit all schedule arguments that should remain unchanged.
-
-## Arguments and Defaults
-
-| Argument | Default | Effect |
-|---|---|---|
-| `occupancy_schedule_json` | empty | Empty means no occupancy changes. |
-| `lighting_schedule_json` | empty | Empty means no lighting changes. |
-| `electric_equipment_schedule_json` | empty | Empty means no electric-equipment changes. |
-| `gas_equipment_schedule_json` | empty | Empty means no gas-equipment changes. |
-| `hvac_availability_schedule_json` | empty | Empty means no air-loop availability changes. |
-| `additional_schedules_json` | `[]` | An empty array means no additional schedules. |
-
-To change only lighting, supply only `lighting_schedule_json`. If its `name` is `Office Lighting`, the measure creates `Office Lighting_modified`, leaves `Office Lighting` unchanged, and assigns the new schedule directly to every `Lights` object.
-
-## Naming Rule
-
-The payload `name` is the source/base schedule name, not the requested output name:
-
-| Existing model names | Payload `name` | Generated name |
-|---|---|---|
-| `Office Lighting` | `Office Lighting` | `Office Lighting_modified` |
-| `Office Lighting`, `Office Lighting_modified` | `Office Lighting` | `Office Lighting_modified_2` |
-| No matching source object | `Audit Lighting` | `Audit Lighting_modified` |
-
-The payload may use a BuildingSync `Schedule/@ID` as its base name when no OpenStudio source-name mapping is available. The same suffix rule applies.
+5. To change only lighting, supply only `lighting_schedule_json`. If its `name` is `Office Lighting`, the measure creates `Office Lighting_modified`, leaves `Office Lighting` unchanged, and assigns the new schedule directly to every `Lights` object.
 
 ## BuildingSync Reader Mapping
 
