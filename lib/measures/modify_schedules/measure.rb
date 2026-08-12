@@ -4,51 +4,41 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
   end
 
   def description
-    return "Create or replace OpenStudio schedules from BuildingSync-aligned schedule detail payloads and bind them to occupancy, lighting, plug loads, gas equipment, HVAC availability, and optional additional end uses."
+    return "Create new modified OpenStudio schedules from BuildingSync-aligned schedule detail payloads and assign them directly to occupancy, lighting, plug loads, gas equipment, HVAC availability, and optional additional end uses."
   end
 
   def modeler_description
-    return "Accepts BuildingSync-style schedule payloads with day types, start/end times, and partial operation percentages. Builds ScheduleRulesets, assigns them to building and space type default schedule sets, resets explicit internal load schedules when requested, applies HVAC availability schedules to air loops, supports a dedicated gas equipment schedule, and retains extensible additional targets such as service water."
+    return "Accepts BuildingSync-style schedule payloads with day types, start/end times, and partial operation percentages. Builds new ScheduleRulesets named from the source schedule plus '_modified' and assigns them directly to matching internal loads, air loops, or water-use equipment."
   end
 
   def arguments(model)
     args = OpenStudio::Measure::OSArgumentVector.new
-    replace_existing = OpenStudio::Measure::OSArgument.makeBoolArgument("replace_existing", true)
-    replace_existing.setDisplayName("Replace Existing Matching Schedules")
-    replace_existing.setDescription("Overwrite existing ScheduleRulesets with matching names when true. Keep matching schedules when false.")
-    replace_existing.setDefaultValue(true)
-    args << replace_existing
-    default_schedule_set_name = OpenStudio::Measure::OSArgument.makeStringArgument("default_schedule_set_name", true)
-    default_schedule_set_name.setDisplayName("Default Schedule Set Name")
-    default_schedule_set_name.setDescription("Name of the building-level default schedule set that receives imported occupancy, lighting, and equipment schedules.")
-    default_schedule_set_name.setDefaultValue("Modified Schedule Set")
-    args << default_schedule_set_name
-    occupancy_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("occupancy_schedule_json", true)
+    occupancy_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("occupancy_schedule_json", false)
     occupancy_schedule_json.setDisplayName("Occupancy Schedule Payload")
-    occupancy_schedule_json.setDescription("BuildingSync schedule payload. Supports either JSON or compact BuildingSync text using semicolon-separated records like name=...;schedule_category=Occupied;Weekday|06:00:00|07:00:00|11.")
-    occupancy_schedule_json.setDefaultValue("name=Modified Occupancy Schedule;schedule_category=Occupied;Weekday|00:00:00|06:00:00|0;Weekday|06:00:00|07:00:00|11;Weekday|07:00:00|08:00:00|21;Weekday|08:00:00|12:00:00|100;Weekday|12:00:00|13:00:00|53;Weekday|13:00:00|17:00:00|100;Weekday|17:00:00|18:00:00|32;Weekday|18:00:00|22:00:00|11;Weekday|22:00:00|23:00:00|5;Weekday|23:00:00|23:59:59|0;Weekend|00:00:00|23:59:59|0;Holiday|00:00:00|23:59:59|0")
+    occupancy_schedule_json.setDescription("Optional BuildingSync schedule payload. Leave blank to keep occupancy schedules unchanged. Supports JSON or compact semicolon-separated text.")
+    occupancy_schedule_json.setDefaultValue("")
     args << occupancy_schedule_json
-    lighting_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("lighting_schedule_json", true)
+    lighting_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("lighting_schedule_json", false)
     lighting_schedule_json.setDisplayName("Lighting Schedule Payload")
-    lighting_schedule_json.setDescription("BuildingSync schedule payload for lighting. Supports JSON or compact semicolon-separated BuildingSync text.")
-    lighting_schedule_json.setDefaultValue("name=Modified Lighting Schedule;schedule_category=Lighting;Weekday|00:00:00|05:00:00|18;Weekday|05:00:00|07:00:00|23;Weekday|07:00:00|08:00:00|42;Weekday|08:00:00|12:00:00|90;Weekday|12:00:00|13:00:00|80;Weekday|13:00:00|17:00:00|90;Weekday|17:00:00|18:00:00|61;Weekday|18:00:00|20:00:00|42;Weekday|20:00:00|22:00:00|32;Weekday|22:00:00|23:00:00|23;Weekday|23:00:00|23:59:59|18;Weekend|00:00:00|23:59:59|18;Holiday|00:00:00|23:59:59|18")
+    lighting_schedule_json.setDescription("Optional BuildingSync schedule payload for lighting. Leave blank to keep lighting schedules unchanged. Supports JSON or compact semicolon-separated text.")
+    lighting_schedule_json.setDefaultValue("")
     args << lighting_schedule_json
-    electric_equipment_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("electric_equipment_schedule_json", true)
+    electric_equipment_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("electric_equipment_schedule_json", false)
     electric_equipment_schedule_json.setDisplayName("Plug Load Schedule Payload")
-    electric_equipment_schedule_json.setDescription("BuildingSync schedule payload for plug or electric equipment schedules. Supports JSON or compact semicolon-separated BuildingSync text.")
-    electric_equipment_schedule_json.setDefaultValue("name=Modified Plug Load Schedule;schedule_category=Miscellaneous equipment;Weekday|00:00:00|08:00:00|50;Weekday|08:00:00|12:00:00|100;Weekday|12:00:00|13:00:00|94;Weekday|13:00:00|17:00:00|100;Weekday|17:00:00|18:00:00|50;Weekday|18:00:00|23:59:59|20;Weekend|00:00:00|23:59:59|20;Holiday|00:00:00|23:59:59|20")
+    electric_equipment_schedule_json.setDescription("Optional BuildingSync schedule payload for plug or electric equipment. Leave blank to keep these schedules unchanged. Supports JSON or compact semicolon-separated text.")
+    electric_equipment_schedule_json.setDefaultValue("")
     args << electric_equipment_schedule_json
     gas_equipment_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("gas_equipment_schedule_json", false)
     gas_equipment_schedule_json.setDisplayName("Gas Equipment Schedule Payload")
-    gas_equipment_schedule_json.setDescription("BuildingSync schedule payload for gas equipment schedules. Supports JSON or compact semicolon-separated BuildingSync text.")
+    gas_equipment_schedule_json.setDescription("Optional BuildingSync gas-equipment payload. Leave blank to keep gas-equipment schedules unchanged. Supports JSON or compact semicolon-separated text.")
     gas_equipment_schedule_json.setDefaultValue("")
     args << gas_equipment_schedule_json
-    hvac_availability_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("hvac_availability_schedule_json", true)
+    hvac_availability_schedule_json = OpenStudio::Measure::OSArgument.makeStringArgument("hvac_availability_schedule_json", false)
     hvac_availability_schedule_json.setDisplayName("HVAC Availability Schedule Payload")
-    hvac_availability_schedule_json.setDescription("BuildingSync schedule payload for HVAC availability schedules. Supports JSON or compact semicolon-separated BuildingSync text.")
-    hvac_availability_schedule_json.setDefaultValue("name=Modified HVAC Availability Schedule;schedule_category=HVAC equipment;Weekday|00:00:00|06:00:00|0;Weekday|06:00:00|07:00:00|60;Weekday|07:00:00|12:00:00|100;Weekday|12:00:00|13:00:00|80;Weekday|13:00:00|18:00:00|100;Weekday|18:00:00|20:00:00|60;Weekday|20:00:00|23:59:59|0;Weekend|00:00:00|23:59:59|0;Holiday|00:00:00|23:59:59|0")
+    hvac_availability_schedule_json.setDescription("Optional BuildingSync HVAC availability payload. Leave blank to keep air-loop availability schedules unchanged. Supports JSON or compact semicolon-separated text.")
+    hvac_availability_schedule_json.setDefaultValue("")
     args << hvac_availability_schedule_json
-    additional_schedules_json = OpenStudio::Measure::OSArgument.makeStringArgument("additional_schedules_json", true)
+    additional_schedules_json = OpenStudio::Measure::OSArgument.makeStringArgument("additional_schedules_json", false)
     additional_schedules_json.setDisplayName("Additional Schedule Payloads")
     additional_schedules_json.setDescription("JSON array or compact semicolon-separated payloads for extensible categories such as gas equipment or service water.")
     additional_schedules_json.setDefaultValue("[]")
@@ -61,8 +51,6 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
     if !runner.validateUserArguments(arguments(model), user_arguments)
       return false
     end
-    replace_existing = runner.getBoolArgumentValue("replace_existing", user_arguments)
-    default_schedule_set_name = runner.getStringArgumentValue("default_schedule_set_name", user_arguments)
     occupancy_schedule_json = runner.getStringArgumentValue("occupancy_schedule_json", user_arguments)
     lighting_schedule_json = runner.getStringArgumentValue("lighting_schedule_json", user_arguments)
     electric_equipment_schedule_json = runner.getStringArgumentValue("electric_equipment_schedule_json", user_arguments)
@@ -189,9 +177,10 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
         return :error
       end
 
-      schedule_name = fetch_value.call(payload, %w[name schedule_name id], label)
+      schedule_name = fetch_value.call(payload, %w[name schedule_name id], label).to_s.strip
+      schedule_name = label if schedule_name.empty?
       spec = {
-        'name' => schedule_name.to_s,
+        'name' => schedule_name,
         'target' => target,
         'details' => []
       }
@@ -270,65 +259,6 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
       true
     end
 
-    fraction_limits = nil
-    model.getScheduleTypeLimitss.each do |limits|
-      next if limits.name.to_s != 'Fraction'
-
-      fraction_limits = limits
-      break
-    end
-    if fraction_limits.nil?
-      fraction_limits = OpenStudio::Model::ScheduleTypeLimits.new(model)
-      fraction_limits.setName('Fraction')
-      fraction_limits.setLowerLimitValue(0.0)
-      fraction_limits.setUpperLimitValue(1.0)
-      fraction_limits.setNumericType('Continuous')
-      fraction_limits.setUnitType('Dimensionless')
-    end
-
-    building = model.getBuilding
-    default_schedule_set = if building.defaultScheduleSet.is_initialized
-                             building.defaultScheduleSet.get
-                           else
-                             created_default = OpenStudio::Model::DefaultScheduleSet.new(model)
-                             building.setDefaultScheduleSet(created_default)
-                             created_default
-                           end
-    default_schedule_set.setName(default_schedule_set_name)
-
-    model.getSpaceTypes.each do |space_type|
-      space_type.setDefaultScheduleSet(default_schedule_set)
-    end
-
-    if replace_existing
-      model.getPeoples.each do |people|
-        people.resetNumberofPeopleSchedule
-      end
-      model.getLightss.each do |lights|
-        lights.resetSchedule
-      end
-      model.getElectricEquipments.each do |equipment|
-        equipment.resetSchedule
-      end
-      model.getGasEquipments.each do |equipment|
-        equipment.resetSchedule
-      end
-      model.getSpaceTypes.each do |space_type|
-        space_type.people.each do |people|
-          people.resetNumberofPeopleSchedule
-        end
-        space_type.lights.each do |lights|
-          lights.resetSchedule
-        end
-        space_type.electricEquipment.each do |equipment|
-          equipment.resetSchedule
-        end
-        space_type.gasEquipment.each do |equipment|
-          equipment.resetSchedule
-        end
-      end
-    end
-
     schedule_specs = []
     core_specs = [
       ['Occupancy Schedule Payload', occupancy_schedule_json, 'occupancy'],
@@ -340,6 +270,7 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
     core_specs.each do |label, payload_text, target|
       spec = parse_schedule_payload.call(label, payload_text, target)
       return false if spec == :error
+
       schedule_specs << spec unless spec.nil?
     end
 
@@ -361,6 +292,7 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
       additional_payload.each_with_index do |payload, index|
         spec = parse_schedule_payload.call("Additional schedule #{index + 1}", JSON.generate(payload), nil)
         return false if spec == :error
+
         schedule_specs << spec unless spec.nil?
       end
     end
@@ -370,6 +302,22 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
       return true
     end
 
+    fraction_limits = nil
+    model.getScheduleTypeLimitss.each do |limits|
+      next if limits.name.to_s != 'Fraction'
+
+      fraction_limits = limits
+      break
+    end
+    if fraction_limits.nil?
+      fraction_limits = OpenStudio::Model::ScheduleTypeLimits.new(model)
+      fraction_limits.setName('Fraction')
+      fraction_limits.setLowerLimitValue(0.0)
+      fraction_limits.setUpperLimitValue(1.0)
+      fraction_limits.setNumericType('Continuous')
+      fraction_limits.setUnitType('Dimensionless')
+    end
+
     starting_schedule_count = model.getSchedules.size
     created_schedule_names = []
     internal_load_count = 0
@@ -377,108 +325,109 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
     water_use_count = 0
 
     schedule_specs.each do |spec|
-      existing_schedule = nil
-      model.getScheduleRulesets.each do |schedule|
-        if schedule.name.to_s == spec['name']
-          existing_schedule = schedule
-          break
+      base_generated_name = "#{spec['name']}_modified"
+      generated_name = base_generated_name
+      existing_names = model.getSchedules.map { |schedule| schedule.name.to_s }
+      suffix = 2
+      while existing_names.include?(generated_name)
+        generated_name = "#{base_generated_name}_#{suffix}"
+        suffix += 1
+      end
+
+      generated_schedule = OpenStudio::Model::ScheduleRuleset.new(model)
+      generated_schedule.setName(generated_name)
+      generated_schedule.setScheduleTypeLimits(fraction_limits)
+
+      weekday_intervals = []
+      saturday_intervals = []
+      sunday_intervals = []
+      holiday_intervals = []
+
+      spec['details'].each do |detail|
+        case detail['day_type'].downcase
+        when 'weekday', 'default'
+          weekday_intervals << detail
+        when 'saturday', 'sat'
+          saturday_intervals << detail
+        when 'sunday', 'sun'
+          sunday_intervals << detail
+        when 'weekend'
+          saturday_intervals << detail.dup
+          sunday_intervals << detail.dup
+        when 'holiday'
+          holiday_intervals << detail
+        else
+          runner.registerWarning("Skipping unsupported day type '#{detail['day_type']}' for schedule '#{generated_name}'.")
         end
       end
 
-      if !existing_schedule.nil? && !replace_existing
-        runner.registerInfo("Keeping existing schedule '#{spec['name']}'.")
-        generated_schedule = existing_schedule
-      else
-        generated_schedule = existing_schedule.nil? ? OpenStudio::Model::ScheduleRuleset.new(model) : existing_schedule
-        generated_schedule.setName(spec['name'])
-        generated_schedule.setScheduleTypeLimits(fraction_limits)
-        generated_schedule.scheduleRules.each do |rule|
-          rule.remove
-        end
-
-        weekday_intervals = []
-        saturday_intervals = []
-        sunday_intervals = []
-        holiday_intervals = []
-
-        spec['details'].each do |detail|
-          case detail['day_type'].downcase
-          when 'weekday', 'default'
-            weekday_intervals << detail
-          when 'saturday', 'sat'
-            saturday_intervals << detail
-          when 'sunday', 'sun'
-            sunday_intervals << detail
-          when 'weekend'
-            saturday_intervals << detail.dup
-            sunday_intervals << detail.dup
-          when 'holiday'
-            holiday_intervals << detail
-          else
-            runner.registerWarning("Skipping unsupported day type '#{detail['day_type']}' for schedule '#{spec['name']}'.")
-          end
-        end
-
-        if !apply_intervals.call(generated_schedule.defaultDaySchedule, weekday_intervals, "#{spec['name']} weekday")
-          return false
-        end
-
-        if !saturday_intervals.empty?
-          saturday_rule = OpenStudio::Model::ScheduleRule.new(generated_schedule)
-          saturday_rule.setName("#{spec['name']} Saturday")
-          saturday_rule.setApplyMonday(false)
-          saturday_rule.setApplyTuesday(false)
-          saturday_rule.setApplyWednesday(false)
-          saturday_rule.setApplyThursday(false)
-          saturday_rule.setApplyFriday(false)
-          saturday_rule.setApplySaturday(true)
-          saturday_rule.setApplySunday(false)
-          if !apply_intervals.call(saturday_rule.daySchedule, saturday_intervals, "#{spec['name']} Saturday")
-            return false
-          end
-        end
-
-        if !sunday_intervals.empty?
-          sunday_rule = OpenStudio::Model::ScheduleRule.new(generated_schedule)
-          sunday_rule.setName("#{spec['name']} Sunday")
-          sunday_rule.setApplyMonday(false)
-          sunday_rule.setApplyTuesday(false)
-          sunday_rule.setApplyWednesday(false)
-          sunday_rule.setApplyThursday(false)
-          sunday_rule.setApplyFriday(false)
-          sunday_rule.setApplySaturday(false)
-          sunday_rule.setApplySunday(true)
-          if !apply_intervals.call(sunday_rule.daySchedule, sunday_intervals, "#{spec['name']} Sunday")
-            return false
-          end
-        end
-
-        holiday_source = holiday_intervals.empty? ? sunday_intervals : holiday_intervals
-        if !apply_intervals.call(generated_schedule.holidaySchedule, holiday_source, "#{spec['name']} Holiday")
-          return false
-        end
-
-        all_values = spec['details'].map { |detail| detail['value'] }
-        design_value = all_values.empty? ? 0.0 : all_values.max
-        generated_schedule.winterDesignDaySchedule.clearValues
-        generated_schedule.winterDesignDaySchedule.addValue(OpenStudio::Time.new(0, 24, 0, 0), design_value)
-        generated_schedule.summerDesignDaySchedule.clearValues
-        generated_schedule.summerDesignDaySchedule.addValue(OpenStudio::Time.new(0, 24, 0, 0), design_value)
+      if !apply_intervals.call(generated_schedule.defaultDaySchedule, weekday_intervals, "#{generated_name} weekday")
+        return false
       end
+
+      if !saturday_intervals.empty?
+        saturday_rule = OpenStudio::Model::ScheduleRule.new(generated_schedule)
+        saturday_rule.setName("#{generated_name} Saturday")
+        saturday_rule.setApplyMonday(false)
+        saturday_rule.setApplyTuesday(false)
+        saturday_rule.setApplyWednesday(false)
+        saturday_rule.setApplyThursday(false)
+        saturday_rule.setApplyFriday(false)
+        saturday_rule.setApplySaturday(true)
+        saturday_rule.setApplySunday(false)
+        if !apply_intervals.call(saturday_rule.daySchedule, saturday_intervals, "#{generated_name} Saturday")
+          return false
+        end
+      end
+
+      if !sunday_intervals.empty?
+        sunday_rule = OpenStudio::Model::ScheduleRule.new(generated_schedule)
+        sunday_rule.setName("#{generated_name} Sunday")
+        sunday_rule.setApplyMonday(false)
+        sunday_rule.setApplyTuesday(false)
+        sunday_rule.setApplyWednesday(false)
+        sunday_rule.setApplyThursday(false)
+        sunday_rule.setApplyFriday(false)
+        sunday_rule.setApplySaturday(false)
+        sunday_rule.setApplySunday(true)
+        if !apply_intervals.call(sunday_rule.daySchedule, sunday_intervals, "#{generated_name} Sunday")
+          return false
+        end
+      end
+
+      holiday_source = holiday_intervals.empty? ? sunday_intervals : holiday_intervals
+      if !apply_intervals.call(generated_schedule.holidaySchedule, holiday_source, "#{generated_name} Holiday")
+        return false
+      end
+
+      all_values = spec['details'].map { |detail| detail['value'] }
+      design_value = all_values.empty? ? 0.0 : all_values.max
+      generated_schedule.winterDesignDaySchedule.clearValues
+      generated_schedule.winterDesignDaySchedule.addValue(OpenStudio::Time.new(0, 24, 0, 0), design_value)
+      generated_schedule.summerDesignDaySchedule.clearValues
+      generated_schedule.summerDesignDaySchedule.addValue(OpenStudio::Time.new(0, 24, 0, 0), design_value)
 
       case spec['target']
       when 'occupancy'
-        default_schedule_set.setNumberofPeopleSchedule(generated_schedule)
-        internal_load_count += model.getPeoples.size
+        model.getPeoples.each do |people|
+          people.setNumberofPeopleSchedule(generated_schedule)
+          internal_load_count += 1
+        end
       when 'lighting'
-        default_schedule_set.setLightingSchedule(generated_schedule)
-        internal_load_count += model.getLightss.size
+        model.getLightss.each do |lights|
+          lights.setSchedule(generated_schedule)
+          internal_load_count += 1
+        end
       when 'electric_equipment'
-        default_schedule_set.setElectricEquipmentSchedule(generated_schedule)
-        internal_load_count += model.getElectricEquipments.size
+        model.getElectricEquipments.each do |equipment|
+          equipment.setSchedule(generated_schedule)
+          internal_load_count += 1
+        end
       when 'gas_equipment'
-        default_schedule_set.setGasEquipmentSchedule(generated_schedule)
-        internal_load_count += model.getGasEquipments.size
+        model.getGasEquipments.each do |equipment|
+          equipment.setSchedule(generated_schedule)
+          internal_load_count += 1
+        end
       when 'hvac_availability'
         model.getAirLoopHVACs.each do |air_loop|
           air_loop.setAvailabilitySchedule(generated_schedule)
@@ -494,11 +443,11 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
         next
       end
 
-      created_schedule_names << spec['name']
+      created_schedule_names << generated_name
     end
 
     runner.registerInitialCondition("The model started with #{starting_schedule_count} schedules, #{model.getAirLoopHVACs.size} air loops, and #{model.getWaterUseEquipments.size} water use equipment objects.")
-    runner.registerFinalCondition("Created or updated #{created_schedule_names.uniq.size} schedules: #{created_schedule_names.uniq.join(', ')}. Applied internal-load schedule targets across #{internal_load_count} load objects, HVAC availability across #{air_loop_count} air loops, and service-water schedules across #{water_use_count} water use equipment objects.")
+    runner.registerFinalCondition("Created #{created_schedule_names.uniq.size} modified schedules: #{created_schedule_names.uniq.join(', ')}. Applied internal-load schedule targets across #{internal_load_count} load objects, HVAC availability across #{air_loop_count} air loops, and service-water schedules across #{water_use_count} water use equipment objects.")
 
     true
 # --- end user logic ---

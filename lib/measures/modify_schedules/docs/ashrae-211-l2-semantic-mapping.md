@@ -28,8 +28,8 @@ Key behavioral semantics:
 - Accepts either JSON payloads or compact semicolon-delimited text payloads
 - Parses day-type intervals with start time, end time, and fractional/percent values
 - Normalizes values to fraction range `[0, 1]`
-- Applies schedules via building and space type default schedule sets and equipment/air loop objects
-- Optionally replaces existing matching schedules
+- Assigns schedules directly to matching internal-load, air-loop, and water-use equipment objects
+- Preserves source schedules, creates uniquely named `_modified` schedules, and optionally overrides existing load assignments
 
 ## Semantic Mapping
 
@@ -42,10 +42,9 @@ Key behavioral semantics:
 | HVAC availability profile | `hvac_availability_schedule_json` mapped to `hvac_availability` target and assigned to air loops | HVAC system operating schedules and availability windows from controls review | Represents AHU/system on-off availability assumptions for energy and demand impact analysis. |
 | Additional schedule categories | `additional_schedules_json` with extensible `target` mapping, including `service_water` | Additional end-use schedule assumptions beyond core categories | Supports extending L2 operational assumptions into custom/end-use model components. |
 | BuildingSync-aligned schedule details | Day type + start/end time + partial operation percent parsing | Audit data exchange and interoperability of schedule observations | Provides a structured handoff path from audit data formats to simulation input objects. |
-| Replace-existing control | `replace_existing` determines overwrite vs preserve behavior | Baseline integrity and scenario-control decisions in audit workflow | Supports either conservative reuse of existing schedules or explicit replacement for scenario testing. |
 | Day-type handling | Weekday/default, Saturday, Sunday, weekend expansion, holiday profile | Typical operating-day categorization in audit documentation | Aligns schedule semantics with common audit reporting of weekday/weekend/holiday operations. |
 | Fraction type limits and clipping | Enforces fraction schedules with values constrained to `[0,1]` | Data validation and plausibility screening for operational assumptions | Prevents invalid operational schedule magnitudes from propagating into simulation runs. |
-| Assignment to model objects | Applies via default schedule set, internal load objects, air loops, and water-use equipment | Translation of observed/control assumptions to modeled systems and end uses | Encodes operational ECM or baseline assumptions where simulation engines consume schedules. |
+| Assignment to model objects | Assigns directly to internal load objects, air loops, and water-use equipment | Translation of observed/control assumptions to modeled systems and end uses | Encodes operational ECM or baseline assumptions where simulation engines consume schedules. |
 | Run-level reporting | Initial/final condition with counts of schedules and affected objects | Audit traceability of analytical assumptions and modeled scope | Improves transparency of what assumptions were applied, but is not a complete L2 report artifact. |
 
 ## What This Measure Supports in an L2 Audit Workflow
