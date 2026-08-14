@@ -32,9 +32,8 @@ The paths below omit the XML namespace prefix and use `HVAC` for `/BuildingSync/
 Resolve `hvac_system_type` in this order:
 
 1. Use a recognized `HVAC/PrincipalHVACSystemType` value (L100).
-2. Otherwise, accept `HVAC/PrimaryHVACSystemType` as a compatibility candidate.
-3. Otherwise, infer the type from a consistent combination of detailed L200 fields. Do not infer a topology from one generic field such as `HeatingMedium` alone.
-4. Use `unknown` when detailed records are incomplete, contradictory, or match more than one choice. `other` requires an explicit `Other` classification; it is not the ambiguity fallback.
+2. Otherwise, infer the type from a consistent combination of detailed L200 fields. Do not infer a topology from one generic field such as `HeatingMedium` alone.
+3. Use `unknown` when detailed records are incomplete, contradictory, or match more than one choice. `other` requires an explicit `Other` classification; it is not the ambiguity fallback.
 
 The L200 column uses these path aliases, all relative to `HVAC`:
 
