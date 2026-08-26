@@ -22,8 +22,12 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       create_four_pipe_fan_coil_hvac
       create_packaged_rooftop_ac_hvac
       create_packaged_rooftop_heat_pump_hvac
+      create_packaged_rooftop_vav_electric_reheat_hvac
+      create_packaged_rooftop_vav_hw_reheat_hvac
       create_ptac_hvac
       create_pthp_hvac
+      create_vav_electric_reheat_hvac
+      create_vav_hw_reheat_hvac
       disable_sizing_runs
       modify_envelope_insulation
       modify_existing_air_loop_controls
@@ -36,8 +40,12 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       replace_with_four_pipe_fan_coil_hvac
       replace_with_packaged_rooftop_ac_hvac
       replace_with_packaged_rooftop_heat_pump_hvac
+      replace_with_packaged_rooftop_vav_electric_reheat_hvac
+      replace_with_packaged_rooftop_vav_hw_reheat_hvac
       replace_with_ptac_hvac
       replace_with_pthp_hvac
+      replace_with_vav_electric_reheat_hvac
+      replace_with_vav_hw_reheat_hvac
       set_infiltration_by_ach
     ]
 

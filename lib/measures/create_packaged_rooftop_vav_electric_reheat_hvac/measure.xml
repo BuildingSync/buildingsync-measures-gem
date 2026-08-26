@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>create_packaged_rooftop_vav_electric_reheat_hvac</name>
+  <uid>18be7eb6-ef54-4a80-869b-780dcda3e661</uid>
+  <version_id>85301e19-c00a-448d-8981-566b1e2f0595</version_id>
+  <version_modified>2026-08-26T22:12:12Z</version_modified>
+  <xml_checksum>AC2EC58F</xml_checksum>
+  <class_name>CreatePackagedRooftopVavElectricReheatHvac</class_name>
+  <display_name>Create Packaged Rooftop VAV with Electric Reheat</display_name>
+  <description>Adds packaged rooftop VAV systems with parallel fan-powered electric-reheat terminals to unserved target zones.</description>
+  <modeler_description>Uses the openstudio-standards PVAV PFP Boxes system and verifies that newly created air loops serve every selected zone.</modeler_description>
+  <arguments>
+    <argument>
+      <name>target_zone_names</name>
+      <display_name>Target Zone Names</display_name>
+      <description>Comma-separated exact thermal-zone names. Blank selects all thermal zones.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>standards_template</name>
+      <display_name>Standards Template</display_name>
+      <description>openstudio-standards template used to construct the PVAV PFP Boxes system.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>90.1-2019</default_value>
+      <choices>
+        <choice>
+          <value>90.1-2013</value>
+          <display_name>90.1-2013</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2016</value>
+          <display_name>90.1-2016</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2019</value>
+          <display_name>90.1-2019</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Systems</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>502F6CA8</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>66C1610D</checksum>
+    </file>
+    <file>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>C794DF69</checksum>
+    </file>
+  </files>
+</measure>

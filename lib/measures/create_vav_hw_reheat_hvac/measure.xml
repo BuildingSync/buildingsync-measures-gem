@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>create_vav_hw_reheat_hvac</name>
+  <uid>76daf8ba-1338-480c-a299-3e5fb42920c4</uid>
+  <version_id>4f662bc1-1414-4333-a50f-d0bd91552c64</version_id>
+  <version_modified>2026-08-26T22:14:52Z</version_modified>
+  <xml_checksum>AC2EC58F</xml_checksum>
+  <class_name>CreateVavHwReheatHvac</class_name>
+  <display_name>Create VAV with Hot Water Reheat</display_name>
+  <description>Adds built-up VAV systems with hot-water terminal reheat to unserved target zones.</description>
+  <modeler_description>Uses openstudio-standards VAV Reheat and verifies newly created air-loop coverage.</modeler_description>
+  <arguments>
+    <argument>
+      <name>target_zone_names</name>
+      <display_name>Target Zone Names</display_name>
+      <description>Comma-separated exact thermal-zone names. Blank selects all thermal zones.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>standards_template</name>
+      <display_name>Standards Template</display_name>
+      <description>openstudio-standards template used to construct VAV Reheat.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>90.1-2019</default_value>
+      <choices>
+        <choice>
+          <value>90.1-2013</value>
+          <display_name>90.1-2013</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2016</value>
+          <display_name>90.1-2016</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2019</value>
+          <display_name>90.1-2019</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Systems</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>502F6CA8</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>898DC9E9</checksum>
+    </file>
+    <file>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>61BE716D</checksum>
+    </file>
+  </files>
+</measure>
