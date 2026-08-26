@@ -10,7 +10,9 @@ require_relative '../../lib/measures/create_packaged_rooftop_heat_pump_hvac/meas
 require_relative '../../lib/measures/create_packaged_rooftop_vav_electric_reheat_hvac/measure'
 require_relative '../../lib/measures/create_packaged_rooftop_vav_hw_reheat_hvac/measure'
 require_relative '../../lib/measures/create_ptac_hvac/measure'
+require_relative '../../lib/measures/create_doas_hvac/measure'
 require_relative '../../lib/measures/create_pthp_hvac/measure'
+require_relative '../../lib/measures/create_ventilation_only_hvac/measure'
 require_relative '../../lib/measures/create_vav_electric_reheat_hvac/measure'
 require_relative '../../lib/measures/create_vav_hw_reheat_hvac/measure'
 require_relative '../../lib/measures/replace_with_four_pipe_fan_coil_hvac/measure'
@@ -20,6 +22,8 @@ require_relative '../../lib/measures/replace_with_packaged_rooftop_vav_electric_
 require_relative '../../lib/measures/replace_with_packaged_rooftop_vav_hw_reheat_hvac/measure'
 require_relative '../../lib/measures/replace_with_ptac_hvac/measure'
 require_relative '../../lib/measures/replace_with_pthp_hvac/measure'
+require_relative '../../lib/measures/replace_with_doas_hvac/measure'
+require_relative '../../lib/measures/replace_with_ventilation_only_hvac/measure'
 require_relative '../../lib/measures/replace_with_vav_electric_reheat_hvac/measure'
 require_relative '../../lib/measures/replace_with_vav_hw_reheat_hvac/measure'
 require_relative '../../lib/measures/modify_existing_air_loop_controls/measure'
@@ -69,6 +73,7 @@ RSpec.describe 'Independent HVAC measures' do
   it 'exposes the intended focused argument contracts' do
     model = OpenStudio::Model::Model.new
     contracts = {
+      CreateDoasHvac.new => %w[target_zone_names standards_template],
       CreateFourPipeFanCoilHvac.new => %w[target_zone_names standards_template],
       CreatePackagedRooftopAcHvac.new => %w[target_zone_names standards_template],
       CreatePackagedRooftopHeatPumpHvac.new => %w[target_zone_names standards_template],
@@ -76,6 +81,7 @@ RSpec.describe 'Independent HVAC measures' do
       CreatePackagedRooftopVavHwReheatHvac.new => %w[target_zone_names standards_template],
       CreatePtacHvac.new => %w[target_zone_names standards_template],
       CreatePthpHvac.new => %w[target_zone_names standards_template],
+      CreateVentilationOnlyHvac.new => %w[target_zone_names standards_template],
       CreateVavElectricReheatHvac.new => %w[target_zone_names standards_template],
       CreateVavHwReheatHvac.new => %w[target_zone_names standards_template],
       ReplaceWithFourPipeFanCoilHvac.new => %w[target_zone_names standards_template],
@@ -85,6 +91,8 @@ RSpec.describe 'Independent HVAC measures' do
       ReplaceWithPackagedRooftopVavHwReheatHvac.new => %w[target_zone_names standards_template],
       ReplaceWithPtacHvac.new => %w[target_zone_names standards_template],
       ReplaceWithPthpHvac.new => %w[target_zone_names standards_template],
+      ReplaceWithDoasHvac.new => %w[target_zone_names standards_template],
+      ReplaceWithVentilationOnlyHvac.new => %w[target_zone_names standards_template],
       ReplaceWithVavElectricReheatHvac.new => %w[target_zone_names standards_template],
       ReplaceWithVavHwReheatHvac.new => %w[target_zone_names standards_template],
       ModifyExistingAirLoopControls.new => %w[target_air_loop_names set_supply_air_temperatures cooling_supply_air_temperature_c heating_supply_air_temperature_c set_economizer economizer_control_type economizer_high_limit_dry_bulb_temperature_c economizer_high_limit_enthalpy_j_kg],
@@ -347,6 +355,43 @@ RSpec.describe 'Independent HVAC measures' do
     expect(replacement_result.value.valueName).to eq('Success')
     expect(replacement_model.getZoneHVACBaseboardConvectiveElectrics).to be_empty
     expect(replacement_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*replacement_zones)
+  end
+
+  it 'creates and replaces ventilation-only and DOAS systems' do
+    ventilation_model, ventilation_zones = named_multizone_model('Ventilation')
+    doas_model, doas_zones = named_multizone_model('DOAS')
+    replacement_model, replacement_zones = named_multizone_model('Replacement DOAS')
+    ventilation_replacement_model, ventilation_replacement_zones = named_multizone_model('Replacement Ventilation')
+    replacement_zones.each do |zone|
+      OpenStudio::Model::ZoneHVACBaseboardConvectiveElectric.new(replacement_model).addToThermalZone(zone)
+    end
+    ventilation_replacement_zones.each do |zone|
+      OpenStudio::Model::ZoneHVACBaseboardConvectiveElectric.new(ventilation_replacement_model).addToThermalZone(zone)
+    end
+
+    ventilation_result = run_measure(CreateVentilationOnlyHvac.new, ventilation_model,
+                                     'target_zone_names' => ventilation_zones.map(&:nameString).join(', '), 'standards_template' => '90.1-2019')
+    doas_result = run_measure(CreateDoasHvac.new, doas_model,
+                              'target_zone_names' => doas_zones.map(&:nameString).join(', '), 'standards_template' => '90.1-2019')
+    replacement_result = run_measure(ReplaceWithDoasHvac.new, replacement_model,
+                                     'target_zone_names' => replacement_zones.map(&:nameString).join(', '), 'standards_template' => '90.1-2019')
+    ventilation_replacement_result = run_measure(
+      ReplaceWithVentilationOnlyHvac.new,
+      ventilation_replacement_model,
+      'target_zone_names' => ventilation_replacement_zones.map(&:nameString).join(', '),
+      'standards_template' => '90.1-2019'
+    )
+
+    expect(ventilation_result.value.valueName).to eq('Success')
+    expect(ventilation_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*ventilation_zones)
+    expect(doas_result.value.valueName).to eq('Success'), doas_result.errors.map(&:logMessage).join('; ')
+    expect(doas_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*doas_zones)
+    expect(replacement_result.value.valueName).to eq('Success')
+    expect(replacement_model.getZoneHVACBaseboardConvectiveElectrics).to be_empty
+    expect(replacement_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*replacement_zones)
+    expect(ventilation_replacement_result.value.valueName).to eq('Success')
+    expect(ventilation_replacement_model.getZoneHVACBaseboardConvectiveElectrics).to be_empty
+    expect(ventilation_replacement_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*ventilation_replacement_zones)
   end
 
   it 'updates only a named air loop design temperature' do

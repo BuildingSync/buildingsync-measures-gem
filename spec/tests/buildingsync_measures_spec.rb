@@ -19,6 +19,7 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
   it 'includes migrated measures' do
     instance = OpenStudio::BuildingsyncMeasures::BuildingsyncMeasures.new
     expected_measures = %w[
+      create_doas_hvac
       create_four_pipe_fan_coil_hvac
       create_packaged_rooftop_ac_hvac
       create_packaged_rooftop_heat_pump_hvac
@@ -28,6 +29,7 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       create_pthp_hvac
       create_vav_electric_reheat_hvac
       create_vav_hw_reheat_hvac
+      create_ventilation_only_hvac
       disable_sizing_runs
       modify_envelope_insulation
       modify_existing_air_loop_controls
@@ -46,6 +48,8 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       replace_with_pthp_hvac
       replace_with_vav_electric_reheat_hvac
       replace_with_vav_hw_reheat_hvac
+      replace_with_doas_hvac
+      replace_with_ventilation_only_hvac
       set_infiltration_by_ach
     ]
 
