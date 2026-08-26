@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>modify_existing_heat_recovery</name>
+  <uid>ef1de350-f353-477a-b782-7d0c6a3a4b42</uid>
+  <version_id>d260fcad-c903-4357-8f98-5a9d9b0a9233</version_id>
+  <version_modified>2026-08-26T21:47:10Z</version_modified>
+  <xml_checksum>AC2EC58F</xml_checksum>
+  <class_name>ModifyExistingHeatRecovery</class_name>
+  <display_name>Modify Existing Heat Recovery</display_name>
+  <description>Sets sensible or latent effectiveness on explicitly named air-to-air heat exchangers.</description>
+  <modeler_description>Updates all 100% and 75% heating/cooling effectiveness fields for the selected metric.</modeler_description>
+  <arguments>
+    <argument>
+      <name>target_heat_exchanger_names</name>
+      <display_name>Target Heat Exchanger Names</display_name>
+      <description>Comma-separated exact HeatExchangerAirToAirSensibleAndLatent names.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>effectiveness_metric</name>
+      <display_name>Effectiveness Metric</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>sensible_effectiveness</default_value>
+      <choices>
+        <choice>
+          <value>sensible_effectiveness</value>
+          <display_name>sensible_effectiveness</display_name>
+        </choice>
+        <choice>
+          <value>latent_effectiveness</value>
+          <display_name>latent_effectiveness</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>effectiveness</name>
+      <display_name>Effectiveness</display_name>
+      <description>Fraction from 0 through 1.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.7</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Systems</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>550EB339</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>DD57B79C</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>AC082FCE</checksum>
+    </file>
+  </files>
+</measure>

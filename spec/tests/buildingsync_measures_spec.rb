@@ -18,10 +18,17 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
   it 'includes migrated measures' do
     instance = OpenStudio::BuildingsyncMeasures::BuildingsyncMeasures.new
     expected_measures = %w[
+      create_ptac_hvac
       disable_sizing_runs
       modify_envelope_insulation
+      modify_existing_air_loop_controls
+      modify_existing_heat_recovery
+      modify_existing_hvac_equipment_efficiencies
+      modify_existing_plant_equipment
+      modify_existing_plant_loop_temperatures
       modify_hvac
       modify_schedules
+      replace_with_ptac_hvac
       set_infiltration_by_ach
     ]
 
