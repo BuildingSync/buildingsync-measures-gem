@@ -21,6 +21,7 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
     expected_measures = %w[
       create_doas_hvac
       create_four_pipe_fan_coil_hvac
+      create_ground_source_heat_pump_hvac
       create_packaged_rooftop_ac_hvac
       create_packaged_rooftop_heat_pump_hvac
       create_packaged_rooftop_vav_electric_reheat_hvac
@@ -30,6 +31,9 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       create_vav_electric_reheat_hvac
       create_vav_hw_reheat_hvac
       create_ventilation_only_hvac
+      create_water_loop_heat_pump_hvac
+      create_warm_air_furnace_hvac
+      create_vrf_hvac
       disable_sizing_runs
       modify_envelope_insulation
       modify_existing_air_loop_controls
@@ -40,6 +44,7 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       modify_hvac
       modify_schedules
       replace_with_four_pipe_fan_coil_hvac
+      replace_with_ground_source_heat_pump_hvac
       replace_with_packaged_rooftop_ac_hvac
       replace_with_packaged_rooftop_heat_pump_hvac
       replace_with_packaged_rooftop_vav_electric_reheat_hvac
@@ -50,6 +55,9 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       replace_with_vav_hw_reheat_hvac
       replace_with_doas_hvac
       replace_with_ventilation_only_hvac
+      replace_with_water_loop_heat_pump_hvac
+      replace_with_warm_air_furnace_hvac
+      replace_with_vrf_hvac
       set_infiltration_by_ach
     ]
 
