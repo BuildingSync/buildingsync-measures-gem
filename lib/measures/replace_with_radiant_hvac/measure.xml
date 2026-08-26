@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>replace_with_radiant_hvac</name>
+  <uid>a220ea1f-c898-42cb-88b8-f86edc1fd3ec</uid>
+  <version_id>cb417871-8694-4013-8e74-2afe46d0394c</version_id>
+  <version_modified>2026-08-26T22:47:21Z</version_modified>
+  <xml_checksum>AC2EC58F</xml_checksum>
+  <class_name>ReplaceWithRadiantHvac</class_name>
+  <display_name>Replace HVAC with Low-Temperature Radiant</display_name>
+  <description>Replaces HVAC dedicated to selected zones with hydronic low-temperature radiant heating and cooling.</description>
+  <modeler_description>Rejects partial shared-loop removal, preserves existing plants, and creates Radiant Slab equipment plus new supporting plants.</modeler_description>
+  <arguments>
+    <argument>
+      <name>target_zone_names</name>
+      <display_name>Target Zone Names</display_name>
+      <description>Comma-separated exact thermal-zone names to replace.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>standards_template</name>
+      <display_name>Standards Template</display_name>
+      <description>openstudio-standards template used to construct the replacement Radiant Slab system.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>90.1-2019</default_value>
+      <choices>
+        <choice>
+          <value>90.1-2013</value>
+          <display_name>90.1-2013</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2016</value>
+          <display_name>90.1-2016</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2019</value>
+          <display_name>90.1-2019</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Systems</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>ACDF3563</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>2397ED80</checksum>
+    </file>
+    <file>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>1B50356B</checksum>
+    </file>
+  </files>
+</measure>
