@@ -20,8 +20,10 @@ Do not use it to replace existing HVAC or merely change plant properties.
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Measure selection | `PrincipalHVACSystemType`; fallback `DeliveryType/ZoneEquipment` fan-coil type plus linked heating and cooling plants | Require four-pipe or both hot-water and chilled-water coil evidence | Enum/relationship mapping | High for explicit type; medium for inferred plant links |
-| `target_zone_names` | HVAC `LinkedPremises` thermal-zone, space, or section IDrefs | Resolve linked premises to exact model thermal-zone names | Join names with commas | Consumer owns ID resolution |
+| Measure selection — L200 (preferred) | `HVACSystem/HeatingAndCoolingSystems/Deliveries/Delivery/DeliveryType/ZoneEquipment/FanBased/FanBasedDistributionType/FanCoil/FanCoilType = "Fan coil 4 pipe"` and `HVACPipeConfiguration = "4 pipe"`; `Delivery/HeatingSourceID/@IDref` joins a source with `HeatingMedium = "Hot water"`; `Delivery/CoolingSourceID/@IDref` joins a source with `CoolingMedium = "Chilled water"` | Require the explicit fan-coil enum and both hydronic circuits | Exact enums plus IDREF relationships | High when all components are present |
+| Measure selection — L100/L000 fallback only | `HVACSystem/PrincipalHVACSystemType = "Four Pipe Fan Coil Unit"` | Use only if the L200 delivery and source records are unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | Fan-coil type or pipe configuration is `Other`/`Unknown`, either heating or cooling source link is missing, or linked plants cannot be resolved | Confirm two independent water coils and four-pipe operation | Manual topology review | Required if any component cannot be mapped directly |
+| `target_zone_names` | `HVACSystem/HeatingAndCoolingSystems/Deliveries/Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives: `LinkedPremises/Space/LinkedSpaceID/@IDref` and `LinkedPremises/Section/LinkedSectionID/@IDref` | Resolve linked premises to exact model thermal-zone names | Join names with commas | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow/baseline policy | None | Not an audit property |
 
 ## Usage

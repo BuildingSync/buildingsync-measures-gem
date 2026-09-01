@@ -20,8 +20,10 @@ Do not use it for replacement or efficiency-only changes.
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Measure selection | `HVACSystem/PrincipalHVACSystemType`; fallback heat-pump `CoolingSourceType/DX/DXSystemType` and heating-source evidence | Select when L100 is `Packaged Terminal Heat Pump`; otherwise require terminal heat-pump evidence | Enum mapping only | High for L100; medium for inferred L200 evidence |
-| `target_zone_names` | `HVACSystem/LinkedPremises/.../ThermalZone/@IDref`; fallback Space or Section IDrefs | Consumer resolves all linked premises to exact model zone names | Join names with commas | ID-to-model-name mapping is consumer policy |
+| Measure selection — L200 (preferred) | `HVACSystem/HeatingAndCoolingSystems/CoolingSources/CoolingSource/CoolingSourceType/DX/DXSystemType = "Packaged terminal heat pump (PTHP)"` + `HeatingSources/HeatingSource/HeatingSourceType/HeatPump/HeatPumpType = "Packaged Terminal"` + associated `Delivery/DeliveryType/ZoneEquipment`; use `HeatPump/CoolingSourceID/@IDref`, `Delivery/HeatingSourceID/@IDref`, and `Delivery/CoolingSourceID/@IDref` to verify one system | Require matching terminal heat-pump cooling, heating, and zone-delivery records | Exact enums plus IDREF relationships | High when records are linked |
+| Measure selection — L100/L000 fallback only | `HVACSystem/PrincipalHVACSystemType = "Packaged Terminal Heat Pump"` | Use only if L200 component evidence is unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | Either exact enum is absent, cooling/heating/delivery records cannot be joined, or a central-air delivery is indicated | Confirm PTHP topology and served-zone scope manually | Manual classification | Required if any listed condition applies |
+| `target_zone_names` | `HVACSystem/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; component-level `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives: `LinkedPremises/Space/LinkedSpaceID/@IDref` and `LinkedPremises/Section/LinkedSectionID/@IDref` | Resolve every IDREF to exact model thermal-zone names | Join names with commas | Consumer owns ID resolution |
 | `standards_template` | No direct BuildingSync field | Workflow/baseline policy | None | Not an audit property |
 
 ## Usage

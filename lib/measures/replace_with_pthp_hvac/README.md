@@ -20,8 +20,10 @@ Do not use it for efficiency-only changes.
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Replacement selection | Proposed/retrofit `PrincipalHVACSystemType`; fallback terminal heat-pump DX evidence | Consumer selects this measure only when replacement topology is PTHP | Enum mapping only | Scenario context identifies existing versus proposed systems |
-| `target_zone_names` | Replacement system `LinkedPremises` thermal-zone, space, or section IDrefs | Resolve every served premise and include all zones on shared existing loops | Comma-separated names | Incomplete scope is rejected when detectable |
+| Replacement selection — L200 (preferred) | On the proposed `HVACSystem` (`@Status = "Proposed"`): `HeatingAndCoolingSystems/CoolingSources/CoolingSource/CoolingSourceType/DX/DXSystemType = "Packaged terminal heat pump (PTHP)"` + `HeatingSources/HeatingSource/HeatingSourceType/HeatPump/HeatPumpType = "Packaged Terminal"` + associated `Delivery/DeliveryType/ZoneEquipment`; verify `CoolingSourceID`, `HeatingSourceID`, and delivery IDREFs | Require matching proposed terminal heat-pump cooling, heating, and zone-delivery records | Exact enums plus IDREF relationships | High when all records are linked |
+| Replacement selection — L100/L000 fallback only | Proposed `HVACSystem/PrincipalHVACSystemType = "Packaged Terminal Heat Pump"` | Use only if proposed L200 evidence is unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | Proposed status is unclear, either exact enum is absent, cooling/heating/delivery records cannot be joined, or central-air delivery is indicated | Confirm PTHP topology and full existing shared-system scope | Manual classification | Required if any listed condition applies |
+| `target_zone_names` | Proposed HVAC/component `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; Space and Section alternatives use `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve every served premise and include all zones on shared existing loops | Comma-separated names | Incomplete scope is rejected when detectable |
 | `standards_template` | No direct field | Workflow policy | None | Not an audited property |
 
 ## Usage

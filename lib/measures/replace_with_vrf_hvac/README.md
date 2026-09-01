@@ -11,8 +11,10 @@ Removes HVAC dedicated to explicitly selected zones and installs variable-refrig
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Measure selection | Recommended `PrincipalHVACSystemType`; proposed cooling/heating sources identifying VRF/VRV; linked terminal systems | Require explicit proposed VRF outdoor-unit and terminal evidence | Relationship/enum mapping | High with explicit system type; low if inferred only from heat-pump source |
-| `target_zone_names` | Recommended HVAC `LinkedPremises` zone/space/section IDrefs and terminal links | Resolve the complete outdoor-unit service scope to exact model thermal-zone names | Join with commas | Consumer owns ID resolution |
+| Replacement selection — L200 (preferred) | On the proposed `HVACSystem` (`@Status = "Proposed"`): `HeatingAndCoolingSystems/CoolingSources/CoolingSource/CoolingSourceType/DX/DXSystemType = "Variable refrigerant flow"` + `Deliveries/Delivery/DeliveryType/ZoneEquipment/FanBased/FanBasedDistributionType/FanCoil/FanCoilType = "VRF terminal units"`; use delivery/source IDREFs to identify one service group | Require explicit proposed VRF source and terminal enums | Exact enums plus IDREF relationships | High when outdoor-unit and terminal records are linked |
+| Replacement selection — L100/L000 fallback only | Proposed `HVACSystem/PrincipalHVACSystemType = "VRF Terminal Unit"` | Use only if proposed L200 source/terminal records are unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | Proposed status is unclear, only generic heat-pump evidence exists, FanCoilType is absent/unknown, or IDREFs do not establish the complete VRF group | Confirm proposed outdoor-unit topology and include every zone on affected existing VRF/air-loop groups | Manual topology review | Required if any listed condition applies |
+| `target_zone_names` | Proposed VRF delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; Space and Section alternatives use `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve the complete outdoor-unit service scope to exact model thermal-zone names | Join with commas | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | None | Not audit data |
 
 Partial removal of shared air loops or shared VRF outdoor units is rejected; include every zone served by each affected system. Existing plant loops are preserved. Model edits are not transactional, so retain an input-model copy.

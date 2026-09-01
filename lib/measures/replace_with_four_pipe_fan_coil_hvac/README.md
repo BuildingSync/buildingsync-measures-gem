@@ -20,8 +20,10 @@ Do not use it for plant-only or efficiency-only changes.
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Replacement selection | Proposed/retrofit `PrincipalHVACSystemType`; fallback four-pipe fan-coil delivery plus heating/cooling plant links | Consumer selects only when replacement topology includes both water coils | Enum/relationship mapping | Scenario context distinguishes existing and proposed systems |
-| `target_zone_names` | Replacement system `LinkedPremises` IDrefs | Resolve complete served scope; include all zones on affected shared loops | Comma-separated names | Incomplete shared-loop scope is rejected |
+| Replacement selection — L200 (preferred) | On the proposed `HVACSystem` (`@Status = "Proposed"`): `HeatingAndCoolingSystems/Deliveries/Delivery/DeliveryType/ZoneEquipment/FanBased/FanBasedDistributionType/FanCoil/FanCoilType = "Fan coil 4 pipe"` and `HVACPipeConfiguration = "4 pipe"`; `HeatingSourceID/@IDref` resolves to `HeatingMedium = "Hot water"`; `CoolingSourceID/@IDref` resolves to `CoolingMedium = "Chilled water"` | Require proposed status, explicit fan-coil type, and both hydronic circuits | Exact enums plus IDREF relationships | High when all records resolve |
+| Replacement selection — L100/L000 fallback only | Proposed `HVACSystem/PrincipalHVACSystemType = "Four Pipe Fan Coil Unit"` | Use only if proposed L200 records are unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | Proposed status, fan-coil type, pipe configuration, either source link, or plant resolution is missing/unknown | Confirm two independent water coils and full existing shared-system scope | Manual topology review | Required if any component cannot be mapped directly |
+| `target_zone_names` | Proposed delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; Space and Section alternatives use `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve complete served scope; include all zones on affected shared loops | Comma-separated names | Incomplete shared-loop scope is rejected |
 | `standards_template` | No direct field | Workflow policy | None | Not audited data |
 
 ## Usage

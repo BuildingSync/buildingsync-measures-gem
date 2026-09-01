@@ -11,8 +11,10 @@ Adds built-up central VAV with hot-water terminal reheat to unserved zones.
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Measure selection | `PrincipalHVACSystemType`; central VAV delivery; built-up chilled-water cooling; hot-water terminal reheat | Require built-up VAV plus hydronic cooling/reheat evidence | Relationship/enum mapping | Medium when packaged versus built-up is not explicit |
-| `target_zone_names` | HVAC `LinkedPremises` zone/space/section IDrefs | Resolve complete served scope to exact names | Join with commas | Consumer owns ID resolution |
+| Measure selection — L200 (preferred) | `HVACSystem/HeatingAndCoolingSystems/ZoningSystemType = "Multi zone"` + `CoolingSources/CoolingSource/CoolingSourceType/CoolingPlantID/@IDref` resolving to `HVACSystem/Plants/CoolingPlants/CoolingPlant/Chiller` + `CoolingSource/CoolingMedium = "Chilled water"` + `Deliveries/Delivery/DeliveryType/CentralAirDistribution/TerminalUnit = "VAV terminal box not fan powered with reheat"` + `ReheatSource = "Heating plant"`; `ReheatPlantID/@IDref` resolves to `HeatingPlant/Boiler/BoilerType = "Hot water"` | Require a central chiller, multizone VAV delivery, and hot-water terminal reheat | Exact enums/elements plus IDREF relationships | High when all records resolve |
+| Measure selection — L100/L000 fallback only | `HVACSystem/PrincipalHVACSystemType = "VAV with Hot Water Reheat"` | Use only if L200 records are unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | CoolingPlantID or ReheatPlantID is unresolved, terminal/reheat type is missing, or DX cooling is present instead of a chiller link | Distinguish built-up VAV from packaged rooftop VAV | Manual topology review | Required if any component cannot be mapped directly |
+| `target_zone_names` | `HVACSystem/HeatingAndCoolingSystems/Deliveries/Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; Space and Section alternatives use `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve complete served scope to exact names | Join with commas | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | None | Not audit data |
 
 Use only on unserved zones. Plant infrastructure may be created; apply audited controls, temperatures, capacities, and efficiencies with focused modifiers.

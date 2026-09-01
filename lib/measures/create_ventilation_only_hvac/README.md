@@ -11,8 +11,10 @@ Adds outdoor-air delivery without space heating or cooling to unserved zones. Th
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Measure selection | `PrincipalHVACSystemType`; `DeliveryType/CentralAirDistribution`; ventilation rate and outdoor-air evidence | Select only when the modeled system supplies ventilation without thermal conditioning | Relationship/enum mapping | Low-medium; BuildingSync may not explicitly distinguish ventilation-only air loops |
-| `target_zone_names` | HVAC `LinkedPremises` zone/space/section IDrefs | Resolve complete served scope to exact model names | Join with commas | Consumer owns ID resolution |
+| Measure selection — L200 (preferred) | `HVACSystem/OtherHVACSystems/OtherHVACSystem/OtherHVACType/MechanicalVentilation/VentilationType = "Supply only"` + `HeatingAndCoolingSystems/HeatingSources/HeatingSource/HeatingSourceType/NoHeating` present + `CoolingSources/CoolingSource/CoolingSourceType/NoCooling` present + `Deliveries/Delivery/DeliveryType/CentralAirDistribution` present | Require positive no-heating and no-cooling elements; missing source records do not prove their absence | Exact enum/element conjunction | High only when all facts are explicit |
+| Measure selection — L100/L000 fallback only | `HVACSystem/PrincipalHVACSystemType = "Ventilation Only"` | Use only if L200 component records are unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | Heating or cooling records are merely absent, ventilation type is not `Supply only`, or the central-air delivery cannot be joined to the ventilation system | Confirm the measure will not omit intended thermal conditioning | Manual topology review | Required if any listed condition applies |
+| `target_zone_names` | Mechanical-ventilation, delivery, or HVAC-system `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; Space and Section alternatives use `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve complete served scope to exact model names | Join with commas | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | None | Not audit data |
 
 Use only on unserved zones. This measure does not provide zone heating or cooling; separate systems may be needed by the workflow.

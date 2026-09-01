@@ -11,8 +11,10 @@ Adds built-up central VAV with parallel fan-powered electric-reheat terminals to
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Measure selection | `PrincipalHVACSystemType`; central VAV delivery; built-up chilled-water cooling; fan-powered electric-reheat terminals | Require built-up VAV and electric terminal evidence | Relationship/enum mapping | Medium if fan arrangement is not explicit |
-| `target_zone_names` | HVAC `LinkedPremises` zone/space/section IDrefs | Resolve complete served scope to exact names | Join with commas | Consumer owns ID resolution |
+| Measure selection — L200 (preferred) | `HVACSystem/HeatingAndCoolingSystems/ZoningSystemType = "Multi zone"` + `CoolingSources/CoolingSource/CoolingSourceType/CoolingPlantID/@IDref` resolving to `HVACSystem/Plants/CoolingPlants/CoolingPlant/Chiller` + `CoolingSource/CoolingMedium = "Chilled water"` + `Deliveries/Delivery/DeliveryType/CentralAirDistribution/TerminalUnit = "VAV terminal box fan powered with reheat"` + `ReheatSource = "Local electric resistance"` | Require a central chiller, multizone fan-powered VAV delivery, and electric terminal reheat | Exact enums/elements plus IDREF relationships | High when all records resolve |
+| Measure selection — L100/L000 fallback only | `HVACSystem/PrincipalHVACSystemType = "VAV with Electric Reheat"` | Use only if L200 records are unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | CoolingPlantID is unresolved, terminal/reheat type is missing, or DX cooling is present instead of a chiller link | Distinguish built-up VAV from packaged rooftop VAV and hydronic reheat | Manual topology review | Required if any component cannot be mapped directly |
+| `target_zone_names` | `HVACSystem/HeatingAndCoolingSystems/Deliveries/Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; Space and Section alternatives use `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve complete served scope to exact names | Join with commas | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | None | Not audit data |
 
 Use only on unserved zones. Apply audited controls, plant properties, and terminal efficiencies with focused modifiers.

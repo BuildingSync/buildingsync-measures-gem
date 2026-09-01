@@ -20,8 +20,10 @@ Do not use it to replace existing HVAC; use `replace_with_ptac_hvac` instead. Ap
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Measure selection | `HVACSystem/PrincipalHVACSystemType`; fallback `CoolingSourceType/DX/DXSystemType` | Select when L100 is `Packaged Terminal Air Conditioner`; otherwise require PTAC DX evidence plus zone fan delivery | Enum mapping only | High for L100; medium for L200 inference |
-| `target_zone_names` | `HVACSystem/LinkedPremises/.../ThermalZone/@IDref`; fallback Space or Section IDrefs | Consumer resolves premise references to exact model thermal-zone names | Join resolved names with commas | Mapping from BuildingSync IDs to model names is consumer policy |
+| Measure selection — L200 (preferred) | `HVACSystem/HeatingAndCoolingSystems/CoolingSources/CoolingSource/CoolingSourceType/DX/DXSystemType = "Packaged terminal air conditioner (PTAC)"`; associated `Delivery/DeliveryType/ZoneEquipment`; `CoolingSourceID/@IDref` joins the delivery to the cooling source | Require the PTAC enum and a zone-equipment delivery serving the same premises | Exact enum plus IDREF relationship | High when all three records agree |
+| Measure selection — L100/L000 fallback only | `HVACSystem/PrincipalHVACSystemType = "Packaged Terminal Air Conditioner"` | Use only when the L200 source/delivery records are unavailable; do not override contradictory L200 data | Exact enum | Medium |
+| MANUAL CHECK | PTAC enum is missing, source-to-delivery IDREF is unresolved, delivery is central rather than zone equipment, or heating configuration matters to the intended model | Confirm the equipment is a PTAC rather than a generic packaged DX unit or PTHP | Manual classification | Required if any listed condition applies |
+| `target_zone_names` | `HVACSystem/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; component-level `HeatingSource`, `CoolingSource`, or `Delivery` `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives: `LinkedPremises/Space/LinkedSpaceID/@IDref` and `LinkedPremises/Section/LinkedSectionID/@IDref` | Resolve every IDREF to exact OpenStudio thermal-zone names | Join resolved names with commas | Consumer owns BuildingSync-ID-to-model-name resolution |
 | `standards_template` | No direct BuildingSync field | Workflow/baseline policy | None | Not an audit property |
 
 ## Usage

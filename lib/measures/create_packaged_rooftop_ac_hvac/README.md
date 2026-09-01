@@ -13,8 +13,10 @@ Adds packaged single-zone rooftop air conditioners to selected unserved zones.
 
 | Measure argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| Measure selection | `PrincipalHVACSystemType`; fallback packaged DX `CoolingSourceType/DX/DXSystemType` plus single-zone central-air delivery | Require packaged rooftop AC evidence without heat-pump heating | Enum mapping | High for explicit L100; medium for combined L200 evidence |
-| `target_zone_names` | HVAC `LinkedPremises` thermal-zone, space, or section IDrefs | Resolve every linked premise to exact model zone names | Join with commas | Consumer owns ID resolution |
+| Measure selection — L200 (preferred) | `HVACSystem/HeatingAndCoolingSystems/CoolingSources/CoolingSource/CoolingSourceType/DX/DXSystemType = "Packaged/unitary direct expansion/RTU"` + `HeatingAndCoolingSystems/ZoningSystemType = "Single zone"` + `Deliveries/Delivery/DeliveryType/CentralAirDistribution/AirDeliveryType = "Central fan"`; heating should resolve to `HeatingSourceType/Furnace/FurnaceType = "Warm air"`, not `HeatPump` | Require packaged DX cooling, single-zone central delivery, and non-heat-pump heating evidence | Exact enums plus IDREF relationships | High when source and delivery IDs resolve consistently |
+| Measure selection — L100/L000 fallback only | `HVACSystem/PrincipalHVACSystemType = "Packaged Rooftop Air Conditioner"` | Use only if L200 evidence is unavailable and not contradictory | Exact enum | Medium |
+| MANUAL CHECK | Zoning or central-air delivery is missing, the heating source is absent/ambiguous, or heat-pump heating is present | Distinguish PSZ-AC from PSZ-HP, multizone PVAV, and cooling-only equipment | Manual topology review | Required if any listed condition applies |
+| `target_zone_names` | `HVACSystem/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref` or associated `Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; Space and Section alternatives use `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve every linked premise to exact model zones | Join with commas | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | None | Not audit data |
 
 ## Usage and limitations

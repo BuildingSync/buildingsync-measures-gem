@@ -6,9 +6,9 @@ Sets sensible or latent effectiveness on exact, named sensible-and-latent air-to
 
 | Argument | Candidate BuildingSync field(s) | Selection rule | Conversion | Confidence/notes |
 |---|---|---|---|---|
-| `target_heat_exchanger_names` | `HeatRecoverySystem/@ID`, equipment identifiers, shared `LinkedPremises` | Consumer resolves the selected record to exact model names | Comma-separated names | No direct standard model-name field |
-| `sensible_effectiveness` | `HeatRecoveryEfficiency` | Use when the record explicitly represents sensible heat recovery | Percent ÷ 100 | Medium-high |
-| `latent_effectiveness` | No direct field; `EnergyRecoveryEfficiency` is only a candidate | Use only with a documented derivation or explicit latent audit value | Percent ÷ 100 | Low: total energy effectiveness is not latent effectiveness |
+| `target_heat_exchanger_names` | `Systems/HeatRecoverySystems/HeatRecoverySystem/@ID`; `HeatRecoverySystem/EquipmentID`; `LinkedSystemIDs`; `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref` | Resolve the selected record to exact OpenStudio sensible-and-latent heat-exchanger names | Comma-separated names | **MANUAL CHECK always:** BuildingSync IDs are not OpenStudio names; verify `HeatRecoveryType = "Air to air heat exchanger"` and use an external object crosswalk |
+| `sensible_effectiveness` | `Systems/HeatRecoverySystems/HeatRecoverySystem/HeatRecoveryEfficiency` | Use only for the matched air-to-air record; XSD definition is sensible heat-recovery efficiency | Percent ÷ 100 | Direct metric after identity and operating-condition review |
+| `latent_effectiveness` | No direct XSD field; `Systems/HeatRecoverySystems/HeatRecoverySystem/EnergyRecoveryEfficiency` is net total sensible-plus-latent efficiency | Do not map directly; use only an independently documented latent value or derivation | Percent ÷ 100 after derivation | **MANUAL CHECK always:** total energy efficiency is not latent effectiveness |
 
 ## Usage
 
