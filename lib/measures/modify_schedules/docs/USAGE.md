@@ -2,12 +2,12 @@
 
 ## Overview
 
-The **Modify Schedules** measure creates or replaces OpenStudio schedule objects from BuildingSync-aligned schedule payloads and automatically binds them to occupancy, lighting, plug load, gas equipment, process loads, HVAC availability, and other building end uses.
+The **Modify Schedules** measure creates new modified OpenStudio schedule objects from BuildingSync-aligned payloads and assigns them directly to occupancy, lighting, plug load, gas equipment, HVAC availability, and other supported building end uses.
 
 This measure enables users to:
 - Import standardized schedule data from BuildingSync XML audit documents
 - Apply occupancy, lighting, equipment, and HVAC control schedules to OpenStudio models
-- Apply dedicated gas equipment schedules through the default schedule set
+- Assign dedicated gas equipment schedules directly to gas equipment objects
 - Maintain BuildingSync-native schedule semantics (day types, partial operation percentages)
 - Extend scheduling to arbitrary load categories (gas equipment, service water, etc.)
 
@@ -63,56 +63,43 @@ If no Saturday or Sunday intervals are specified, those days default to the week
 
 - BuildingSync values are specified as percentages (0–100)
 - The measure automatically normalizes values to OpenStudio's 0.0–1.0 fraction range
-- Values exceeding 1.0 are clamped to 1.0; negative values are clamped to 0.0
+- `value_percent` and `PartialOperationPercentage` are divided by 100; generic `fraction` values may be supplied directly from 0.0–1.0
+- Normalized values are clamped to 0.0–1.0
 - Design-day (summer/winter) schedules default to the maximum value across all intervals for that schedule
 
 ## Input Arguments
 
-### Required Arguments
-
-#### 1. **Replace Existing Matching Schedules** (`replace_existing`)
-- **Type:** Boolean
-- **Default:** `true`
-- **Description:** When `true`, overwrites existing ScheduleRulesets with matching names. When `false`, preserves and reuses existing schedules.
-- **Use Case:** Set to `false` if you want to augment rather than replace existing schedules.
-
-#### 2. **Default Schedule Set Name** (`default_schedule_set_name`)
-- **Type:** String
-- **Default:** `"Modified Schedule Set"`
-- **Description:** Name of the building-level DefaultScheduleSet that receives imported occupancy, lighting, and equipment schedules. This set is applied to all space types to ensure consistent internal load scheduling.
-- **Note:** If a default schedule set already exists, it will be updated with this name.
-
-#### 3. **Occupancy Schedule Payload** (`occupancy_schedule_json`)
+#### 1. **Occupancy Schedule Payload** (`occupancy_schedule_json`)
 - **Type:** String (JSON or Compact Text)
-- **Default:** Small office weekday occupancy profile (6am–6pm peak, low shoulders)
+- **Default:** Empty (no occupancy changes)
 - **Description:** BuildingSync payload defining occupancy fraction schedule. Target category auto-detected as occupancy.
 - **Format:** See [Payload Format](#payload-formats) section below.
 
-#### 4. **Lighting Schedule Payload** (`lighting_schedule_json`)
+#### 2. **Lighting Schedule Payload** (`lighting_schedule_json`)
 - **Type:** String (JSON or Compact Text)
-- **Default:** Small office weekday lighting profile (ramps around occupancy, flat 18% off-hours)
+- **Default:** Empty (no lighting changes)
 - **Description:** BuildingSync payload for lighting fraction schedule. Target category auto-detected as lighting.
 - **Format:** See [Payload Format](#payload-formats) section below.
 
-#### 5. **Plug Load Schedule Payload** (`electric_equipment_schedule_json`)
+#### 3. **Plug Load Schedule Payload** (`electric_equipment_schedule_json`)
 - **Type:** String (JSON or Compact Text)
-- **Default:** Small office weekday equipment profile (50% baseline, 100% peak, 20% off-hours)
+- **Default:** Empty (no electric-equipment changes)
 - **Description:** BuildingSync payload for plug-load fraction schedule. Target category auto-detected as electric equipment.
 - **Format:** See [Payload Format](#payload-formats) section below.
 
-#### 6. **Gas Equipment Schedule Payload** (`gas_equipment_schedule_json`)
+#### 4. **Gas Equipment Schedule Payload** (`gas_equipment_schedule_json`)
 - **Type:** String (JSON or Compact Text)
 - **Default:** Empty
 - **Description:** Dedicated BuildingSync payload for gas equipment schedules. This avoids having to pass gas equipment through `additional_schedules_json`.
 - **Format:** See [Payload Format](#payload-formats) section below.
 
-#### 7. **HVAC Availability Schedule Payload** (`hvac_availability_schedule_json`)
+#### 5. **HVAC Availability Schedule Payload** (`hvac_availability_schedule_json`)
 - **Type:** String (JSON or Compact Text)
-- **Default:** Small office building hours (6am–8pm weekday, 0% weekend/holiday)
+- **Default:** Empty (no HVAC availability changes)
 - **Description:** BuildingSync payload for HVAC system availability. Applied to all air loops. Values of 0 disable system operation; values > 0 permit operation.
 - **Format:** See [Payload Format](#payload-formats) section below.
 
-#### 8. **Additional Schedule Payloads** (`additional_schedules_json`)
+#### 6. **Additional Schedule Payloads** (`additional_schedules_json`)
 - **Type:** String (JSON array or Compact Text)
 - **Default:** `"[]"` (empty array)
 - **Description:** JSON array of additional schedule payloads for extensible categories that are not already exposed as dedicated arguments, such as service water heating. Each payload must include a valid `schedule_category` or `target` field.
@@ -199,29 +186,23 @@ name=Lighting;schedule_category=Lighting;Weekday|00:00:00|05:00:00|18;Weekday|05
 
 Once schedules are imported, the measure applies them to the model as follows:
 
+Every imported payload creates a distinct `ScheduleRuleset` named `<payload name>_modified`. If that name exists, the measure appends `_2`, `_3`, and so on. Existing schedule objects remain unchanged.
+
 ### Occupancy Schedules
-- Added to building-level DefaultScheduleSet as occupancy schedule
-- Applied to all People objects via the default schedule set
-- If `replace_existing=true`, explicit people activity schedules are cleared
+- Assigned directly to all People objects
 
 ### Lighting Schedules
-- Added to building-level DefaultScheduleSet as lighting schedule
-- Applied to all Lights objects via the default schedule set
-- If `replace_existing=true`, explicit lighting schedules are cleared
+- Assigned directly to all Lights objects
 
 ### Plug Load Schedules
-- Added to building-level DefaultScheduleSet as electric equipment schedule
-- Applied to ElectricEquipment objects via the default schedule set
-- If `replace_existing=true`, explicit equipment schedules are cleared
+- Assigned directly to all ElectricEquipment objects
 
 ### Gas Equipment Schedules
-- Added to building-level DefaultScheduleSet as gas equipment schedule
-- Applied to GasEquipment objects via the default schedule set
+- Assigned directly to all GasEquipment objects
 
 ### HVAC Availability Schedules
 - Bound directly to **each AirLoopHVAC** object in the model
 - Controls loop availability; 0 = disabled, > 0 = operational
-- Applied regardless of DefaultScheduleSet (air loops don't use default schedules)
 
 ### Additional Schedules
 - If included in `additional_schedules_json`, schedules are created for extensible categories such as service water
@@ -275,23 +256,21 @@ Additional schedules JSON for service water:
 ```
 
 **Expected Result:**
-- Dedicated gas equipment schedule bound to the default schedule set
+- Dedicated gas equipment schedule assigned directly to GasEquipment objects
 - Additional service-water schedule created and bound to WaterUseEquipment objects
 - Model now covers full end-use spectrum (occupancy, lighting, electric, gas, water)
 
-### Use Case 3: Override Existing Schedules in an Existing Model
+### Use Case 3: Apply Modified Schedules in an Existing Model
 
-**Scenario:** Your baseline model already has occupancy profiles, but you want to replace them with audit-based data.
+**Scenario:** Your baseline model already has occupancy profiles, but you want its loads to use new audit-based schedules while preserving the source schedule objects.
 
 **Configuration:**
-- Set `replace_existing = true`
 - Provide new occupancy/lighting/equipment payloads
-- Existing explicit schedules on People, Lights, and ElectricEquipment objects are cleared
-- New schedules are created and applied via DefaultScheduleSet (automatic consistency)
+- New schedules are created and assigned directly to the supplied People, Lights, and ElectricEquipment target categories
 
 **Result:**
-- Old schedules remain as orphaned objects (referenceable by name, but not actively used)
-- New schedules take effect immediately; ready for resimulation
+- Source schedules remain unchanged and retain their original names
+- New `_modified` schedules take effect for the supplied categories; ready for resimulation
 
 ## Error Handling
 
@@ -313,7 +292,6 @@ The measure validates inputs and reports errors as follows:
 
 | Warning | Cause | Impact |
 |---|---|---|
-| "Keeping existing schedule 'Name'" | Schedule already exists, `replace_existing=false` | Existing schedule reused; new payload ignored |
 | "unsupported day type '...'" | Day type not recognized (e.g., typo in `Weekdays`) | Interval ignored; partial schedule applied |
 
 ### Not Applicable Conditions (Return `true`, no changes)
@@ -324,15 +302,12 @@ The measure validates inputs and reports errors as follows:
 
 ## Testing & Validation
 
-The measure includes comprehensive integration tests:
+The measure includes integration tests for:
 
-- **Test 1:** Default payloads applied to baseline model
-  - Validates: Schedule creation, interval parsing, day-type routing
-  - Expected: 4 schedules created, 3+ internal load objects scheduled
-
-- **Test 2:** Custom JSON payloads with overrides
-  - Validates: JSON parsing, case-insensitive category mapping, existing-schedule preservation
-  - Expected: Payloads parsed without errors; existing schedules retained when `replace_existing=false`
+- Argument count and registration
+- Empty-default no-op behavior
+- Lighting-only direct assignment while preserving occupancy
+- Multi-category compact payload parsing and assignment
 
 To run tests locally:
 
@@ -361,7 +336,7 @@ RUN_OPENSTUDIO_INTEGRATION=1 pytest tests/test_measure_authoring.py -k "modify_s
 
 ### Air Loop Binding
 
-- HVAC availability schedules are bound directly to AirLoopHVAC objects, bypassing DefaultScheduleSet
+- HVAC availability schedules are bound directly to AirLoopHVAC objects
 - Each air loop independently references the schedule
 - Changing air-loop availability does not affect occupancy/lighting/equipment scheduling
 

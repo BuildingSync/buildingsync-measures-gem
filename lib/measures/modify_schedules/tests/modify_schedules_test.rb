@@ -18,7 +18,89 @@ class ModifySchedulesTest < Minitest::Test
     measure = ModifySchedules.new
     model = load_test_model
     arguments = measure.arguments(model)
-    assert_equal(8, arguments.size)
+    assert_equal(6, arguments.size)
+  end
+
+  def argument_map_for(measure, model, overrides = {})
+    arguments = measure.arguments(model)
+    argument_map = OpenStudio::Measure.convertOSArgumentVectorToMap(arguments)
+    arguments.each do |argument|
+      argument_value = argument.clone
+      assert(argument_value.setValue(overrides[argument.name])) if overrides.key?(argument.name)
+      argument_map[argument.name] = argument_value
+    end
+    argument_map
+  end
+
+  def test_default_arguments_make_no_changes
+    measure = ModifySchedules.new
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
+    model = load_test_model
+    schedule_count = model.getSchedules.size
+    space_type_schedule_sets = model.getSpaceTypes.map do |space_type|
+      space_type.defaultScheduleSet.is_initialized ? space_type.defaultScheduleSet.get.handle.to_s : nil
+    end
+
+    measure.run(model, runner, argument_map_for(measure, model))
+
+    assert_equal('NA', runner.result.value.valueName)
+    assert_equal(schedule_count, model.getSchedules.size)
+    assert_equal(space_type_schedule_sets, model.getSpaceTypes.map { |space_type| space_type.defaultScheduleSet.is_initialized ? space_type.defaultScheduleSet.get.handle.to_s : nil })
+  end
+
+  def test_lighting_only_does_not_reset_occupancy
+    measure = ModifySchedules.new
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
+    model = OpenStudio::Model::Model.new
+    space_type = OpenStudio::Model::SpaceType.new(model)
+
+    occupancy_schedule = OpenStudio::Model::ScheduleRuleset.new(model)
+    occupancy_schedule.setName('Existing Occupancy Schedule')
+    people_definition = OpenStudio::Model::PeopleDefinition.new(model)
+    people = OpenStudio::Model::People.new(people_definition)
+    people.setSpaceType(space_type)
+    people.setNumberofPeopleSchedule(occupancy_schedule)
+
+    old_lighting_schedule = OpenStudio::Model::ScheduleRuleset.new(model)
+    old_lighting_schedule.setName('BuildingSync Lighting')
+    lights_definition = OpenStudio::Model::LightsDefinition.new(model)
+    lights = OpenStudio::Model::Lights.new(lights_definition)
+    lights.setSpaceType(space_type)
+    lights.setSchedule(old_lighting_schedule)
+
+    lighting_payload = 'name=BuildingSync Lighting;schedule_category=Lighting;Weekday|00:00:00|24:00:00|50'
+    arguments = argument_map_for(measure, model, { 'lighting_schedule_json' => lighting_payload })
+
+    measure.run(model, runner, arguments)
+
+    assert_equal('Success', runner.result.value.valueName)
+    assert(people.numberofPeopleSchedule.is_initialized)
+    assert_equal(occupancy_schedule.handle, people.numberofPeopleSchedule.get.handle)
+    refute(model.getBuilding.defaultScheduleSet.is_initialized)
+    generated_lighting_schedule = lights.schedule.get
+    assert_equal('BuildingSync Lighting', old_lighting_schedule.name.to_s)
+    refute_equal(old_lighting_schedule.handle, generated_lighting_schedule.handle)
+    assert_equal('BuildingSync Lighting_modified', generated_lighting_schedule.name.to_s)
+    assert_equal(generated_lighting_schedule.handle, lights.schedule.get.handle)
+  end
+
+  def test_modified_schedule_name_uses_numeric_suffix_when_taken
+    measure = ModifySchedules.new
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
+    model = OpenStudio::Model::Model.new
+    existing_modified_schedule = OpenStudio::Model::ScheduleRuleset.new(model)
+    existing_modified_schedule.setName('BuildingSync Lighting_modified')
+    lighting_payload = 'name=BuildingSync Lighting;schedule_category=Lighting;Weekday|00:00:00|24:00:00|50'
+
+    arguments = argument_map_for(measure, model, { 'lighting_schedule_json' => lighting_payload })
+    measure.run(model, runner, arguments)
+
+    assert_equal('Success', runner.result.value.valueName)
+    generated_schedule = model.getScheduleRulesets.find { |schedule| schedule.name.to_s == 'BuildingSync Lighting_modified_2' }
+    refute_nil(generated_schedule)
+    assert_equal('BuildingSync Lighting_modified_2', generated_schedule.name.to_s)
+    assert_equal('BuildingSync Lighting_modified', existing_modified_schedule.name.to_s)
+    refute_equal(existing_modified_schedule.handle, generated_schedule.handle)
   end
 
   def test_good_argument_values
@@ -29,8 +111,6 @@ class ModifySchedulesTest < Minitest::Test
     arguments = measure.arguments(model)
     argument_map = OpenStudio::Measure.convertOSArgumentVectorToMap(arguments)
     args_hash = {}
-    args_hash['replace_existing'] = true
-    args_hash['default_schedule_set_name'] = 'Modified Schedule Set'
     args_hash['occupancy_schedule_json'] = 'name=Modified Occupancy Schedule;schedule_category=Occupied;Weekday|00:00:00|06:00:00|0;Weekday|06:00:00|07:00:00|11;Weekday|07:00:00|08:00:00|21;Weekday|08:00:00|12:00:00|100;Weekday|12:00:00|13:00:00|53;Weekday|13:00:00|17:00:00|100;Weekday|17:00:00|18:00:00|32;Weekday|18:00:00|22:00:00|11;Weekday|22:00:00|23:00:00|5;Weekday|23:00:00|23:59:59|0;Weekend|00:00:00|23:59:59|0;Holiday|00:00:00|23:59:59|0'
     args_hash['lighting_schedule_json'] = 'name=Modified Lighting Schedule;schedule_category=Lighting;Weekday|00:00:00|05:00:00|18;Weekday|05:00:00|07:00:00|23;Weekday|07:00:00|08:00:00|42;Weekday|08:00:00|12:00:00|90;Weekday|12:00:00|13:00:00|80;Weekday|13:00:00|17:00:00|90;Weekday|17:00:00|18:00:00|61;Weekday|18:00:00|20:00:00|42;Weekday|20:00:00|22:00:00|32;Weekday|22:00:00|23:00:00|23;Weekday|23:00:00|23:59:59|18;Weekend|00:00:00|23:59:59|18;Holiday|00:00:00|23:59:59|18'
     args_hash['electric_equipment_schedule_json'] = 'name=Modified Plug Load Schedule;schedule_category=Miscellaneous equipment;Weekday|00:00:00|08:00:00|50;Weekday|08:00:00|12:00:00|100;Weekday|12:00:00|13:00:00|94;Weekday|13:00:00|17:00:00|100;Weekday|17:00:00|18:00:00|50;Weekday|18:00:00|23:59:59|20;Weekend|00:00:00|23:59:59|20;Holiday|00:00:00|23:59:59|20'
