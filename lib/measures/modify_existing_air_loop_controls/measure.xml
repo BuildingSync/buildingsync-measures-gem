@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>modify_existing_air_loop_controls</name>
+  <uid>26812002-ee08-4800-88fb-556df8f859bb</uid>
+  <version_id>31080084-d087-4fe7-89d2-2000047aa7cf</version_id>
+  <version_modified>2026-08-26T21:47:05Z</version_modified>
+  <xml_checksum>AC2EC58F</xml_checksum>
+  <class_name>ModifyExistingAirLoopControls</class_name>
+  <display_name>Modify Existing Air Loop Controls</display_name>
+  <description>Updates sizing supply-air temperatures and economizer controls on explicitly named air loops.</description>
+  <modeler_description>Performs exact-name matching only. It does not infer HVAC type, add equipment, or alter topology.</modeler_description>
+  <arguments>
+    <argument>
+      <name>target_air_loop_names</name>
+      <display_name>Target Air Loop Names</display_name>
+      <description>Comma-separated exact OpenStudio air-loop names.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>set_supply_air_temperatures</name>
+      <display_name>Set Supply Air Temperatures</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>cooling_supply_air_temperature_c</name>
+      <display_name>Cooling Supply Air Temperature (C)</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>12.8</default_value>
+    </argument>
+    <argument>
+      <name>heating_supply_air_temperature_c</name>
+      <display_name>Heating Supply Air Temperature (C)</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>32</default_value>
+    </argument>
+    <argument>
+      <name>set_economizer</name>
+      <display_name>Set Economizer</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>economizer_control_type</name>
+      <display_name>Economizer Control Type</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>FixedDryBulb</default_value>
+      <choices>
+        <choice>
+          <value>NoEconomizer</value>
+          <display_name>NoEconomizer</display_name>
+        </choice>
+        <choice>
+          <value>FixedDryBulb</value>
+          <display_name>FixedDryBulb</display_name>
+        </choice>
+        <choice>
+          <value>FixedEnthalpy</value>
+          <display_name>FixedEnthalpy</display_name>
+        </choice>
+        <choice>
+          <value>DifferentialDryBulb</value>
+          <display_name>DifferentialDryBulb</display_name>
+        </choice>
+        <choice>
+          <value>DifferentialEnthalpy</value>
+          <display_name>DifferentialEnthalpy</display_name>
+        </choice>
+        <choice>
+          <value>ElectronicEnthalpy</value>
+          <display_name>ElectronicEnthalpy</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>economizer_high_limit_dry_bulb_temperature_c</name>
+      <display_name>Economizer High Limit Dry Bulb (C)</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>24</default_value>
+    </argument>
+    <argument>
+      <name>economizer_high_limit_enthalpy_j_kg</name>
+      <display_name>Economizer High Limit Enthalpy (J/kg)</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>64000</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Systems</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>550EB339</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>42D96C6C</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>321FD75E</checksum>
+    </file>
+  </files>
+</measure>
