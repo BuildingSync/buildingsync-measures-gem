@@ -35,10 +35,9 @@ General model measures:
 - `modify_schedules` - creates or replaces OpenStudio schedules from BuildingSync-aligned schedule payloads.
 - `set_infiltration_by_ach` - updates existing infiltration objects to a natural ACH value, with optional ACH50 conversion.
 
-HVAC configuration is split into 39 independent measures:
+HVAC configuration is split into 22 independent measures:
 
-- 17 `create_*` measures add one exact topology to unserved zones.
-- 17 `replace_with_*` measures replace HVAC dedicated to an explicit zone scope.
+- 17 neutral topology measures each support `operation = create` and `operation = replace`.
 - `modify_existing_air_loop_controls`
 - `modify_existing_hvac_equipment_efficiencies`
 - `modify_existing_plant_equipment`
@@ -72,7 +71,7 @@ The legacy `modify_hvac` direct test remains with the deprecated measure during 
 
 ## Migration Status
 
-All 17 exact HVAC topologies now have independent create and replacement measures, and all five focused modifiers are implemented. The suite is validated against OpenStudio 3.10 and openstudio-standards 0.8.2. Small local duplication is intentional: each measure is independently packaged and does not invoke another measure or depend on a shared production dispatcher.
+All 17 exact HVAC topologies now have one independent operation-aware measure, and all five focused modifiers are implemented. The suite is validated against OpenStudio 3.10 and openstudio-standards 0.8.2. Small local duplication is intentional: each measure is independently packaged and does not invoke another measure or depend on a shared production dispatcher.
 
 The remaining migration step is to remove deprecated `modify_hvac` after consumers switch to the exact-type measures. That removal and the associated version change will be handled as a breaking pre-1.0 release.
 

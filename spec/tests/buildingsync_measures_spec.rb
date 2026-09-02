@@ -19,24 +19,24 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
   it 'includes migrated measures' do
     instance = OpenStudio::BuildingsyncMeasures::BuildingsyncMeasures.new
     expected_measures = %w[
-      create_chilled_beam_hvac
-      create_doas_hvac
-      create_four_pipe_fan_coil_hvac
-      create_ground_source_heat_pump_hvac
-      create_packaged_rooftop_ac_hvac
-      create_packaged_rooftop_heat_pump_hvac
-      create_packaged_rooftop_vav_electric_reheat_hvac
-      create_packaged_rooftop_vav_hw_reheat_hvac
-      create_ptac_hvac
-      create_pthp_hvac
-      create_radiant_hvac
-      create_vav_electric_reheat_hvac
-      create_vav_hw_reheat_hvac
-      create_ventilation_only_hvac
-      create_water_loop_heat_pump_hvac
-      create_warm_air_furnace_hvac
-      create_vrf_hvac
       disable_sizing_runs
+      hvac_chilled_beam
+      hvac_doas
+      hvac_four_pipe_fan_coil
+      hvac_ground_source_heat_pump
+      hvac_packaged_rooftop_ac
+      hvac_packaged_rooftop_heat_pump
+      hvac_packaged_rooftop_vav_electric_reheat
+      hvac_packaged_rooftop_vav_hw_reheat
+      hvac_ptac
+      hvac_pthp
+      hvac_radiant
+      hvac_vav_electric_reheat
+      hvac_vav_hw_reheat
+      hvac_ventilation_only
+      hvac_vrf
+      hvac_warm_air_furnace
+      hvac_water_loop_heat_pump
       modify_envelope_insulation
       modify_existing_air_loop_controls
       modify_existing_heat_recovery
@@ -45,23 +45,6 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       modify_existing_plant_loop_temperatures
       modify_hvac
       modify_schedules
-      replace_with_four_pipe_fan_coil_hvac
-      replace_with_chilled_beam_hvac
-      replace_with_ground_source_heat_pump_hvac
-      replace_with_packaged_rooftop_ac_hvac
-      replace_with_packaged_rooftop_heat_pump_hvac
-      replace_with_packaged_rooftop_vav_electric_reheat_hvac
-      replace_with_packaged_rooftop_vav_hw_reheat_hvac
-      replace_with_ptac_hvac
-      replace_with_pthp_hvac
-      replace_with_radiant_hvac
-      replace_with_vav_electric_reheat_hvac
-      replace_with_vav_hw_reheat_hvac
-      replace_with_doas_hvac
-      replace_with_ventilation_only_hvac
-      replace_with_water_loop_heat_pump_hvac
-      replace_with_warm_air_furnace_hvac
-      replace_with_vrf_hvac
       set_infiltration_by_ach
     ]
 
@@ -89,7 +72,15 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
 
   it 'packages documentation and BuildingSync mappings for independent HVAC measures' do
     instance = OpenStudio::BuildingsyncMeasures::BuildingsyncMeasures.new
-    independent_dirs = Dir.glob(File.join(instance.measures_dir, '{create_*,replace_with_*,modify_existing_*}'))
+    topology_names = %w[
+      hvac_chilled_beam hvac_doas hvac_four_pipe_fan_coil hvac_ground_source_heat_pump
+      hvac_packaged_rooftop_ac hvac_packaged_rooftop_heat_pump
+      hvac_packaged_rooftop_vav_electric_reheat hvac_packaged_rooftop_vav_hw_reheat
+      hvac_ptac hvac_pthp hvac_radiant hvac_vav_electric_reheat hvac_vav_hw_reheat
+      hvac_ventilation_only hvac_vrf hvac_warm_air_furnace hvac_water_loop_heat_pump
+    ]
+    independent_dirs = topology_names.map { |name| File.join(instance.measures_dir, name) }
+    independent_dirs.concat(Dir.glob(File.join(instance.measures_dir, 'modify_existing_*')))
 
     independent_dirs.each do |measure_dir|
       readme_path = File.join(measure_dir, 'README.md')

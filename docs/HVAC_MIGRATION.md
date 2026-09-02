@@ -2,8 +2,7 @@
 
 The monolithic `modify_hvac` measure has been split into independent measures with narrow responsibilities:
 
-- 17 `create_*` measures add one exact HVAC topology to unserved zones.
-- 17 `replace_with_*` measures remove HVAC dedicated to an explicit zone scope and install one exact topology.
+- 17 topology measures each support `operation = create` or `operation = replace` for one exact HVAC topology.
 - 5 `modify_existing_*` measures change named controls, efficiencies, heat recovery, or plant properties without classifying or rebuilding HVAC.
 
 New workflows should use these independent measures. `modify_hvac` remains in the gem temporarily for backward compatibility and is deprecated.
@@ -12,33 +11,33 @@ New workflows should use these independent measures. `modify_hvac` remains in th
 
 1. Resolve BuildingSync IDs and linked premises to exact OpenStudio object and thermal-zone names before invoking a measure.
 2. Choose one exact topology from the index below.
-3. Use `create_*` only when every target zone is unserved. A blank `target_zone_names` selects all thermal zones.
-4. Use `replace_with_*` when existing HVAC dedicated to named zones must be removed. Replacement requires an explicit, complete `target_zone_names` list.
+3. Set `operation = create` only when every target zone is unserved. A blank `target_zone_names` selects all thermal zones.
+4. Set `operation = replace` when existing HVAC dedicated to named zones must be removed. Replacement requires an explicit, complete `target_zone_names` list.
 5. Run focused `modify_existing_*` measures afterward for audited temperatures, efficiencies, capacities, economizers, or heat recovery.
 
 Selection of the topology, interpretation of legacy aliases, and BuildingSync ID-to-model-name resolution belong to the consuming workflow. The measures do not dispatch from a BuildingSync enum or infer object names.
 
 ## Exact topology index
 
-| Legacy `hvac_system_type` | Create measure | Replacement measure |
-|---|---|---|
-| `packaged_terminal_air_conditioner` | [`create_ptac_hvac`](../lib/measures/create_ptac_hvac/README.md) | [`replace_with_ptac_hvac`](../lib/measures/replace_with_ptac_hvac/README.md) |
-| `packaged_terminal_heat_pump` | [`create_pthp_hvac`](../lib/measures/create_pthp_hvac/README.md) | [`replace_with_pthp_hvac`](../lib/measures/replace_with_pthp_hvac/README.md) |
-| `four_pipe_fan_coil_unit` | [`create_four_pipe_fan_coil_hvac`](../lib/measures/create_four_pipe_fan_coil_hvac/README.md) | [`replace_with_four_pipe_fan_coil_hvac`](../lib/measures/replace_with_four_pipe_fan_coil_hvac/README.md) |
-| `packaged_rooftop_air_conditioner` | [`create_packaged_rooftop_ac_hvac`](../lib/measures/create_packaged_rooftop_ac_hvac/README.md) | [`replace_with_packaged_rooftop_ac_hvac`](../lib/measures/replace_with_packaged_rooftop_ac_hvac/README.md) |
-| `packaged_rooftop_heat_pump` | [`create_packaged_rooftop_heat_pump_hvac`](../lib/measures/create_packaged_rooftop_heat_pump_hvac/README.md) | [`replace_with_packaged_rooftop_heat_pump_hvac`](../lib/measures/replace_with_packaged_rooftop_heat_pump_hvac/README.md) |
-| `packaged_rooftop_vav_hot_water_reheat` | [`create_packaged_rooftop_vav_hw_reheat_hvac`](../lib/measures/create_packaged_rooftop_vav_hw_reheat_hvac/README.md) | [`replace_with_packaged_rooftop_vav_hw_reheat_hvac`](../lib/measures/replace_with_packaged_rooftop_vav_hw_reheat_hvac/README.md) |
-| `packaged_rooftop_vav_electric_reheat` | [`create_packaged_rooftop_vav_electric_reheat_hvac`](../lib/measures/create_packaged_rooftop_vav_electric_reheat_hvac/README.md) | [`replace_with_packaged_rooftop_vav_electric_reheat_hvac`](../lib/measures/replace_with_packaged_rooftop_vav_electric_reheat_hvac/README.md) |
-| `vav_with_hot_water_reheat` | [`create_vav_hw_reheat_hvac`](../lib/measures/create_vav_hw_reheat_hvac/README.md) | [`replace_with_vav_hw_reheat_hvac`](../lib/measures/replace_with_vav_hw_reheat_hvac/README.md) |
-| `vav_with_electric_reheat` | [`create_vav_electric_reheat_hvac`](../lib/measures/create_vav_electric_reheat_hvac/README.md) | [`replace_with_vav_electric_reheat_hvac`](../lib/measures/replace_with_vav_electric_reheat_hvac/README.md) |
-| `warm_air_furnace` | [`create_warm_air_furnace_hvac`](../lib/measures/create_warm_air_furnace_hvac/README.md) | [`replace_with_warm_air_furnace_hvac`](../lib/measures/replace_with_warm_air_furnace_hvac/README.md) |
-| `ventilation_only` | [`create_ventilation_only_hvac`](../lib/measures/create_ventilation_only_hvac/README.md) | [`replace_with_ventilation_only_hvac`](../lib/measures/replace_with_ventilation_only_hvac/README.md) |
-| `dedicated_outdoor_air_system` | [`create_doas_hvac`](../lib/measures/create_doas_hvac/README.md) | [`replace_with_doas_hvac`](../lib/measures/replace_with_doas_hvac/README.md) |
-| `water_loop_heat_pump` | [`create_water_loop_heat_pump_hvac`](../lib/measures/create_water_loop_heat_pump_hvac/README.md) | [`replace_with_water_loop_heat_pump_hvac`](../lib/measures/replace_with_water_loop_heat_pump_hvac/README.md) |
-| `ground_source_heat_pump` | [`create_ground_source_heat_pump_hvac`](../lib/measures/create_ground_source_heat_pump_hvac/README.md) | [`replace_with_ground_source_heat_pump_hvac`](../lib/measures/replace_with_ground_source_heat_pump_hvac/README.md) |
-| `vrf_terminal_unit` | [`create_vrf_hvac`](../lib/measures/create_vrf_hvac/README.md) | [`replace_with_vrf_hvac`](../lib/measures/replace_with_vrf_hvac/README.md) |
-| `chilled_beam` | [`create_chilled_beam_hvac`](../lib/measures/create_chilled_beam_hvac/README.md) | [`replace_with_chilled_beam_hvac`](../lib/measures/replace_with_chilled_beam_hvac/README.md) |
-| `radiant_system` | [`create_radiant_hvac`](../lib/measures/create_radiant_hvac/README.md) | [`replace_with_radiant_hvac`](../lib/measures/replace_with_radiant_hvac/README.md) |
+| Legacy `hvac_system_type` | Topology measure |
+|---|---|
+| `packaged_terminal_air_conditioner` | [`hvac_ptac`](../lib/measures/hvac_ptac/README.md) |
+| `packaged_terminal_heat_pump` | [`hvac_pthp`](../lib/measures/hvac_pthp/README.md) |
+| `four_pipe_fan_coil_unit` | [`hvac_four_pipe_fan_coil`](../lib/measures/hvac_four_pipe_fan_coil/README.md) |
+| `packaged_rooftop_air_conditioner` | [`hvac_packaged_rooftop_ac`](../lib/measures/hvac_packaged_rooftop_ac/README.md) |
+| `packaged_rooftop_heat_pump` | [`hvac_packaged_rooftop_heat_pump`](../lib/measures/hvac_packaged_rooftop_heat_pump/README.md) |
+| `packaged_rooftop_vav_hot_water_reheat` | [`hvac_packaged_rooftop_vav_hw_reheat`](../lib/measures/hvac_packaged_rooftop_vav_hw_reheat/README.md) |
+| `packaged_rooftop_vav_electric_reheat` | [`hvac_packaged_rooftop_vav_electric_reheat`](../lib/measures/hvac_packaged_rooftop_vav_electric_reheat/README.md) |
+| `vav_with_hot_water_reheat` | [`hvac_vav_hw_reheat`](../lib/measures/hvac_vav_hw_reheat/README.md) |
+| `vav_with_electric_reheat` | [`hvac_vav_electric_reheat`](../lib/measures/hvac_vav_electric_reheat/README.md) |
+| `warm_air_furnace` | [`hvac_warm_air_furnace`](../lib/measures/hvac_warm_air_furnace/README.md) |
+| `ventilation_only` | [`hvac_ventilation_only`](../lib/measures/hvac_ventilation_only/README.md) |
+| `dedicated_outdoor_air_system` | [`hvac_doas`](../lib/measures/hvac_doas/README.md) |
+| `water_loop_heat_pump` | [`hvac_water_loop_heat_pump`](../lib/measures/hvac_water_loop_heat_pump/README.md) |
+| `ground_source_heat_pump` | [`hvac_ground_source_heat_pump`](../lib/measures/hvac_ground_source_heat_pump/README.md) |
+| `vrf_terminal_unit` | [`hvac_vrf`](../lib/measures/hvac_vrf/README.md) |
+| `chilled_beam` | [`hvac_chilled_beam`](../lib/measures/hvac_chilled_beam/README.md) |
+| `radiant_system` | [`hvac_radiant`](../lib/measures/hvac_radiant/README.md) |
 
 Each linked README contains the measure-specific BuildingSync candidate mapping, selection rules, conversions, confidence, and limitations.
 
@@ -46,8 +45,8 @@ Each linked README contains the measure-specific BuildingSync candidate mapping,
 
 | Legacy choice | Migration |
 |---|---|
-| `vav_with_boiler_and_central_chiller` | Resolve upstream to `vav_with_hot_water_reheat`, then select its create or replacement measure. |
-| `fan_coil_with_central_plant` | Resolve upstream to `four_pipe_fan_coil_unit`, then select its create or replacement measure. |
+| `vav_with_boiler_and_central_chiller` | Resolve upstream to `vav_with_hot_water_reheat`, then set the measure operation. |
+| `fan_coil_with_central_plant` | Resolve upstream to `four_pipe_fan_coil_unit`, then set the measure operation. |
 | `other` | Do not invoke a topology measure until the consumer resolves an exact supported topology. |
 | `unknown` | Leave HVAC unchanged or resolve the topology upstream. |
 | `existing_unknown_mixed_system` | Leave HVAC unchanged or resolve each constituent system upstream. |
@@ -68,10 +67,10 @@ The aliases are intentionally not implemented as dispatching measures.
 
 | Legacy `modify_hvac` argument | Independent measure migration |
 |---|---|
-| `hvac_system_type` | Select one exact create or replacement measure from the topology index. |
-| `target_zone_names` | Pass to the selected create or replacement measure after resolving BuildingSync premises. |
+| `hvac_system_type` | Select one exact neutral measure from the topology index. |
+| `target_zone_names` | Pass to the selected topology measure after resolving BuildingSync premises. |
 | `target_air_loop_name` | Use plural `target_air_loop_names` in `modify_existing_air_loop_controls`. Blank no longer means all; provide exact names. |
-| `synthesize_if_missing` | Choose the operation explicitly: `create_*` for unserved zones, `replace_with_*` for replacement, or a modifier for existing objects. |
+| `synthesize_if_missing` | Choose explicitly: `operation = create`, `operation = replace`, or a modifier for existing objects. |
 | `central_cooling_supply_air_temperature_c`, `central_heating_supply_air_temperature_c` | `modify_existing_air_loop_controls` with `set_supply_air_temperatures = true`. |
 | `doas_supply_air_temperature_c` | `modify_existing_air_loop_controls` on the resolved DOAS or primary-air loop. |
 | `economizer_control_type`, `economizer_high_limit_dry_bulb_temperature_c`, `economizer_high_limit_enthalpy_j_kg` | `modify_existing_air_loop_controls` with `set_economizer = true`. |
@@ -93,9 +92,9 @@ The aliases are intentionally not implemented as dispatching measures.
 
 ## Safety and lifecycle rules
 
-- Create measures fail when a target zone already has zone HVAC or air-loop service.
-- Replacement measures resolve all target names and reject partial removal of shared air loops before deletion. VRF replacement also rejects partial removal of a shared outdoor unit.
-- Replacement preserves every pre-existing plant loop. This avoids deleting shared infrastructure but can leave unused plant objects after terminal removal.
+- `create` fails when a target zone already has zone HVAC or air-loop service.
+- `replace` resolves all target names and rejects partial removal of shared air loops before deletion. VRF also rejects partial removal of a shared outdoor unit.
+- `replace` preserves every pre-existing plant loop. This avoids deleting shared infrastructure but can leave unused plant objects after terminal removal.
 - OpenStudio model edits are not transactional. A failure during synthesis can leave an in-memory model partially changed; run replacements against a disposable copy or workflow checkpoint.
 - Modifiers use exact OpenStudio object names. They do not accept BuildingSync IDs, wildcards, or inferred relationships.
 - Topology measures use `90.1-2013`, `90.1-2016`, or `90.1-2019`; the default is `90.1-2019`.
