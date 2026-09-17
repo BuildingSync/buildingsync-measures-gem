@@ -11,10 +11,13 @@ jobs:
       DEPLOY_PATH: ${{ github.repository }}/${{ github.ref_name }}/${{ github.run_number }} # Path for S3 deployment
       S3_BUCKET: ext-gem-dashboard
       AWS_REGION: us-east-1
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      RUBYOPT: -EUTF-8:UTF-8
 
     container: # Define the Docker container for the job. All subsequent steps run inside it.
       image: nrel/openstudio:3.10.0
-      options: -u root -e "LANG=en_US.UTF-8" # These options are passed to the 'docker run' command internally
+      options: -u root # These options are passed to the 'docker run' command internally
 
     steps:
       - name: Checkout Repository
@@ -61,6 +64,7 @@ jobs:
           
           echo "OpenStudio Version: $(openstudio --version)"
           echo "Ruby Version: $(ruby -v)"
+          ruby -e 'abort "Ruby external encoding is not UTF-8" unless Encoding.default_external == Encoding::UTF_8; abort "Ruby internal encoding is not UTF-8" unless Encoding.default_internal == Encoding::UTF_8'
           echo "Listing OpenStudio Gems: $(openstudio gem_list)"
           
           # Install dependencies before running tests
