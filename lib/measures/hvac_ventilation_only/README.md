@@ -21,3 +21,5 @@ Creates central supply-only ventilation without heating or cooling, or replaces 
 | `standards_template` | No direct field | Workflow policy | Direct construction does not query standards data |
 
 This measure constructs topology directly. Replacement preserves plant loops and rejects partial shared-loop removal.
+
+Run this measure after all other HVAC upgrades. The loop supplies outdoor air directly to each zone through its own terminal. Existing zone equipment is kept, and its outdoor air is set to 0 so the loop is the only ventilation source. See [DOAS layering](../../../docs/HVAC_MIGRATION.md#doas-layering-direct-to-zone).

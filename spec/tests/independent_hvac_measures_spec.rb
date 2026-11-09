@@ -440,6 +440,9 @@ RSpec.describe 'Independent HVAC measures' do
     doas_after = run_measure(HvacDoas.new, doas_after_model, 'target_zone_names' => names)
     expect(doas_after.value.valueName).to eq('Success'), doas_after.errors.map(&:logMessage).join('; ')
     expect(doas_after_model.getZoneHVACPackagedTerminalAirConditioners.size).to eq(2)
+    doas_after_model.getZoneHVACPackagedTerminalAirConditioners.each do |unit|
+      expect([unit.outdoorAirFlowRateDuringCoolingOperation, unit.outdoorAirFlowRateDuringHeatingOperation, unit.outdoorAirFlowRateWhenNoCoolingorHeatingisNeeded].map { |flow| flow.get }).to eq([0.0, 0.0, 0.0])
+    end
     doas_after_zones.each { |zone| expect(zone.equipmentInCoolingOrder.first.to_AirTerminalSingleDuctConstantVolumeNoReheat.is_initialized).to be(true) }
     expect_zones_translated_as_served(doas_after_model, doas_after_zones)
 

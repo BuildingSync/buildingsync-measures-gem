@@ -11,7 +11,7 @@ New workflows should use these independent measures. `modify_hvac` remains in th
 
 1. Resolve BuildingSync IDs and linked premises to exact OpenStudio object and thermal-zone names before invoking a measure.
 2. Choose one exact topology from the index below.
-3. Set `operation = create` only when every target zone is unserved. A blank `target_zone_names` selects all thermal zones. Exception: DOAS/ventilation-only loops are an outdoor-air layer. `hvac_doas` and `hvac_ventilation_only` can be created on zones that have zone equipment but no air loop. Zone-equipment topologies (PTAC, PTHP, fan coil, WLHP, GSHP, radiant, VRF) can be created on DOAS-served zones. When a zone-equipment topology replaces equipment, it keeps the DOAS loop. When DOAS/ventilation-only replaces, it replaces only the air loops and keeps the zone equipment. Air-loop topologies still conflict with DOAS-served zones. Zone units built by openstudio-standards may also bring their own outdoor air, so check for double-counted ventilation when you layer them.
+3. Set `operation = create` only when every target zone is unserved. A blank `target_zone_names` selects all thermal zones. Exception: DOAS/ventilation-only loops are an outdoor-air layer. `hvac_doas` and `hvac_ventilation_only` can be created on zones that have zone equipment but no air loop; run them after all other HVAC upgrades. Zone-equipment topologies (PTAC, PTHP, fan coil, WLHP, GSHP, radiant, VRF) can be created on DOAS-served zones. When a zone-equipment topology replaces equipment, it keeps the DOAS loop. When DOAS/ventilation-only replaces, it replaces only the air loops and keeps the zone equipment. Air-loop topologies still conflict with DOAS-served zones. See [DOAS layering](#doas-layering-direct-to-zone).
 4. Set `operation = replace` when existing HVAC dedicated to named zones must be removed. Replacement requires an explicit, complete `target_zone_names` list.
 5. Run focused `modify_existing_*` measures afterward for audited temperatures, efficiencies, capacities, economizers, or heat recovery.
 
@@ -106,6 +106,26 @@ The aliases are intentionally not implemented as dispatching measures.
 - **Chilled beam:** openstudio-standards 0.8.2 has no chilled-beam key. The measure creates supporting plants through temporary fan-coil synthesis, removes those fan coils, installs four-pipe beams, and builds the primary-air loop directly. The primary-air loop has hot- and chilled-water coils held at a constant 14 °C supply-air setpoint, but no heat recovery or humidity controls. Beam sizing depends on zone design outdoor-air rates; low primary-air flow can produce undersized beams.
 - **Radiant:** requires modeled zone surfaces. Standards changes constructions and assigns internal-source radiant surfaces; BuildingSync commonly lacks enough information to map individual surfaces.
 - **Plant-based systems:** new plants can be created rather than merged into existing infrastructure. Apply audited plant properties afterward with focused modifiers.
+
+## DOAS layering (direct to zone)
+
+`hvac_doas` and `hvac_ventilation_only` build a ventilation loop sized on `VentilationRequirement`, with one `AirTerminalSingleDuctConstantVolumeNoReheat` per zone. The other measures recognize a loop with this setup as a DOAS loop. The loop delivers outdoor air **directly to each zone**, in parallel with the zone equipment. It is not ducted to the zone units' inlets.
+
+```text
+Outdoor air -> DOAS loop (OA system + fan) -> CV NoReheat terminal -> Zone
+Zone air    -> PTAC / PTHP / fan coil / WAHP / VRF terminal (OA = 0) -> Zone
+```
+
+- **Single outdoor-air source:** the DOAS loop is the only source of outdoor air for each zone it serves. When `hvac_doas` or `hvac_ventilation_only` runs, it sets the outdoor-air flows of every existing zone unit in the target zones to 0 and logs an info message. The fields set to 0 are:
+  - PTAC, PTHP, water-to-air heat pump and VRF terminal: the outdoor-air flow during cooling, during heating, and when no heating or cooling is needed.
+  - Four-pipe fan coil: the maximum outdoor-air flow.
+  - Radiant systems and baseboards have no outdoor air, so they are unchanged.
+- **Required order: run DOAS last.** Apply `hvac_doas` / `hvac_ventilation_only` after every other HVAC upgrade in the workflow. The zone-equipment measures do not change outdoor air. If one runs after the DOAS measure, its new units keep their standards-based outdoor air, and ventilation is counted twice.
+- **Zone-equipment measures on DOAS-served zones:** they are still allowed, and `replace` removes zone units but keeps the DOAS loop and its terminals. Re-run the DOAS measure afterward with `operation = replace` on those zones; it rebuilds the DOAS loop and sets the new units' outdoor air to 0.
+- **Load order:** the DOAS terminal is set first in each zone's cooling and heating order. The zone units handle the remaining sensible load.
+- **DOAS `replace`:** removes only the air loops serving the target zones, including their outdoor-air systems. Zone equipment is kept.
+- **Not supported:** air-loop topologies (packaged rooftop, VAV, furnace, chilled beam) are rejected on DOAS-served zones, because they bring their own outdoor-air system.
+- **Untreated supply air:** the DOAS loop has no outdoor-air heating or cooling coils, so the zone units absorb the outdoor-air load.
 
 ## Deprecation status
 

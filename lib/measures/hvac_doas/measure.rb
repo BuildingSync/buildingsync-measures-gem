@@ -62,6 +62,20 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
       end
     end
 
+    # Direct-to-zone DOAS: the DOAS terminal is the only outdoor-air source, so zone units only recirculate.
+    zero_outdoor_air = lambda do |equipment|
+      %w[ZoneHVACPackagedTerminalAirConditioner ZoneHVACPackagedTerminalHeatPump ZoneHVACWaterToAirHeatPump ZoneHVACTerminalUnitVariableRefrigerantFlow ZoneHVACFourPipeFanCoil].each do |type|
+        unit = equipment.public_send("to_#{type}")
+        next unless unit.is_initialized
+
+        %w[setOutdoorAirFlowRateDuringCoolingOperation setOutdoorAirFlowRateDuringHeatingOperation setOutdoorAirFlowRateWhenNoCoolingorHeatingisNeeded setMaximumOutdoorAirFlowRate].each do |setter|
+          unit.get.public_send(setter, 0.0) if unit.get.respond_to?(setter)
+        end
+        return true
+      end
+      false
+    end
+
     begin
       preserved_plants = model.getPlantLoops.size
       affected.each(&:remove) if operation == 'replace'
@@ -86,6 +100,8 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
       template = runner.getStringArgumentValue('standards_template', user_arguments)
       summary = "Created one DOAS loop for #{zones.size} zones using workflow template #{template}."
       summary = "Removed #{affected.size} air loops and kept existing zone equipment; #{summary} Preserved #{preserved_plants} plant loops." if operation == 'replace'
+      zeroed = zones.sum { |zone| zone.equipment.count { |equipment| zero_outdoor_air.call(equipment) } }
+      runner.registerInfo("Set outdoor air to 0 on #{zeroed} existing zone units; the DOAS supplies ventilation directly to each zone.") if zeroed.positive?
       runner.registerFinalCondition(summary)
       true
     rescue StandardError => e
