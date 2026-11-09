@@ -11,7 +11,7 @@ New workflows should use these independent measures. `modify_hvac` remains in th
 
 1. Resolve BuildingSync IDs and linked premises to exact OpenStudio object and thermal-zone names before invoking a measure.
 2. Choose one exact topology from the index below.
-3. Set `operation = create` only when every target zone is unserved. A blank `target_zone_names` selects all thermal zones.
+3. Set `operation = create` only when every target zone is unserved. A blank `target_zone_names` selects all thermal zones. Exception: DOAS/ventilation-only loops are an outdoor-air layer. `hvac_doas` and `hvac_ventilation_only` can be created on zones that have zone equipment but no air loop. Zone-equipment topologies (PTAC, PTHP, fan coil, WLHP, GSHP, radiant, VRF) can be created on DOAS-served zones. When a zone-equipment topology replaces equipment, it keeps the DOAS loop. When DOAS/ventilation-only replaces, it replaces only the air loops and keeps the zone equipment. Air-loop topologies still conflict with DOAS-served zones. Zone units built by openstudio-standards may also bring their own outdoor air, so check for double-counted ventilation when you layer them.
 4. Set `operation = replace` when existing HVAC dedicated to named zones must be removed. Replacement requires an explicit, complete `target_zone_names` list.
 5. Run focused `modify_existing_*` measures afterward for audited temperatures, efficiencies, capacities, economizers, or heat recovery.
 

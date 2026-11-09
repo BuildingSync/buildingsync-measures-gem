@@ -1,6 +1,6 @@
 class HvacDoas < OpenStudio::Measure::ModelMeasure
   def name = 'Dedicated Outdoor Air System HVAC'
-  def description = 'Creates a dedicated outdoor-air system in unserved zones or replaces HVAC dedicated to selected zones.'
+  def description = 'Adds a dedicated outdoor-air system to zones without air-loop service, or replaces the air loops serving selected zones. Zone equipment is kept.'
   def modeler_description = 'Directly constructs one DOAS topology; replacement rejects partial shared-loop removal and preserves plants.'
 
   def arguments(_model)
@@ -48,9 +48,9 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
     end
     affected = model.getAirLoopHVACs.select { |air_loop| (air_loop.thermalZones.to_a & zones).any? }
     if operation == 'create'
-      conflicts = zones.select { |zone| !zone.equipment.empty? || affected.any? { |air_loop| air_loop.thermalZones.include?(zone) } }
+      conflicts = zones.select { |zone| affected.any? { |air_loop| air_loop.thermalZones.include?(zone) } }
       unless conflicts.empty?
-        runner.registerError("DOAS creation requires unserved zones. Conflicts: #{conflicts.map { |zone| zone.name.to_s }.join(', ')}")
+        runner.registerError("DOAS creation requires zones without air-loop service; zone equipment is kept. Conflicts: #{conflicts.map { |zone| zone.name.to_s }.join(', ')}")
         return false
       end
     else
@@ -64,15 +64,7 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
 
     begin
       preserved_plants = model.getPlantLoops.size
-      removed = 0
-      if operation == 'replace'
-        removed = zones.sum do |zone|
-          equipment = zone.equipment.to_a
-          equipment.each(&:remove)
-          equipment.size
-        end
-        affected.each(&:remove)
-      end
+      affected.each(&:remove) if operation == 'replace'
       air_loop = OpenStudio::Model::AirLoopHVAC.new(model)
       air_loop.setName('Dedicated Outdoor Air System')
       air_loop.sizingSystem.setTypeofLoadtoSizeOn('VentilationRequirement')
@@ -83,6 +75,8 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
         terminal = OpenStudio::Model::AirTerminalSingleDuctConstantVolumeNoReheat.new(model, model.alwaysOnDiscreteSchedule)
         terminal.setName("#{zone.name} DOAS Terminal")
         air_loop.addBranchForZone(zone, terminal)
+        zone.setCoolingPriority(terminal, 1)
+        zone.setHeatingPriority(terminal, 1)
       end
       unserved = zones - air_loop.thermalZones.to_a
       unless unserved.empty?
@@ -91,7 +85,7 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
       end
       template = runner.getStringArgumentValue('standards_template', user_arguments)
       summary = "Created one DOAS loop for #{zones.size} zones using workflow template #{template}."
-      summary = "Removed #{affected.size} air loops and #{removed} zone HVAC objects; #{summary} Preserved #{preserved_plants} plant loops." if operation == 'replace'
+      summary = "Removed #{affected.size} air loops and kept existing zone equipment; #{summary} Preserved #{preserved_plants} plant loops." if operation == 'replace'
       runner.registerFinalCondition(summary)
       true
     rescue StandardError => e

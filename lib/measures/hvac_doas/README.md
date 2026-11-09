@@ -20,4 +20,4 @@ Creates a dedicated outdoor-air system or replaces HVAC dedicated to selected zo
 | `target_zone_names` | `OtherHVACSystem/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref` and associated delivery/HVAC-system `LinkedPremises`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve all served premises; include complete shared-loop scope for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Direct construction does not query standards data |
 
-This topology supplies ventilation air only. Apply terminal heating/cooling with a separate topology when required.
+This topology supplies ventilation air only. It can be combined with a zone-equipment topology (PTAC, PTHP, fan coil, WLHP, GSHP, radiant, VRF) in either order. Existing zone equipment is kept during both create and replace.

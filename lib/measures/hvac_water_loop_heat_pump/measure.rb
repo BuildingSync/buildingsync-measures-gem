@@ -45,9 +45,15 @@ class HvacWaterLoopHeatPump < OpenStudio::Measure::ModelMeasure
       runner.registerError('No target thermal zones were found.')
       return false
     end
-    affected = model.getAirLoopHVACs.select { |air_loop| (air_loop.thermalZones.to_a & zones).any? }
+    dedicated_outdoor_air = lambda do |air_loop|
+      air_loop.sizingSystem.typeofLoadtoSizeOn == 'VentilationRequirement' &&
+        air_loop.demandComponents.count { |component| component.to_AirTerminalSingleDuctConstantVolumeNoReheat.is_initialized } == air_loop.thermalZones.size
+    end
+    doas_loops, affected = model.getAirLoopHVACs.select { |air_loop| (air_loop.thermalZones.to_a & zones).any? }.partition(&dedicated_outdoor_air)
+    doas_handles = doas_loops.flat_map { |air_loop| air_loop.demandComponents.map { |component| component.handle.to_s } }
+    zone_equipment = ->(zone) { zone.equipment.reject { |equipment| doas_handles.include?(equipment.handle.to_s) } }
     if operation == 'create'
-      conflicts = zones.select { |zone| !zone.equipment.empty? || affected.any? { |air_loop| air_loop.thermalZones.include?(zone) } }
+      conflicts = zones.select { |zone| !zone_equipment.call(zone).empty? || affected.any? { |air_loop| air_loop.thermalZones.include?(zone) } }
       unless conflicts.empty?
         runner.registerError("Water-loop heat-pump creation requires unserved zones. Conflicts: #{conflicts.map { |zone| zone.name.to_s }.join(', ')}")
         return false
@@ -67,7 +73,7 @@ class HvacWaterLoopHeatPump < OpenStudio::Measure::ModelMeasure
       removed = 0
       if operation == 'replace'
         removed = zones.sum do |zone|
-          equipment = zone.equipment.to_a
+          equipment = zone_equipment.call(zone).to_a
           equipment.each(&:remove)
           equipment.size
         end

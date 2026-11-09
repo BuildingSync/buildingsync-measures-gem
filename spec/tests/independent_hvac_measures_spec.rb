@@ -424,13 +424,39 @@ RSpec.describe 'Independent HVAC measures' do
     expect(doas_result.value.valueName).to eq('Success'), doas_result.errors.map(&:logMessage).join('; ')
     expect(doas_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*doas_zones)
     expect(replacement_result.value.valueName).to eq('Success')
-    expect(replacement_model.getZoneHVACBaseboardConvectiveElectrics).to be_empty
+    expect(replacement_model.getZoneHVACBaseboardConvectiveElectrics.size).to eq(replacement_zones.size)
     expect(replacement_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*replacement_zones)
     expect(ventilation_replacement_result.value.valueName).to eq('Success')
-    expect(ventilation_replacement_model.getZoneHVACBaseboardConvectiveElectrics).to be_empty
+    expect(ventilation_replacement_model.getZoneHVACBaseboardConvectiveElectrics.size).to eq(ventilation_replacement_zones.size)
     expect(ventilation_replacement_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*ventilation_replacement_zones)
     expect_zones_translated_as_served(ventilation_model, ventilation_zones)
     expect_zones_translated_as_served(doas_model, doas_zones)
+  end
+
+  it 'combines DOAS with zone equipment in either order' do
+    doas_after_model, doas_after_zones = named_multizone_model('DOAS After PTAC')
+    names = doas_after_zones.map(&:nameString).join(', ')
+    expect(run_measure(HvacPtac.new, doas_after_model, 'target_zone_names' => names).value.valueName).to eq('Success')
+    doas_after = run_measure(HvacDoas.new, doas_after_model, 'target_zone_names' => names)
+    expect(doas_after.value.valueName).to eq('Success'), doas_after.errors.map(&:logMessage).join('; ')
+    expect(doas_after_model.getZoneHVACPackagedTerminalAirConditioners.size).to eq(2)
+    doas_after_zones.each { |zone| expect(zone.equipmentInCoolingOrder.first.to_AirTerminalSingleDuctConstantVolumeNoReheat.is_initialized).to be(true) }
+    expect_zones_translated_as_served(doas_after_model, doas_after_zones)
+
+    doas_first_model, doas_first_zones = named_multizone_model('DOAS Before Fan Coil')
+    names = doas_first_zones.map(&:nameString).join(', ')
+    expect(run_measure(HvacVentilationOnly.new, doas_first_model, 'target_zone_names' => names).value.valueName).to eq('Success')
+    fan_coil = run_measure(HvacFourPipeFanCoil.new, doas_first_model, 'target_zone_names' => names)
+    expect(fan_coil.value.valueName).to eq('Success'), fan_coil.errors.map(&:logMessage).join('; ')
+    expect(doas_first_model.getZoneHVACFourPipeFanCoils.size).to eq(2)
+
+    replace = run_measure(HvacPthp.new, doas_first_model, 'operation' => 'replace', 'target_zone_names' => names)
+    expect(replace.value.valueName).to eq('Success'), replace.errors.map(&:logMessage).join('; ')
+    expect(doas_first_model.getZoneHVACFourPipeFanCoils).to be_empty
+    expect(doas_first_model.getAirLoopHVACs.map(&:nameString)).to include('Ventilation Only Air Loop')
+
+    rooftop = run_measure(HvacPackagedRooftopAc.new, doas_first_model, 'target_zone_names' => doas_first_zones.first.nameString)
+    expect(rooftop.value.valueName).to eq('Fail')
   end
 
   it 'creates and replaces water-loop and ground-source heat-pump systems' do
