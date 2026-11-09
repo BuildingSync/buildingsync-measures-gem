@@ -77,7 +77,10 @@ class HvacFourPipeFanCoil < OpenStudio::Measure::ModelMeasure
       unit_handles = model.getZoneHVACFourPipeFanCoils.map { |unit| unit.handle.to_s }
       plant_handles = model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      Standard.build(template).model_add_hvac_system(model, 'Fan Coil', 'NaturalGas', nil, 'Electricity', zones)
+      unless Standard.build(template).model_add_hvac_system(model, 'Fan Coil', 'NaturalGas', nil, 'Electricity', zones)
+        runner.registerError("openstudio-standards failed to add 'Fan Coil' for #{operation}.")
+        return false
+      end
       units = model.getZoneHVACFourPipeFanCoils.reject { |unit| unit_handles.include?(unit.handle.to_s) }
       plants = model.getPlantLoops.reject { |plant_loop| plant_handles.include?(plant_loop.handle.to_s) }
       served = units.filter_map { |unit| unit.thermalZone.get if unit.thermalZone.is_initialized }

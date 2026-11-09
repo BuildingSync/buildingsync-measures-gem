@@ -76,7 +76,10 @@ class HvacPtac < OpenStudio::Measure::ModelMeasure
       end
       before = model.getZoneHVACPackagedTerminalAirConditioners.map { |unit| unit.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      Standard.build(template).model_add_hvac_system(model, 'PTAC', 'NaturalGas', nil, 'Electricity', zones)
+      unless Standard.build(template).model_add_hvac_system(model, 'PTAC', 'NaturalGas', nil, 'Electricity', zones)
+        runner.registerError("openstudio-standards failed to add 'PTAC' for #{operation}.")
+        return false
+      end
       created = model.getZoneHVACPackagedTerminalAirConditioners.reject { |unit| before.include?(unit.handle.to_s) }
       served = created.filter_map { |unit| unit.thermalZone.get if unit.thermalZone.is_initialized }
       unserved = zones - served

@@ -76,7 +76,10 @@ class HvacPackagedRooftopVavElectricReheat < OpenStudio::Measure::ModelMeasure
       end
       before = model.getAirLoopHVACs.map { |air_loop| air_loop.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      Standard.build(template).model_add_hvac_system(model, 'PVAV PFP Boxes', 'NaturalGas', nil, 'Electricity', zones)
+      unless Standard.build(template).model_add_hvac_system(model, 'PVAV PFP Boxes', 'NaturalGas', nil, 'Electricity', zones)
+        runner.registerError("openstudio-standards failed to add 'PVAV PFP Boxes' for #{operation}.")
+        return false
+      end
       loops = model.getAirLoopHVACs.reject { |air_loop| before.include?(air_loop.handle.to_s) }
       unserved = zones - loops.flat_map(&:thermalZones).uniq
       unless unserved.empty?

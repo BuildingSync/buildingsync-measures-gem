@@ -75,7 +75,10 @@ class HvacWarmAirFurnace < OpenStudio::Measure::ModelMeasure
       loop_handles = model.getAirLoopHVACs.map { |air_loop| air_loop.handle.to_s }
       unit_handles = model.getZoneHVACUnitHeaters.map { |unit| unit.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      Standard.build(template).model_add_hvac_system(model, 'Forced Air Furnace', 'NaturalGas', nil, 'Electricity', zones)
+      unless Standard.build(template).model_add_hvac_system(model, 'Forced Air Furnace', 'NaturalGas', nil, 'Electricity', zones)
+        runner.registerError("openstudio-standards failed to add 'Forced Air Furnace' for #{operation}.")
+        return false
+      end
       loops = model.getAirLoopHVACs.reject { |air_loop| loop_handles.include?(air_loop.handle.to_s) }
       units = model.getZoneHVACUnitHeaters.reject { |unit| unit_handles.include?(unit.handle.to_s) }
       served = loops.flat_map(&:thermalZones)

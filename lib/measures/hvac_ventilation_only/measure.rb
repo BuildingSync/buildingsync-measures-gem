@@ -78,7 +78,11 @@ class HvacVentilationOnly < OpenStudio::Measure::ModelMeasure
       controller = OpenStudio::Model::ControllerOutdoorAir.new(model)
       OpenStudio::Model::AirLoopHVACOutdoorAirSystem.new(model, controller).addToNode(air_loop.supplyInletNode)
       OpenStudio::Model::FanSystemModel.new(model).addToNode(air_loop.supplyOutletNode)
-      zones.each { |zone| air_loop.addBranchForZone(zone) }
+      zones.each do |zone|
+        terminal = OpenStudio::Model::AirTerminalSingleDuctConstantVolumeNoReheat.new(model, model.alwaysOnDiscreteSchedule)
+        terminal.setName("#{zone.name} Ventilation Terminal")
+        air_loop.addBranchForZone(zone, terminal)
+      end
       unserved = zones - air_loop.thermalZones.to_a
       unless unserved.empty?
         runner.registerError("Ventilation-only #{operation} did not serve: #{unserved.map { |zone| zone.name.to_s }.join(', ')}")

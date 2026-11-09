@@ -81,7 +81,10 @@ class HvacRadiant < OpenStudio::Measure::ModelMeasure
       unit_handles = (model.getZoneHVACLowTempRadiantVarFlows + model.getZoneHVACLowTempRadiantConstFlows).map { |unit| unit.handle.to_s }
       plant_handles = model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      Standard.build(template).model_add_hvac_system(model, 'Radiant Slab', 'NaturalGas', nil, 'Electricity', zones)
+      unless Standard.build(template).model_add_hvac_system(model, 'Radiant Slab', 'NaturalGas', nil, 'Electricity', zones)
+        runner.registerError("openstudio-standards failed to add 'Radiant Slab' for #{operation}.")
+        return false
+      end
       units = (model.getZoneHVACLowTempRadiantVarFlows + model.getZoneHVACLowTempRadiantConstFlows).reject do |unit|
         unit_handles.include?(unit.handle.to_s)
       end

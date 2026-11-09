@@ -86,7 +86,10 @@ class HvacVrf < OpenStudio::Measure::ModelMeasure
       end
       before = model.getAirConditionerVariableRefrigerantFlows.map { |vrf| vrf.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      Standard.build(template).model_add_hvac_system(model, 'VRF', 'NaturalGas', nil, 'Electricity', zones)
+      unless Standard.build(template).model_add_hvac_system(model, 'VRF', 'NaturalGas', nil, 'Electricity', zones)
+        runner.registerError("openstudio-standards failed to add 'VRF' for #{operation}.")
+        return false
+      end
       created = model.getAirConditionerVariableRefrigerantFlows.reject { |vrf| before.include?(vrf.handle.to_s) }
       terminals = created.flat_map { |vrf| vrf.terminals.to_a }
       served = terminals.filter_map { |terminal| terminal.thermalZone.get if terminal.thermalZone.is_initialized }

@@ -42,6 +42,14 @@ RSpec.describe 'Independent HVAC measures' do
     runner.result
   end
 
+  def expect_zones_translated_as_served(model, zones)
+    translator = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = translator.translateModel(model)
+    expect(translator.errors.map(&:logMessage)).to be_empty
+    connected = workspace.getObjectsByType('ZoneHVAC:EquipmentConnections'.to_IddObjectType).map { |object| object.getString(0).get.upcase }
+    expect(connected).to include(*zones.map { |zone| zone.nameString.upcase })
+  end
+
   def named_zone_model(zone_name = 'Target Zone')
     model = OpenStudio::Model::Model.new
     zone = OpenStudio::Model::ThermalZone.new(model)
@@ -421,6 +429,8 @@ RSpec.describe 'Independent HVAC measures' do
     expect(ventilation_replacement_result.value.valueName).to eq('Success')
     expect(ventilation_replacement_model.getZoneHVACBaseboardConvectiveElectrics).to be_empty
     expect(ventilation_replacement_model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*ventilation_replacement_zones)
+    expect_zones_translated_as_served(ventilation_model, ventilation_zones)
+    expect_zones_translated_as_served(doas_model, doas_zones)
   end
 
   it 'creates and replaces water-loop and ground-source heat-pump systems' do
@@ -529,8 +539,10 @@ RSpec.describe 'Independent HVAC measures' do
     expect(model.getAirTerminalSingleDuctConstantVolumeFourPipeBeams.size).to eq(2)
     expect(model.getZoneHVACFourPipeFanCoils).to be_empty
     expect(model.getAirLoopHVACs.flat_map(&:thermalZones)).to include(*zones)
+    expect(model.getCoilCoolingWaters.map(&:nameString)).to include('Chilled-Beam Primary Air Cooling Coil')
     expect(replacement_model.getZoneHVACBaseboardConvectiveElectrics).to be_empty
     expect(replacement_model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }).to include(preserved_handle)
+    expect_zones_translated_as_served(model, zones)
   end
 
   it 'creates and replaces low-temperature radiant systems with assigned surfaces' do

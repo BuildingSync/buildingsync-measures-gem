@@ -77,7 +77,10 @@ class HvacPackagedRooftopVavHwReheat < OpenStudio::Measure::ModelMeasure
       air_handles = model.getAirLoopHVACs.map { |air_loop| air_loop.handle.to_s }
       plant_handles = model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      Standard.build(template).model_add_hvac_system(model, 'PVAV Reheat', 'NaturalGas', nil, 'Electricity', zones)
+      unless Standard.build(template).model_add_hvac_system(model, 'PVAV Reheat', 'NaturalGas', nil, 'Electricity', zones)
+        runner.registerError("openstudio-standards failed to add 'PVAV Reheat' for #{operation}.")
+        return false
+      end
       loops = model.getAirLoopHVACs.reject { |air_loop| air_handles.include?(air_loop.handle.to_s) }
       plants = model.getPlantLoops.reject { |plant_loop| plant_handles.include?(plant_loop.handle.to_s) }
       unserved = zones - loops.flat_map(&:thermalZones).uniq

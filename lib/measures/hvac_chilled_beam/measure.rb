@@ -77,7 +77,10 @@ class HvacChilledBeam < OpenStudio::Measure::ModelMeasure
       plant_handles = model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }
       fan_coil_handles = model.getZoneHVACFourPipeFanCoils.map { |unit| unit.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      Standard.build(template).model_add_hvac_system(model, 'Fan Coil', 'NaturalGas', nil, 'Electricity', zones)
+      unless Standard.build(template).model_add_hvac_system(model, 'Fan Coil', 'NaturalGas', nil, 'Electricity', zones)
+        runner.registerError("openstudio-standards failed to add 'Fan Coil' supporting plants for chilled-beam #{operation}.")
+        return false
+      end
       temporary_units = model.getZoneHVACFourPipeFanCoils.reject { |unit| fan_coil_handles.include?(unit.handle.to_s) }
       heating_loops = temporary_units.filter_map do |unit|
         coil = unit.heatingCoil.to_CoilHeatingWater
@@ -98,7 +101,25 @@ class HvacChilledBeam < OpenStudio::Measure::ModelMeasure
       air_loop.sizingSystem.setTypeofLoadtoSizeOn('VentilationRequirement')
       controller = OpenStudio::Model::ControllerOutdoorAir.new(model)
       OpenStudio::Model::AirLoopHVACOutdoorAirSystem.new(model, controller).addToNode(air_loop.supplyInletNode)
+      primary_air_temperature_c = 14.0
+      air_loop.sizingSystem.setCentralCoolingDesignSupplyAirTemperature(primary_air_temperature_c)
+      air_loop.sizingSystem.setCentralHeatingDesignSupplyAirTemperature(primary_air_temperature_c)
+      primary_heating_coil = OpenStudio::Model::CoilHeatingWater.new(model)
+      primary_heating_coil.setName('Chilled-Beam Primary Air Heating Coil')
+      primary_heating_coil.addToNode(air_loop.supplyOutletNode)
+      heating_loops.first.addDemandBranchForComponent(primary_heating_coil)
+      primary_cooling_coil = OpenStudio::Model::CoilCoolingWater.new(model)
+      primary_cooling_coil.setName('Chilled-Beam Primary Air Cooling Coil')
+      primary_cooling_coil.addToNode(air_loop.supplyOutletNode)
+      cooling_loops.first.addDemandBranchForComponent(primary_cooling_coil)
       OpenStudio::Model::FanSystemModel.new(model).addToNode(air_loop.supplyOutletNode)
+      primary_air_schedule = OpenStudio::Model::ScheduleConstant.new(model)
+      primary_air_schedule.setName('Chilled-Beam Primary Air Temperature')
+      primary_air_schedule.setValue(primary_air_temperature_c)
+      OpenStudio::Model::SetpointManagerScheduled.new(model, primary_air_schedule).addToNode(air_loop.supplyOutletNode)
+      [primary_heating_coil, primary_cooling_coil].each do |coil|
+        OpenStudio::Model::SetpointManagerScheduled.new(model, primary_air_schedule).addToNode(coil.airOutletModelObject.get.to_Node.get)
+      end
       terminals = zones.map do |zone|
         cooling_coil = OpenStudio::Model::CoilCoolingFourPipeBeam.new(model)
         heating_coil = OpenStudio::Model::CoilHeatingFourPipeBeam.new(model)
