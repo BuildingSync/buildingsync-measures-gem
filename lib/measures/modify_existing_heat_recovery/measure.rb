@@ -72,8 +72,17 @@ class ModifyExistingHeatRecovery < OpenStudio::Measure::ModelMeasure
     end
 
     exchangers.each do |heat_exchanger|
+      # Since SDK 3.8 the 75% setters normalize a curve by the 100% value, and a
+      # zero reference raises a division-by-zero exception. Always build a neutral
+      # (ratio 1.0) curve at a reference of 1.0, then set only the 100% fields so
+      # the 75% values follow regardless of the exchanger's previous state.
       failed = %w[100Cooling 75Cooling 100Heating 75Heating].reject do |suffix|
-        heat_exchanger.send("set#{prefix}Effectivenessat#{suffix}AirFlow", value)
+        heat_exchanger.send("set#{prefix}Effectivenessat#{suffix}AirFlow", 1.0)
+      end
+      if failed.empty?
+        failed += %w[100Cooling 100Heating].reject do |suffix|
+          heat_exchanger.send("set#{prefix}Effectivenessat#{suffix}AirFlow", value)
+        end
       end
       unless failed.empty?
         runner.registerError("Failed to set #{metric} at #{failed.join(', ')} airflow on '#{heat_exchanger.name}'.")
