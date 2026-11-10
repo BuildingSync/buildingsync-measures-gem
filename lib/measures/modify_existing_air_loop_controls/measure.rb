@@ -85,6 +85,17 @@ class ModifyExistingAirLoopControls < OpenStudio::Measure::ModelMeasure
       return true
     end
 
+    if set_economizer && runner.getStringArgumentValue('economizer_control_type', user_arguments) == 'ElectronicEnthalpy'
+      missing_curves = loops.select do |air_loop|
+        outdoor_air = air_loop.airLoopHVACOutdoorAirSystem
+        outdoor_air.is_initialized && !outdoor_air.get.getControllerOutdoorAir.electronicEnthalpyLimitCurve.is_initialized
+      end
+      unless missing_curves.empty?
+        runner.registerError("ElectronicEnthalpy requires an electronic enthalpy limit curve on: #{missing_curves.map { |air_loop| air_loop.name.to_s }.join(', ')}")
+        return false
+      end
+    end
+
     if set_sat
       cooling_sat = runner.getDoubleArgumentValue('cooling_supply_air_temperature_c', user_arguments)
       heating_sat = runner.getDoubleArgumentValue('heating_supply_air_temperature_c', user_arguments)
