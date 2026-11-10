@@ -1,7 +1,7 @@
 class HvacDoas < OpenStudio::Measure::ModelMeasure
   def name = 'Dedicated Outdoor Air System HVAC'
   def description = 'Adds a dedicated outdoor-air system to zones without air-loop service, or replaces the air loops serving selected zones. Zone equipment is kept.'
-  def modeler_description = 'Directly constructs one DOAS topology; replacement rejects partial shared-loop removal and preserves plants.'
+  def modeler_description = 'Directly constructs one DOAS topology; replacement rejects partial shared-loop removal and removes pre-existing plant loops left without loads.'
 
   def arguments(_model)
     args = OpenStudio::Measure::OSArgumentVector.new
@@ -77,7 +77,8 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
     end
 
     begin
-      preserved_plants = model.getPlantLoops.size
+      plant_handles = model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }
+      loaded_plants = loaded_plant_loop_handles(model)
       affected.each(&:remove) if operation == 'replace'
       air_loop = OpenStudio::Model::AirLoopHVAC.new(model)
       air_loop.setName('Dedicated Outdoor Air System')
@@ -97,9 +98,10 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
         runner.registerError("DOAS #{operation} did not serve: #{unserved.map { |zone| zone.name.to_s }.join(', ')}")
         return false
       end
+      orphaned_plants = operation == 'replace' ? remove_orphaned_plant_loops(model, loaded_plants) : []
       template = runner.getStringArgumentValue('standards_template', user_arguments)
       summary = "Created one DOAS loop for #{zones.size} zones using workflow template #{template}."
-      summary = "Removed #{affected.size} air loops and kept existing zone equipment; #{summary} Preserved #{preserved_plants} plant loops." if operation == 'replace'
+      summary = "Removed #{affected.size} air loops and kept existing zone equipment; #{summary} #{plant_note(model, plant_handles, orphaned_plants)}" if operation == 'replace'
       zeroed = zones.sum { |zone| zone.equipment.count { |equipment| zero_outdoor_air.call(equipment) } }
       runner.registerInfo("Set outdoor air to 0 on #{zeroed} existing zone units; the DOAS supplies ventilation directly to each zone.") if zeroed.positive?
       runner.registerFinalCondition(summary)
@@ -108,6 +110,50 @@ class HvacDoas < OpenStudio::Measure::ModelMeasure
       runner.registerError("DOAS #{operation} failed: #{e.message}")
       false
     end
+  end
+
+  private
+
+  # Nodes, pipes, pumps, splitters and mixers only move water; anything else on a loop is equipment or a load.
+  def plant_equipment?(component)
+    return false if component.to_Node.is_initialized || component.to_ConnectorSplitter.is_initialized || component.to_ConnectorMixer.is_initialized
+
+    !component.iddObjectType.valueName.match?(/^OS_(Pipe|Pump|HeaderedPumps)_/)
+  end
+
+  # Handles of the plant loops that currently serve at least one demand-side load.
+  def loaded_plant_loop_handles(model)
+    loaded = model.getPlantLoops.select { |plant_loop| plant_loop.demandComponents.any? { |component| plant_equipment?(component) } }
+    loaded.map { |plant_loop| plant_loop.handle.to_s }
+  end
+
+  # Removes the loops among `handles` that the replacement left without any demand-side load, together with
+  # their supply equipment. PlantLoop#remove on its own leaves a chiller attached to its condenser loop, and
+  # removing the chiller can leave that condenser loop without loads in turn, so the pass repeats until
+  # nothing more is orphaned. Loops that still serve other zones keep their loads and are not touched.
+  def remove_orphaned_plant_loops(model, handles)
+    removed = []
+    loop do
+      orphaned = model.getPlantLoops.select do |plant_loop|
+        handles.include?(plant_loop.handle.to_s) && plant_loop.demandComponents.none? { |component| plant_equipment?(component) }
+      end
+      break if orphaned.empty?
+
+      orphaned.each do |plant_loop|
+        removed << plant_loop.name.to_s
+        plant_loop.supplyComponents.select { |component| plant_equipment?(component) }.each(&:remove)
+        plant_loop.remove
+      end
+    end
+    removed
+  end
+
+  # One sentence on what happened to the plant loops that existed before a replacement.
+  def plant_note(model, pre_existing_handles, orphaned_names)
+    kept = model.getPlantLoops.count { |plant_loop| pre_existing_handles.include?(plant_loop.handle.to_s) }
+    note = "Preserved #{kept} pre-existing plant loops."
+    note += " Removed #{orphaned_names.size} left without loads: #{orphaned_names.join(', ')}." unless orphaned_names.empty?
+    note
   end
 end
 

@@ -20,4 +20,4 @@ Creates warm-air furnace systems in unserved zones or replaces HVAC dedicated to
 | `target_zone_names` | Heating-source/delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve exact served zones and complete shared-loop scope for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Depending on standards behavior, synthesis may create air loops or zone unit heaters. Replacement preserves plants.
+Depending on standards behavior, synthesis may create air loops or zone unit heaters. Replacement keeps pre-existing plant loops that still serve loads and removes those left without loads.

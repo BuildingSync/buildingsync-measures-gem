@@ -20,4 +20,4 @@ Creates packaged terminal air conditioners in unserved zones or replaces HVAC de
 | `target_zone_names` | HVAC/component `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedPremises/Space/LinkedSpaceID/@IDref` and `LinkedPremises/Section/LinkedSectionID/@IDref` | Resolve every IDREF to exact model-zone names; `replace` must include every zone on affected shared loops | Consumer owns BuildingSync-ID-to-model-name resolution |
 | `standards_template` | No direct BuildingSync field | Workflow/baseline policy | Not audit data |
 
-Replacement preserves plant loops and rejects partial shared-air-loop removal before mutation. Creation requires unserved zones. Efficiency values belong in focused modifiers.
+Heating is electric resistance; no hot-water plant is created. Replacement keeps pre-existing plant loops that still serve loads, removes those left without loads, and rejects partial shared-air-loop removal before mutation. Creation requires unserved zones. Efficiency values belong in focused modifiers.

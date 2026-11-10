@@ -3,13 +3,13 @@
   <schema_version>3.1</schema_version>
   <name>hvac_pthp</name>
   <uid>bcf29e4b-1e31-4d59-a391-531db14b114c</uid>
-  <version_id>d375f81d-8859-41d5-91c4-be7b6323a363</version_id>
-  <version_modified>2026-09-02T22:22:47Z</version_modified>
+  <version_id>340c103b-d444-4a9c-bce0-e068aa2dd7cd</version_id>
+  <version_modified>2026-11-10T05:41:08Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPthp</class_name>
   <display_name>PTHP HVAC</display_name>
   <description>Creates PTHP equipment in unserved zones or replaces HVAC dedicated to selected zones.</description>
-  <modeler_description>Uses one synthesis path for both operations; replacement rejects partial shared-air-loop removal and preserves plant loops.</modeler_description>
+  <modeler_description>Uses one synthesis path for both operations; replacement rejects partial shared-air-loop removal and removes pre-existing plant loops left without loads.</modeler_description>
   <arguments>
     <argument>
       <name>operation</name>
@@ -90,7 +90,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>029A1584</checksum>
+      <checksum>1D6E4E78</checksum>
     </file>
     <file>
       <version>
@@ -101,7 +101,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>80828AC2</checksum>
+      <checksum>0E7644E7</checksum>
     </file>
   </files>
 </measure>

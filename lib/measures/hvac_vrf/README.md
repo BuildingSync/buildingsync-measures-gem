@@ -20,4 +20,4 @@ Creates variable-refrigerant-flow outdoor units and terminals or replaces HVAC d
 | `target_zone_names` | VRF delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve every terminal zone; replacement must include all zones on each affected outdoor unit and air loop | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Replacement preflight rejects partial shared outdoor-unit removal as well as partial shared-air-loop removal.
+Replacement preflight rejects partial shared outdoor-unit removal as well as partial shared-air-loop removal. Pre-existing plant loops that still serve loads are kept; loops left without loads are removed.

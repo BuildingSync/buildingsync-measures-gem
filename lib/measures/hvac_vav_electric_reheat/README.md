@@ -20,4 +20,4 @@ Creates built-up multizone VAV with chilled-water cooling and fan-powered electr
 | `target_zone_names` | `Deliveries/Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve all zones; include complete shared-loop scope for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Creation requires unserved zones. Replacement rejects partial shared-air-loop removal and preserves plants.
+Creation requires unserved zones. Replacement rejects partial shared-air-loop removal, keeps pre-existing plant loops that still serve loads, and removes those left without loads.

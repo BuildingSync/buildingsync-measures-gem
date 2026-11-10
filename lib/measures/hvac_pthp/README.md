@@ -20,4 +20,4 @@ Creates packaged terminal heat pumps in unserved zones or replaces HVAC dedicate
 | `target_zone_names` | HVAC/component `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` under `LinkedPremises` | Resolve all served premises; include all zones on shared existing loops for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Creation requires unserved zones. Replacement preserves plants and rejects partial shared-air-loop removal before mutation.
+Creation requires unserved zones. Replacement keeps pre-existing plant loops that still serve loads, removes those left without loads, and rejects partial shared-air-loop removal before mutation.

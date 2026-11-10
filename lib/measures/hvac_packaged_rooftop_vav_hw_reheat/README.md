@@ -20,4 +20,4 @@ Creates packaged multizone VAV with hot-water terminal reheat or replaces dedica
 | `target_zone_names` | `Deliveries/Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve complete multizone scope; `replace` requires every zone on affected shared loops | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Replacement preserves existing plants. Use focused modifiers for audited loop controls, boiler properties, temperatures, and efficiencies.
+Replacement keeps pre-existing plant loops that still serve loads and removes those left without loads. Use focused modifiers for audited loop controls, boiler properties, temperatures, and efficiencies.

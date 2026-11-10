@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_heat_recovery</name>
   <uid>ef1de350-f353-477a-b782-7d0c6a3a4b42</uid>
-  <version_id>d260fcad-c903-4357-8f98-5a9d9b0a9233</version_id>
-  <version_modified>2026-08-26T21:47:10Z</version_modified>
+  <version_id>182364c1-7684-45be-83ca-f015661b0a61</version_id>
+  <version_modified>2026-11-10T05:41:09Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingHeatRecovery</class_name>
   <display_name>Modify Existing Heat Recovery</display_name>
@@ -75,7 +75,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>DD57B79C</checksum>
+      <checksum>A2E9A387</checksum>
     </file>
     <file>
       <version>

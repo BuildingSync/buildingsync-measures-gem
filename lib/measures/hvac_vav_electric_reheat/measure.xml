@@ -3,13 +3,13 @@
   <schema_version>3.1</schema_version>
   <name>hvac_vav_electric_reheat</name>
   <uid>7f30383b-0314-4914-879d-d6defe064446</uid>
-  <version_id>48305d44-3f5c-413f-9647-9bb396f24564</version_id>
-  <version_modified>2026-09-02T22:22:51Z</version_modified>
+  <version_id>ceb78cd2-0090-4203-9501-8ebf57a13a37</version_id>
+  <version_modified>2026-11-10T05:41:08Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVavElectricReheat</class_name>
   <display_name>VAV with Electric Reheat HVAC</display_name>
   <description>Creates built-up VAV with electric reheat or replaces HVAC dedicated to selected zones.</description>
-  <modeler_description>Uses one VAV PFP Boxes synthesis path; replacement rejects partial shared-loop removal and preserves pre-existing plants.</modeler_description>
+  <modeler_description>Uses one VAV PFP Boxes synthesis path; replacement rejects partial shared-loop removal and removes pre-existing plant loops left without loads.</modeler_description>
   <arguments>
     <argument>
       <name>operation</name>
@@ -89,7 +89,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>BF8DC2FF</checksum>
+      <checksum>038DB833</checksum>
     </file>
     <file>
       <version>
@@ -100,7 +100,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>43715754</checksum>
+      <checksum>A50844D6</checksum>
     </file>
   </files>
 </measure>

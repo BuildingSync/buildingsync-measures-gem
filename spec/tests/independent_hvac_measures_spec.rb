@@ -678,4 +678,65 @@ RSpec.describe 'Independent HVAC measures' do
     expect(exchanger.sensibleEffectivenessat100HeatingAirFlow).to be_within(0.001).of(0.77)
     expect(exchanger.sensibleEffectivenessat75CoolingAirFlow).to be_within(0.001).of(0.77)
   end
+
+  it 'creates PTAC and packaged rooftop AC without a hot-water plant' do
+    ptac_model, ptac_zone = named_zone_model('Electric PTAC Zone')
+    rooftop_model, rooftop_zone = named_zone_model('Gas Rooftop Zone')
+
+    ptac_result = run_measure(HvacPtac.new, ptac_model, 'target_zone_names' => ptac_zone.nameString)
+    rooftop_result = run_measure(HvacPackagedRooftopAc.new, rooftop_model, 'target_zone_names' => rooftop_zone.nameString)
+
+    expect(ptac_result.value.valueName).to eq('Success'), ptac_result.errors.map(&:logMessage).join('; ')
+    expect(ptac_model.getPlantLoops).to be_empty
+    expect(ptac_model.getCoilHeatingWaters).to be_empty
+    expect(ptac_model.getCoilHeatingElectrics.size).to eq(1)
+    expect(ptac_result.finalCondition.get.logMessage).to include('and 0 plant loops')
+    expect(rooftop_result.value.valueName).to eq('Success'), rooftop_result.errors.map(&:logMessage).join('; ')
+    expect(rooftop_model.getPlantLoops).to be_empty
+    expect(rooftop_model.getCoilHeatingWaters).to be_empty
+    expect(rooftop_model.getCoilHeatingGass.size).to eq(1)
+  end
+
+  it 'removes plant loops orphaned by replacement but keeps loops still serving other zones' do
+    model, zones = named_multizone_model('Orphaned Plant')
+    names = zones.map(&:nameString)
+    fan_coil = run_measure(HvacFourPipeFanCoil.new, model, 'target_zone_names' => names.join(', '))
+    expect(fan_coil.value.valueName).to eq('Success'), fan_coil.errors.map(&:logMessage).join('; ')
+    plant_handles = model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }
+    expect(plant_handles.size).to be >= 2
+
+    partial = run_measure(HvacPthp.new, model, 'operation' => 'replace', 'target_zone_names' => names.first)
+    expect(partial.value.valueName).to eq('Success'), partial.errors.map(&:logMessage).join('; ')
+    expect(model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }).to match_array(plant_handles)
+    expect(partial.finalCondition.get.logMessage).to include("Preserved #{plant_handles.size} pre-existing plant loops.")
+
+    full = run_measure(HvacPthp.new, model, 'operation' => 'replace', 'target_zone_names' => names.last)
+    expect(full.value.valueName).to eq('Success'), full.errors.map(&:logMessage).join('; ')
+    expect(model.getPlantLoops).to be_empty
+    expect(model.getBoilerHotWaters).to be_empty
+    expect(model.getChillerElectricEIRs).to be_empty
+    expect(model.getPumpVariableSpeeds).to be_empty
+    expect(model.getPumpConstantSpeeds).to be_empty
+    expect(full.finalCondition.get.logMessage).to match(/Removed #{plant_handles.size} left without loads: .*Hot Water Loop/)
+  end
+
+  it 'forwards openstudio-standards log warnings and errors to the runner' do
+    measure = HvacPtac.new
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
+    synthesized = measure.send(:with_standards_log, runner, 'probe') do
+      OpenStudio.logFree(OpenStudio::Warn, 'openstudio.standards.Model', 'synthetic warning')
+      OpenStudio.logFree(OpenStudio::Error, 'openstudio.standards.Model', 'synthetic failure')
+      OpenStudio.logFree(OpenStudio::Error, 'openstudio.model.YearDescription', "'UseWeatherFile' is selected but has no weather file")
+      true
+    end
+
+    expect(synthesized).to be false
+    expect(runner.result.errors.map(&:logMessage)).to eq(['openstudio-standards probe: [openstudio.standards.Model] synthetic failure'])
+    expect(runner.result.warnings.map(&:logMessage)).to eq(['openstudio-standards probe: [openstudio.standards.Model] synthetic warning'])
+
+    clean_runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
+    expect(measure.send(:with_standards_log, clean_runner, 'probe') { true }).to be true
+    OpenStudio.logFree(OpenStudio::Error, 'openstudio.standards.Model', 'logged after the capture ended')
+    expect(clean_runner.result.errors).to be_empty
+  end
 end

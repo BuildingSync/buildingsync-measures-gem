@@ -20,4 +20,4 @@ Creates ground-source water-to-air heat pumps or replaces HVAC dedicated to sele
 | `target_zone_names` | Terminal/delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve every served zone and complete shared scope for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Replacement preserves pre-existing plant loops and rejects partial shared-air-loop removal.
+Replacement keeps pre-existing plant loops that still serve loads, removes those left without loads, and rejects partial shared-air-loop removal.

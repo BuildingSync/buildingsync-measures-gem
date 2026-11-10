@@ -20,4 +20,4 @@ Creates single-zone packaged rooftop air conditioners or replaces HVAC dedicated
 | `target_zone_names` | HVAC/source/delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve all IDs; include every zone on affected shared loops for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Creation requires unserved zones. Replacement preserves plant loops and rejects partial shared-loop removal.
+Heating is a gas furnace coil with electric supplemental heat; no hot-water plant is created. Creation requires unserved zones. Replacement keeps pre-existing plant loops that still serve loads, removes those left without loads, and rejects partial shared-loop removal.

@@ -1,7 +1,7 @@
 class HvacPackagedRooftopVavElectricReheat < OpenStudio::Measure::ModelMeasure
   def name = 'Packaged Rooftop VAV with Electric Reheat HVAC'
   def description = 'Creates packaged rooftop VAV with electric reheat or replaces HVAC dedicated to selected zones.'
-  def modeler_description = 'Uses one PVAV PFP Boxes synthesis path; replacement rejects partial shared-loop removal and preserves plant loops.'
+  def modeler_description = 'Uses one PVAV PFP Boxes synthesis path; replacement rejects partial shared-loop removal and removes pre-existing plant loops left without loads.'
 
   def arguments(_model)
     args = OpenStudio::Measure::OSArgumentVector.new
@@ -64,7 +64,8 @@ class HvacPackagedRooftopVavElectricReheat < OpenStudio::Measure::ModelMeasure
 
     begin
       require 'openstudio-standards'
-      preserved_plants = model.getPlantLoops.size
+      plant_handles = model.getPlantLoops.map { |plant_loop| plant_loop.handle.to_s }
+      loaded_plants = loaded_plant_loop_handles(model)
       removed = 0
       if operation == 'replace'
         removed = zones.sum do |zone|
@@ -76,7 +77,11 @@ class HvacPackagedRooftopVavElectricReheat < OpenStudio::Measure::ModelMeasure
       end
       before = model.getAirLoopHVACs.map { |air_loop| air_loop.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
-      unless Standard.build(template).model_add_hvac_system(model, 'PVAV PFP Boxes', 'NaturalGas', nil, 'Electricity', zones)
+      standard = Standard.build(template)
+      synthesized = with_standards_log(runner, "'PVAV PFP Boxes' #{operation}") do
+        standard.model_add_hvac_system(model, 'PVAV PFP Boxes', 'NaturalGas', nil, 'Electricity', zones)
+      end
+      unless synthesized
         runner.registerError("openstudio-standards failed to add 'PVAV PFP Boxes' for #{operation}.")
         return false
       end
@@ -86,8 +91,10 @@ class HvacPackagedRooftopVavElectricReheat < OpenStudio::Measure::ModelMeasure
         runner.registerError("PVAV PFP Boxes #{operation} did not serve: #{unserved.map { |zone| zone.name.to_s }.join(', ')}")
         return false
       end
-      summary = "Created #{loops.size} PVAV PFP Boxes loops for #{zones.size} zones using #{template}."
-      summary = "Removed #{affected.size} air loops and #{removed} zone HVAC objects; #{summary} Preserved #{preserved_plants} pre-existing plant loops." if operation == 'replace'
+      orphaned_plants = operation == 'replace' ? remove_orphaned_plant_loops(model, loaded_plants) : []
+      plants = model.getPlantLoops.reject { |plant_loop| plant_handles.include?(plant_loop.handle.to_s) }
+      summary = "Created #{loops.size} PVAV PFP Boxes loops and #{plants.size} plant loops for #{zones.size} zones using #{template}."
+      summary = "Removed #{affected.size} air loops and #{removed} zone HVAC objects; #{summary} #{plant_note(model, plant_handles, orphaned_plants)}" if operation == 'replace'
       runner.registerFinalCondition(summary)
       true
     rescue LoadError => e
@@ -97,6 +104,78 @@ class HvacPackagedRooftopVavElectricReheat < OpenStudio::Measure::ModelMeasure
       runner.registerError("PVAV PFP Boxes #{operation} failed: #{e.message}")
       false
     end
+  end
+
+  # Log messages that openstudio-standards itself treats as noise when forwarding its log to a runner.
+  STANDARDS_LOG_NOISE = ['UseWeatherFile', 'Skipping layer', 'has multiple parents', 'Successive data points',
+                         'does not have an Output', 'Prior to OpenStudio 2.6.2'].freeze
+
+  private
+
+  # openstudio-standards reports most synthesis problems through the OpenStudio log and still returns the
+  # model, so its return value cannot tell a failed step from a good one. This captures the log while the
+  # block runs, forwards warnings to the runner, and reports errors, in which case the synthesis counts as
+  # failed and the caller must stop.
+  def with_standards_log(runner, label)
+    sink = OpenStudio::StringStreamLogSink.new
+    sink.setLogLevel(OpenStudio::Warn)
+    result = yield
+    messages = sink.logMessages.reject do |message|
+      message.logChannel.match?(/openstudio\.(measure|Workflow)|runmanager|Translator|setFileExtension/) ||
+        STANDARDS_LOG_NOISE.any? { |noise| message.logMessage.include?(noise) }
+    end
+    errors, warnings = messages.partition { |message| message.logLevel >= OpenStudio::Error }
+    warnings.map { |message| "[#{message.logChannel}] #{message.logMessage}" }.uniq.each do |text|
+      runner.registerWarning("openstudio-standards #{label}: #{text}")
+    end
+    errors.map { |message| "[#{message.logChannel}] #{message.logMessage}" }.uniq.each do |text|
+      runner.registerError("openstudio-standards #{label}: #{text}")
+    end
+    result && errors.empty?
+  ensure
+    sink&.disable
+  end
+
+  # Nodes, pipes, pumps, splitters and mixers only move water; anything else on a loop is equipment or a load.
+  def plant_equipment?(component)
+    return false if component.to_Node.is_initialized || component.to_ConnectorSplitter.is_initialized || component.to_ConnectorMixer.is_initialized
+
+    !component.iddObjectType.valueName.match?(/^OS_(Pipe|Pump|HeaderedPumps)_/)
+  end
+
+  # Handles of the plant loops that currently serve at least one demand-side load.
+  def loaded_plant_loop_handles(model)
+    loaded = model.getPlantLoops.select { |plant_loop| plant_loop.demandComponents.any? { |component| plant_equipment?(component) } }
+    loaded.map { |plant_loop| plant_loop.handle.to_s }
+  end
+
+  # Removes the loops among `handles` that the replacement left without any demand-side load, together with
+  # their supply equipment. PlantLoop#remove on its own leaves a chiller attached to its condenser loop, and
+  # removing the chiller can leave that condenser loop without loads in turn, so the pass repeats until
+  # nothing more is orphaned. Loops that still serve other zones keep their loads and are not touched.
+  def remove_orphaned_plant_loops(model, handles)
+    removed = []
+    loop do
+      orphaned = model.getPlantLoops.select do |plant_loop|
+        handles.include?(plant_loop.handle.to_s) && plant_loop.demandComponents.none? { |component| plant_equipment?(component) }
+      end
+      break if orphaned.empty?
+
+      orphaned.each do |plant_loop|
+        removed << plant_loop.name.to_s
+        plant_loop.supplyComponents.select { |component| plant_equipment?(component) }.each(&:remove)
+        plant_loop.remove
+      end
+    end
+    removed
+  end
+
+  # One sentence on what happened to the plant loops that existed before a replacement.
+  def plant_note(model, pre_existing_handles, orphaned_names)
+    kept = model.getPlantLoops.count { |plant_loop| pre_existing_handles.include?(plant_loop.handle.to_s) }
+    note = "Preserved #{kept} pre-existing plant loops."
+    note += " Removed #{orphaned_names.size} left without loads: #{orphaned_names.join(', ')}." unless orphaned_names.empty?
+    note
   end
 end
 

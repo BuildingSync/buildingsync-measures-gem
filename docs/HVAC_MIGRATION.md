@@ -94,18 +94,21 @@ The aliases are intentionally not implemented as dispatching measures.
 
 - `create` fails when a target zone already has zone HVAC or air-loop service.
 - `replace` resolves all target names and rejects partial removal of shared air loops before deletion. VRF also rejects partial removal of a shared outdoor unit.
-- `replace` preserves every pre-existing plant loop. This avoids deleting shared infrastructure but can leave unused plant objects after terminal removal.
+- `replace` keeps every pre-existing plant loop that still serves a load after the replacement, for example a loop shared with zones outside the target scope or a loop that openstudio-standards reuses for the new system. A pre-existing loop left without any demand-side load is removed together with its supply equipment (boilers, chillers, cooling towers, pumps). Removing a chiller can leave its condenser loop without loads, in which case that loop is removed as well. Loops that already had no loads before the replacement are not touched.
+- Messages that openstudio-standards logs while building a system are forwarded to the measure result: warnings as measure warnings, errors as measure errors that fail the step. openstudio-standards returns the model even when a step failed, so its log is the only reliable error signal; the measures also verify that every target zone received equipment.
 - OpenStudio model edits are not transactional. A failure during synthesis can leave an in-memory model partially changed; run replacements against a disposable copy or workflow checkpoint.
 - Modifiers use exact OpenStudio object names. They do not accept BuildingSync IDs, wildcards, or inferred relationships.
 - Topology measures use `90.1-2013`, `90.1-2016`, or `90.1-2019`; the default is `90.1-2019`.
 
 ## Topology-specific limitations
 
+- **PTAC:** DX cooling with electric-resistance heating. No hot-water plant is created.
+- **Packaged rooftop AC:** DX cooling with a gas furnace heating coil and electric supplemental heat. No hot-water plant is created.
 - **Ventilation-only:** constructed directly because openstudio-standards 0.8.2 does not recognize a `Ventilation Only` key. It does not provide separate zone sensible conditioning.
 - **DOAS:** constructed directly. It has outdoor-air delivery and a fan but no outdoor-air heating/cooling coils or separate zone sensible-conditioning system.
 - **Chilled beam:** openstudio-standards 0.8.2 has no chilled-beam key. The measure creates supporting plants through temporary fan-coil synthesis, removes those fan coils, installs four-pipe beams, and builds the primary-air loop directly. The primary-air loop has hot- and chilled-water coils held at a constant 14 °C supply-air setpoint, but no heat recovery or humidity controls. Beam sizing depends on zone design outdoor-air rates; low primary-air flow can produce undersized beams.
 - **Radiant:** requires modeled zone surfaces. Standards changes constructions and assigns internal-source radiant surfaces; BuildingSync commonly lacks enough information to map individual surfaces.
-- **Plant-based systems:** new plants can be created rather than merged into existing infrastructure. Apply audited plant properties afterward with focused modifiers.
+- **Plant-based systems:** openstudio-standards reuses a pre-existing loop only when it carries the standards default name (`Hot Water Loop`, `Chilled Water Loop`, `Heat Pump Loop`, `Ground HX Loop`, `Ambient Loop`); otherwise new plants are created next to the existing ones. Apply audited plant properties afterward with focused modifiers.
 
 ## DOAS layering (direct to zone)
 

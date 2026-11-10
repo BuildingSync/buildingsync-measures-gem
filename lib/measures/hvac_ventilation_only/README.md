@@ -1,6 +1,6 @@
 # Ventilation-Only HVAC
 
-Creates central supply-only ventilation without heating or cooling, or replaces dedicated HVAC for selected zones.
+Adds a central supply-only ventilation loop, without heating or cooling, to zones without air-loop service, or replaces the air loops serving selected zones. Zone equipment is kept.
 
 ## Arguments
 
@@ -20,6 +20,6 @@ Creates central supply-only ventilation without heating or cooling, or replaces 
 | `target_zone_names` | Ventilation/delivery/HVAC `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve all premises; include every shared-loop zone for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Direct construction does not query standards data |
 
-This measure constructs topology directly. Replacement preserves plant loops and rejects partial shared-loop removal.
+This measure constructs topology directly. Replacement keeps pre-existing plant loops that still serve loads, removes those left without loads, and rejects partial shared-loop removal.
 
 Run this measure after all other HVAC upgrades. The loop supplies outdoor air directly to each zone through its own terminal. Existing zone equipment is kept, and its outdoor air is set to 0 so the loop is the only ventilation source. See [DOAS layering](../../../docs/HVAC_MIGRATION.md#doas-layering-direct-to-zone).

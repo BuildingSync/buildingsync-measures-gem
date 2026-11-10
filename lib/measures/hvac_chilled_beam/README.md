@@ -20,4 +20,4 @@ Creates four-pipe chilled beams, supporting plants, and a primary-air loop, or r
 | `target_zone_names` | Delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve all beam zones; include complete shared-loop scope for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Supporting plants are synthesized through temporary fan coils. Replacement preserves pre-existing plants and creates new beam plants.
+Supporting plants are synthesized through temporary fan coils; openstudio-standards reuses pre-existing loops named `Hot Water Loop` and `Chilled Water Loop` and otherwise creates new ones. Replacement keeps pre-existing plant loops that still serve loads and removes those left without loads, together with their supply equipment.

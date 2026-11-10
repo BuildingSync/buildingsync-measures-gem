@@ -20,4 +20,4 @@ Creates built-up multizone VAV with chilled-water cooling and hot-water terminal
 | `target_zone_names` | `Deliveries/Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve complete multizone scope; include every zone on shared loops for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Replacement preserves pre-existing plant loops even when they become orphaned.
+Replacement keeps pre-existing plant loops that still serve loads and removes those left without loads, together with their boilers, chillers, cooling towers and pumps.

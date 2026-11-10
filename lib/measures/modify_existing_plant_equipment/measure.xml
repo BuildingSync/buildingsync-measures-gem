@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_plant_equipment</name>
   <uid>ff1cfd30-e11f-4409-a19c-2e7377c356f4</uid>
-  <version_id>fc38cfa8-386b-4955-adff-760848389079</version_id>
-  <version_modified>2026-08-26T21:47:08Z</version_modified>
+  <version_id>5249cda6-93b7-4631-be53-5034bef35742</version_id>
+  <version_modified>2026-11-10T05:41:09Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingPlantEquipment</class_name>
   <display_name>Modify Existing Plant Equipment</display_name>
@@ -83,7 +83,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>7B546686</checksum>
+      <checksum>70B25E7F</checksum>
     </file>
     <file>
       <version>

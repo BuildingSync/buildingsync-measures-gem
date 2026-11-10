@@ -20,4 +20,4 @@ Creates four-pipe fan coils and supporting plants or replaces HVAC dedicated to 
 | `target_zone_names` | `Deliveries/Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve exact zones; include complete shared-loop scope for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Replacement removes target-zone equipment and dedicated air loops but deliberately preserves existing plant loops.
+Replacement removes target-zone equipment and dedicated air loops. Pre-existing plant loops that still serve loads are kept; loops left without loads are removed together with their supply equipment.

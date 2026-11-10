@@ -20,4 +20,4 @@ Creates packaged multizone VAV with fan-powered electric-reheat terminals or rep
 | `target_zone_names` | `Deliveries/Delivery/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve complete multizone scope; include every zone on affected loops for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Creation requires unserved zones. Replacement rejects partial shared-loop removal and preserves plants.
+Creation requires unserved zones. Replacement rejects partial shared-loop removal, keeps pre-existing plant loops that still serve loads, and removes those left without loads.

@@ -1,6 +1,6 @@
 # Dedicated Outdoor Air System HVAC
 
-Creates a dedicated outdoor-air system or replaces HVAC dedicated to selected zones.
+Adds a dedicated outdoor-air system to zones without air-loop service, or replaces the air loops serving selected zones. Zone equipment is kept.
 
 ## Arguments
 
@@ -20,4 +20,4 @@ Creates a dedicated outdoor-air system or replaces HVAC dedicated to selected zo
 | `target_zone_names` | `OtherHVACSystem/LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref` and associated delivery/HVAC-system `LinkedPremises`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve all served premises; include complete shared-loop scope for `replace` | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Direct construction does not query standards data |
 
-This topology supplies ventilation air only. It can be combined with a zone-equipment topology (PTAC, PTHP, fan coil, WLHP, GSHP, radiant, VRF). Run this measure after all other HVAC upgrades. Existing zone equipment is kept during both create and replace. The DOAS supplies outdoor air directly to each zone, and zone-unit outdoor air is set to 0 so the DOAS is the only ventilation source. See [DOAS layering](../../../docs/HVAC_MIGRATION.md#doas-layering-direct-to-zone).
+This topology supplies ventilation air only. It can be combined with a zone-equipment topology (PTAC, PTHP, fan coil, WLHP, GSHP, radiant, VRF). Run this measure after all other HVAC upgrades. Existing zone equipment is kept during both create and replace. Pre-existing plant loops that still serve loads are kept; a loop left without loads once the replaced air loops are gone is removed. The DOAS supplies outdoor air directly to each zone, and zone-unit outdoor air is set to 0 so the DOAS is the only ventilation source. See [DOAS layering](../../../docs/HVAC_MIGRATION.md#doas-layering-direct-to-zone).

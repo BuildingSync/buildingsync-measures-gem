@@ -20,4 +20,4 @@ Creates hydronic low-temperature radiant heating and cooling or replaces dedicat
 | `target_zone_names` | Radiant delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve exact zones and complete shared scope for replacement | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Both operations fail before mutation when a selected zone has no modeled surfaces. Replacement preserves existing plants.
+Both operations fail before mutation when a selected zone has no modeled surfaces. Replacement keeps pre-existing plant loops that still serve loads and removes those left without loads.

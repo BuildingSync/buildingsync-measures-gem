@@ -20,4 +20,4 @@ Creates water-to-air heat pumps on a shared tempered loop or replaces dedicated 
 | `target_zone_names` | Terminal/delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve all served zones and complete shared scope | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
 
-Replacement preserves existing plant loops, including loops orphaned by removed zone equipment.
+Replacement keeps pre-existing plant loops that still serve loads and removes those left without loads, such as a heat-pump loop whose units were all removed.
