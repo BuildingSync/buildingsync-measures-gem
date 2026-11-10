@@ -57,17 +57,27 @@ class ModifyExistingHeatRecovery < OpenStudio::Measure::ModelMeasure
       return false
     end
 
+    prefix = metric == 'sensible_effectiveness' ? 'Sensible' : 'Latent'
+    # The 75% airflow setters only succeed when no curve or a TableLookup curve is attached.
+    unsupported = exchangers.select do |heat_exchanger|
+      %w[Cooling Heating].any? do |mode|
+        curve = heat_exchanger.send("#{prefix.downcase}Effectivenessof#{mode}AirFlowCurve")
+        curve.is_initialized && curve.get.to_TableLookup.empty?
+      end
+    end
+    unless unsupported.empty?
+      runner.registerError("Cannot set #{metric} on heat exchangers with non-TableLookup effectiveness curves: " \
+                           "#{unsupported.map { |item| item.name.to_s }.join(', ')}")
+      return false
+    end
+
     exchangers.each do |heat_exchanger|
-      if metric == 'sensible_effectiveness'
-        heat_exchanger.setSensibleEffectivenessat100CoolingAirFlow(value)
-        heat_exchanger.setSensibleEffectivenessat75CoolingAirFlow(value)
-        heat_exchanger.setSensibleEffectivenessat100HeatingAirFlow(value)
-        heat_exchanger.setSensibleEffectivenessat75HeatingAirFlow(value)
-      else
-        heat_exchanger.setLatentEffectivenessat100CoolingAirFlow(value)
-        heat_exchanger.setLatentEffectivenessat75CoolingAirFlow(value)
-        heat_exchanger.setLatentEffectivenessat100HeatingAirFlow(value)
-        heat_exchanger.setLatentEffectivenessat75HeatingAirFlow(value)
+      failed = %w[100Cooling 75Cooling 100Heating 75Heating].reject do |suffix|
+        heat_exchanger.send("set#{prefix}Effectivenessat#{suffix}AirFlow", value)
+      end
+      unless failed.empty?
+        runner.registerError("Failed to set #{metric} at #{failed.join(', ')} airflow on '#{heat_exchanger.name}'.")
+        return false
       end
       runner.registerInfo("Set #{metric}=#{value} on '#{heat_exchanger.name}'.")
     end

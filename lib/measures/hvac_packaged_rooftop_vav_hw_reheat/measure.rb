@@ -68,12 +68,15 @@ class HvacPackagedRooftopVavHwReheat < OpenStudio::Measure::ModelMeasure
       loaded_plants = loaded_plant_loop_handles(model)
       removed = 0
       if operation == 'replace'
+        vrf_units = model.getAirConditionerVariableRefrigerantFlows.reject { |vrf| vrf.terminals.empty? }
         removed = zones.sum do |zone|
           equipment = zone.equipment.to_a
           equipment.each(&:remove)
           equipment.size
         end
         affected.each(&:remove)
+        # Outdoor units whose last terminal was removed would otherwise remain disconnected.
+        vrf_units.select { |vrf| vrf.terminals.empty? }.each(&:remove)
       end
       air_handles = model.getAirLoopHVACs.map { |air_loop| air_loop.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
@@ -120,11 +123,16 @@ class HvacPackagedRooftopVavHwReheat < OpenStudio::Measure::ModelMeasure
     sink = OpenStudio::StringStreamLogSink.new
     sink.setLogLevel(OpenStudio::Warn)
     result = yield
-    messages = sink.logMessages.reject do |message|
+    errors, warnings = sink.logMessages.partition { |message| message.logLevel >= OpenStudio::Error }
+    # Every error fails synthesis except two known notices that do not reflect a synthesis problem.
+    errors.reject! do |message|
+      (message.logChannel == 'openstudio.measure.OSRunner' && message.logMessage.include?('Cannot find current Workflow Step')) ||
+        (message.logChannel == 'openstudio.model.YearDescription' && message.logMessage.include?('UseWeatherFile'))
+    end
+    warnings.reject! do |message|
       message.logChannel.match?(/openstudio\.(measure|Workflow)|runmanager|Translator|setFileExtension/) ||
         STANDARDS_LOG_NOISE.any? { |noise| message.logMessage.include?(noise) }
     end
-    errors, warnings = messages.partition { |message| message.logLevel >= OpenStudio::Error }
     warnings.map { |message| "[#{message.logChannel}] #{message.logMessage}" }.uniq.each do |text|
       runner.registerWarning("openstudio-standards #{label}: #{text}")
     end

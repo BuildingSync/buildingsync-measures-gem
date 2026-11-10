@@ -549,6 +549,23 @@ RSpec.describe 'Independent HVAC measures' do
     expect(model.getZoneHVACTerminalUnitVariableRefrigerantFlows.map { |terminal| terminal.handle.to_s }).to include(*terminal_handles)
   end
 
+  it 'removes a VRF outdoor unit left without terminals by a non-VRF replacement' do
+    model, zones = named_multizone_model('Replaced VRF')
+    vrf = OpenStudio::Model::AirConditionerVariableRefrigerantFlow.new(model)
+    zones.each do |zone|
+      terminal = OpenStudio::Model::ZoneHVACTerminalUnitVariableRefrigerantFlow.new(model)
+      terminal.addToThermalZone(zone)
+      vrf.addTerminal(terminal)
+    end
+
+    result = run_measure(HvacPthp.new, model, 'operation' => 'replace', 'target_zone_names' => zones.map(&:nameString).join(', '))
+
+    expect(result.value.valueName).to eq('Success'), result.errors.map(&:logMessage).join('; ')
+    expect(model.getZoneHVACTerminalUnitVariableRefrigerantFlows).to be_empty
+    expect(model.getAirConditionerVariableRefrigerantFlows).to be_empty
+    expect(model.getZoneHVACPackagedTerminalHeatPumps.size).to eq(zones.size)
+  end
+
   it 'creates and replaces four-pipe chilled-beam systems' do
     model, zones = named_multizone_model('Chilled Beam')
     replacement_model, replacement_zone = named_zone_model('Replacement Chilled Beam')
@@ -679,6 +696,26 @@ RSpec.describe 'Independent HVAC measures' do
     expect(exchanger.sensibleEffectivenessat75CoolingAirFlow).to be_within(0.001).of(0.77)
   end
 
+  it 'fails instead of partially updating heat recovery with a non-TableLookup effectiveness curve' do
+    model = OpenStudio::Model::Model.new
+    exchanger = OpenStudio::Model::HeatExchangerAirToAirSensibleAndLatent.new(model)
+    exchanger.setName('Curve ERV')
+    expect(exchanger.setSensibleEffectivenessofCoolingAirFlowCurve(OpenStudio::Model::CurveLinear.new(model))).to be true
+    before = exchanger.sensibleEffectivenessat100CoolingAirFlow
+
+    result = run_measure(
+      ModifyExistingHeatRecovery.new,
+      model,
+      'target_heat_exchanger_names' => exchanger.nameString,
+      'effectiveness_metric' => 'sensible_effectiveness',
+      'effectiveness' => 0.77
+    )
+
+    expect(result.value.valueName).to eq('Fail')
+    expect(result.errors.map(&:logMessage).join).to include('non-TableLookup')
+    expect(exchanger.sensibleEffectivenessat100CoolingAirFlow).to eq(before)
+  end
+
   it 'creates PTAC and packaged rooftop AC without a hot-water plant' do
     ptac_model, ptac_zone = named_zone_model('Electric PTAC Zone')
     rooftop_model, rooftop_zone = named_zone_model('Gas Rooftop Zone')
@@ -738,5 +775,13 @@ RSpec.describe 'Independent HVAC measures' do
     expect(measure.send(:with_standards_log, clean_runner, 'probe') { true }).to be true
     OpenStudio.logFree(OpenStudio::Error, 'openstudio.standards.Model', 'logged after the capture ended')
     expect(clean_runner.result.errors).to be_empty
+
+    noisy_runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
+    noisy = measure.send(:with_standards_log, noisy_runner, 'probe') do
+      OpenStudio.logFree(OpenStudio::Error, 'openstudio.standards.Model', "#{HvacPtac::STANDARDS_LOG_NOISE.first} as an error")
+      true
+    end
+    expect(noisy).to be false
+    expect(noisy_runner.result.errors.size).to eq(1)
   end
 end

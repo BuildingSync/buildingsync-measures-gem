@@ -139,11 +139,16 @@ class HvacVrf < OpenStudio::Measure::ModelMeasure
     sink = OpenStudio::StringStreamLogSink.new
     sink.setLogLevel(OpenStudio::Warn)
     result = yield
-    messages = sink.logMessages.reject do |message|
+    errors, warnings = sink.logMessages.partition { |message| message.logLevel >= OpenStudio::Error }
+    # Every error fails synthesis except two known notices that do not reflect a synthesis problem.
+    errors.reject! do |message|
+      (message.logChannel == 'openstudio.measure.OSRunner' && message.logMessage.include?('Cannot find current Workflow Step')) ||
+        (message.logChannel == 'openstudio.model.YearDescription' && message.logMessage.include?('UseWeatherFile'))
+    end
+    warnings.reject! do |message|
       message.logChannel.match?(/openstudio\.(measure|Workflow)|runmanager|Translator|setFileExtension/) ||
         STANDARDS_LOG_NOISE.any? { |noise| message.logMessage.include?(noise) }
     end
-    errors, warnings = messages.partition { |message| message.logLevel >= OpenStudio::Error }
     warnings.map { |message| "[#{message.logChannel}] #{message.logMessage}" }.uniq.each do |text|
       runner.registerWarning("openstudio-standards #{label}: #{text}")
     end
