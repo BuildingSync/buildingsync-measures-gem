@@ -76,7 +76,7 @@ bundle exec rake test_hvac
 bundle exec ruby lib/measures/hvac_doas/tests/hvac_doas_test.rb
 ```
 
-Each measure invocation saves input/output models and runner diagnostics under that measure's test output directory, including intentional failures. Assertions inspect the saved-and-reloaded output rather than just checking the runner status. See the [HVAC testing guide](docs/HVAC_TESTING.md) for scenarios, artifact locations, fixture maintenance, and test selection.
+Each measure invocation saves input/output models and runner diagnostics under that measure's test output directory, including intentional failures. Assertions inspect the saved-and-reloaded output rather than just checking the runner status. See [Per-measure unit tests](docs/HVAC_MIGRATION.md#per-measure-unit-tests) in the HVAC migration guide for scenarios, artifact locations, fixture maintenance, and test selection.
 
 The legacy `modify_hvac` direct test remains unchanged with the deprecated measure during its compatibility window. The gem-level RSpec suite continues to provide cross-measure integration coverage; `rake spec` and the default Rake task retain their existing behavior.
 
