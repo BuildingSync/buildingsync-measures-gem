@@ -116,6 +116,8 @@ module HvacVentilationTests
     air_loop = model.getAirLoopHVACs.first
     assert_equal('VentilationRequirement', air_loop.sizingSystem.typeofLoadtoSizeOn)
     assert(air_loop.airLoopHVACOutdoorAirSystem.is_initialized)
+    supply_fans = air_loop.supplyComponents.select { |component| component.to_FanSystemModel.is_initialized }
+    assert_equal(1, supply_fans.size, 'Expected one FanSystemModel connected to the ventilation air loop supply path')
     assert_equal(zone_names.size, model.getAirTerminalSingleDuctConstantVolumeNoReheats.size)
     zone_names.each do |zone_name|
       target = zone(zone_name, model)
