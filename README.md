@@ -44,13 +44,13 @@ HVAC configuration is split into 22 independent measures:
 - `modify_existing_heat_recovery`
 - `modify_existing_plant_loop_temperatures`
 
-See the [HVAC mapping and migration guide](docs/HVAC_MIGRATION.md) for the full BuildingSync predicates, legacy `modify_hvac` mappings, workflow responsibilities, and known limitations. The monolithic `modify_hvac` measure is retained temporarily for backward compatibility but is deprecated for new workflows.
+See the [HVAC mapping and migration guide](docs/HVAC_MAPPING_AND_MIGRATION.md) for the full BuildingSync predicates, legacy `modify_hvac` mappings, workflow responsibilities, and known limitations. The monolithic `modify_hvac` measure is retained temporarily for backward compatibility but is deprecated for new workflows.
 
 ## BuildingSync HVAC mapping overview
 
 For **L100 / family-level data**, `PrincipalHVACSystemType` locates a system family. For **L200 / detailed data**, use the linked sources, deliveries, plants, and ventilation records to identify the actual configuration. These are intended audit uses, not schema-enforced field restrictions; a principal label alone does not establish a detailed match.
 
-This is a **short overview**, not the complete selection contract. Field names and conditions are abbreviated below. Use the [full four-column mapping](docs/HVAC_MIGRATION.md#buildingsync-hvac-mapping) for exact paths/values, required ID references, guards, zone grouping, and call arguments. The baseline is BuildingSync 2.7.0 and openstudio-standards 0.8.2; the measures do not parse BuildingSync themselves.
+This is a **short overview**, not the complete selection contract. Field names and conditions are abbreviated below. Use the [full four-column mapping](docs/HVAC_MAPPING_AND_MIGRATION.md#buildingsync-hvac-mapping) for exact paths/values, required ID references, guards, zone grouping, and call arguments. The baseline is BuildingSync 2.7.0 and openstudio-standards 0.8.2; the measures do not parse BuildingSync themselves.
 
 **Mapping gaps** identify schema or measure enhancements needed for an exact match; the listed measures still exist and produce the stated output. **Not mappeable in this gem** identifies configurations with no current matching gem measure, not a limitation of BuildingSync or OpenStudio. Missing/unknown data is a separate issue.
 
@@ -79,7 +79,7 @@ This is a **short overview**, not the complete selection contract. Field names a
 | Explicitly no HVAC | Explicit `NoHeating`, `NoCooling`, no delivery mechanism, linked ventilation `None` | **No measure call** | Missing HVAC data is not an explicit no-system declaration. |
 | Other / Unknown | Principal label alone supplies no configuration | **not mappeable in this gem from the label alone** | Missing configuration data, not proof that a measure is unavailable; evaluate detailed records. |
 
-For multiple measures, build the matching zone equipment first and unconditioned DOAS/supply ventilation last. Keep each call's exact zone set; central-air systems cannot share zones with a separate DOAS. Hydronic mappings have a conservative single-plant-generating-call constraint because the wrappers cannot bind arbitrary plant IDs. Consult the [complete mapping and grouping requirements](docs/HVAC_MIGRATION.md#applying-one-or-multiple-mappings) before assembling a workflow; an unresolved gap must not silently become a default subtype. Apply validated property modifiers afterward.
+For multiple measures, build the matching zone equipment first and unconditioned DOAS/supply ventilation last. Keep each call's exact zone set; central-air systems cannot share zones with a separate DOAS. Hydronic mappings have a conservative single-plant-generating-call constraint because the wrappers cannot bind arbitrary plant IDs. Consult the [complete mapping and grouping requirements](docs/HVAC_MAPPING_AND_MIGRATION.md#applying-one-or-multiple-mappings) before assembling a workflow; an unresolved gap must not silently become a default subtype. Apply validated property modifiers afterward.
 
 ## Testing
 
@@ -113,7 +113,7 @@ bundle exec rake test_hvac
 bundle exec ruby lib/measures/hvac_doas/tests/hvac_doas_test.rb
 ```
 
-Each measure invocation saves input/output models and runner diagnostics under that measure's test output directory, including intentional failures. Assertions inspect the saved-and-reloaded output rather than just checking the runner status. See [Per-measure unit tests](docs/HVAC_MIGRATION.md#per-measure-unit-tests) in the HVAC migration guide for scenarios, artifact locations, fixture maintenance, and test selection.
+Each measure invocation saves input/output models and runner diagnostics under that measure's test output directory, including intentional failures. Assertions inspect the saved-and-reloaded output rather than just checking the runner status. See [Per-measure unit tests](docs/HVAC_MAPPING_AND_MIGRATION.md#per-measure-unit-tests) in the HVAC migration guide for scenarios, artifact locations, fixture maintenance, and test selection.
 
 The legacy `modify_hvac` direct test remains unchanged with the deprecated measure during its compatibility window. The gem-level RSpec suite continues to provide cross-measure integration coverage; `rake spec` and the default Rake task retain their existing behavior.
 
