@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_ac</name>
   <uid>d44119a8-26be-4f60-8f3f-8a4ec01804a2</uid>
-  <version_id>36a638a0-be00-4044-a613-1747404752f2</version_id>
-  <version_modified>2026-11-10T05:41:07Z</version_modified>
+  <version_id>cb19d7cd-128b-4b79-ae3e-bbd6e0d80ef5</version_id>
+  <version_modified>2026-11-12T23:34:20Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopAc</class_name>
   <display_name>Packaged Rooftop AC HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -100,7 +100,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>0EA31CEA</checksum>
+      <checksum>E0B93202</checksum>
+    </file>
+    <file>
+      <filename>hvac_packaged_rooftop_ac_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>76D1EE39</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>2C682BDD</checksum>
     </file>
   </files>
 </measure>

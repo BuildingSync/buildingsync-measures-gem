@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_ptac</name>
   <uid>f0fa4e41-9824-4470-aab5-3cf50b6a93fb</uid>
-  <version_id>7ad22a90-2a64-4e0b-9468-f293b0426aea</version_id>
-  <version_modified>2026-11-10T05:41:07Z</version_modified>
+  <version_id>ac787997-eeb6-49bf-bd5a-9603de4e4e75</version_id>
+  <version_modified>2026-11-12T23:34:29Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPtac</class_name>
   <display_name>PTAC HVAC</display_name>
@@ -33,7 +33,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -101,7 +101,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>4F78FB5A</checksum>
+      <checksum>7FB4C624</checksum>
+    </file>
+    <file>
+      <filename>hvac_ptac_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>250CD461</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>B8EA05A1</checksum>
     </file>
   </files>
 </measure>

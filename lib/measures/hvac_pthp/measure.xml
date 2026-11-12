@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_pthp</name>
   <uid>bcf29e4b-1e31-4d59-a391-531db14b114c</uid>
-  <version_id>340c103b-d444-4a9c-bce0-e068aa2dd7cd</version_id>
-  <version_modified>2026-11-10T05:41:08Z</version_modified>
+  <version_id>5189af4f-679c-4608-8cb2-81e28150dab0</version_id>
+  <version_modified>2026-11-12T23:34:30Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPthp</class_name>
   <display_name>PTHP HVAC</display_name>
@@ -33,7 +33,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -101,7 +101,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>0E7644E7</checksum>
+      <checksum>34963F77</checksum>
+    </file>
+    <file>
+      <filename>hvac_pthp_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>2A5F967B</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>DFB6952F</checksum>
     </file>
   </files>
 </measure>
