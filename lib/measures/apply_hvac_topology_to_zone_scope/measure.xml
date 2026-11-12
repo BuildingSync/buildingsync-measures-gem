@@ -3,13 +3,13 @@
   <schema_version>3.1</schema_version>
   <name>apply_hvac_topology_to_zone_scope</name>
   <uid>c1c9a22b-aff6-4292-9b2f-f424dbbb1af6</uid>
-  <version_id>525dd2f5-2ac2-4d4f-b5c3-043b5ccdda9f</version_id>
-  <version_modified>2026-11-12T21:40:12Z</version_modified>
+  <version_id>ff0e316a-2c2b-4ff8-8d18-ef1ded0aaaab</version_id>
+  <version_modified>2026-11-12T23:03:12Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ApplyHvacTopologyToZoneScope</class_name>
   <display_name>Apply HVAC Topology To Zone Scope</display_name>
   <description>Runs one split HVAC topology measure on thermal-zone names resolved from the model at run time.</description>
-  <modeler_description>zone_scope all_model_zones passes every thermal zone in the model, by exact name, to the selected topology measure. Create and replace keep the topology measure's own safety checks.</modeler_description>
+  <modeler_description>zone_scope all_model_zones passes every thermal zone in the model, by exact name, to the selected topology measure; explicit_zone_names passes the exact names listed in zone_names_json. Create and replace keep the topology measure's own safety checks.</modeler_description>
   <arguments>
     <argument>
       <name>topology_measure</name>
@@ -118,7 +118,20 @@
           <value>all_model_zones</value>
           <display_name>all_model_zones</display_name>
         </choice>
+        <choice>
+          <value>explicit_zone_names</value>
+          <display_name>explicit_zone_names</display_name>
+        </choice>
       </choices>
+    </argument>
+    <argument>
+      <name>zone_names_json</name>
+      <display_name>Zone Names (JSON)</display_name>
+      <description>JSON array of exact thermal-zone names, e.g. ["Zone A","Office, East"]. Used only when zone_scope is explicit_zone_names.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
     </argument>
     <argument>
       <name>standards_template</name>
@@ -168,6 +181,12 @@
       <checksum>04FF669B</checksum>
     </file>
     <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>819C7134</checksum>
+    </file>
+    <file>
       <version>
         <software_program>OpenStudio</software_program>
         <identifier>3.10.0</identifier>
@@ -176,13 +195,13 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>FA90B7BD</checksum>
+      <checksum>B0F52BB0</checksum>
     </file>
     <file>
       <filename>apply_hvac_topology_to_zone_scope_test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>FEA3D0BE</checksum>
+      <checksum>8E0B3427</checksum>
     </file>
   </files>
 </measure>
