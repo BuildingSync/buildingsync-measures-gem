@@ -30,6 +30,7 @@
 # measures tests
 lib/measures/.rubocop.yml
 lib/measures/test_results/*
+lib/measures/*/tests/output/
 
 # runner conf
 runner.conf
