@@ -92,7 +92,7 @@ RSpec.describe 'Independent HVAC measures' do
       HvacFourPipeFanCoil.new => %w[operation target_zone_names standards_template],
       HvacGroundSourceHeatPump.new => %w[operation target_zone_names standards_template],
       HvacPackagedRooftopAc.new => %w[operation target_zone_names standards_template],
-      HvacPackagedRooftopHeatPump.new => %w[operation target_zone_names standards_template],
+      HvacPackagedRooftopHeatPump.new => %w[operation target_zone_names standards_template supplemental_heating_fuel],
       HvacPackagedRooftopVavElectricReheat.new => %w[operation target_zone_names standards_template],
       HvacPackagedRooftopVavHwReheat.new => %w[operation target_zone_names standards_template],
       HvacPtac.new => %w[operation target_zone_names standards_template],
