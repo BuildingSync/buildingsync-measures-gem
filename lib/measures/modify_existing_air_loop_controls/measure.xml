@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_air_loop_controls</name>
   <uid>26812002-ee08-4800-88fb-556df8f859bb</uid>
-  <version_id>cf5db02b-29cc-46b9-adc5-3b46721495d6</version_id>
-  <version_modified>2026-11-10T05:41:09Z</version_modified>
+  <version_id>5e161a0e-c28d-4c03-8a6b-3363d52f89fa</version_id>
+  <version_modified>2026-11-13T07:33:37Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingAirLoopControls</class_name>
   <display_name>Modify Existing Air Loop Controls</display_name>
@@ -14,7 +14,7 @@
     <argument>
       <name>target_air_loop_names</name>
       <display_name>Target Air Loop Names</display_name>
-      <description>Comma-separated exact OpenStudio air-loop names.</description>
+      <description>Comma-separated exact OpenStudio air-loop names, or a JSON array of exact names (for names containing commas).</description>
       <type>String</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
@@ -161,7 +161,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>321FD75E</checksum>
+      <checksum>CB838781</checksum>
+    </file>
+    <file>
+      <filename>modify_existing_air_loop_controls_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>DF9765A7</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>4AA5A80E</checksum>
     </file>
   </files>
 </measure>

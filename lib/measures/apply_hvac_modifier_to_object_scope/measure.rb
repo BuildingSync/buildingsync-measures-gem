@@ -85,13 +85,6 @@ class ApplyHvacModifierToObjectScope < OpenStudio::Measure::ModelMeasure
       end
     end
 
-    # The modifiers split target names on commas.
-    with_commas = names.select { |object_name| object_name.include?(',') }
-    unless with_commas.empty?
-      runner.registerError("#{modifier} cannot target object names containing commas: #{with_commas.join('; ')}")
-      return false
-    end
-
     runner.registerInfo("Resolved object_scope #{scope} to #{names.size} objects: #{names.join(', ')}.")
     measure_dir = File.expand_path(File.join(__dir__, '..', modifier))
     unless File.file?(File.join(measure_dir, 'measure.rb')) && File.file?(File.join(measure_dir, 'measure.xml'))
@@ -102,7 +95,7 @@ class ApplyHvacModifierToObjectScope < OpenStudio::Measure::ModelMeasure
 
     begin
       measure = load_measure(measure_dir)
-      arguments = argument_map(measure, model, values.merge(target_key => names.join(',')))
+      arguments = argument_map(measure, model, values.merge(target_key => JSON.generate(names)))
     rescue StandardError, LoadError => e
       runner.registerError("Could not prepare modifier measure '#{modifier}': #{e.message}")
       return false

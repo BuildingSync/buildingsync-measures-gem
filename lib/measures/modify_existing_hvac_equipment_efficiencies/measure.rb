@@ -21,7 +21,7 @@ class ModifyExistingHvacEquipmentEfficiencies < OpenStudio::Measure::ModelMeasur
 
     names = OpenStudio::Measure::OSArgument.makeStringArgument('target_object_names', true)
     names.setDisplayName('Target Object Names')
-    names.setDescription('Comma-separated exact OpenStudio component or equipment names.')
+    names.setDescription('Comma-separated exact OpenStudio component or equipment names, or a JSON array of exact names (for names containing commas).')
     args << names
 
     metrics = OpenStudio::StringVector.new
@@ -44,8 +44,18 @@ class ModifyExistingHvacEquipmentEfficiencies < OpenStudio::Measure::ModelMeasur
     super(model, runner, user_arguments)
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
-    names = runner.getStringArgumentValue('target_object_names', user_arguments)
-                  .split(',').map(&:strip).reject(&:empty?).uniq
+    require 'json'
+    text = runner.getStringArgumentValue('target_object_names', user_arguments).strip
+    begin
+      names = text.start_with?('[') ? JSON.parse(text) : text.split(',')
+    rescue JSON::ParserError
+      names = nil
+    end
+    unless names.is_a?(Array) && names.all? { |value| value.is_a?(String) }
+      runner.registerError('target_object_names must be comma-separated names or a JSON array of strings.')
+      return false
+    end
+    names = names.map(&:strip).reject(&:empty?).uniq
     if names.empty?
       runner.registerError('At least one target_object_names value is required.')
       return false

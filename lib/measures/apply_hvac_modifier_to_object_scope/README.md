@@ -24,7 +24,7 @@ OSW step arguments are fixed when a workflow is written, and a measure cannot ch
 | `modify_existing_plant_equipment` | Hot-water boilers for `boiler_*` properties, electric EIR chillers for `chiller_*`; the property is required. |
 | `modify_existing_plant_loop_temperatures` | Plant loops whose sizing loop type is `plant_loop_type`. |
 
-The measure fails when nothing matches. The modifiers split target names on commas, so names containing commas are rejected. The modifier keeps its own checks, including missing explicit names.
+The measure fails when nothing matches. Names are passed to the modifier as a JSON array, so names containing commas work. The modifier keeps its own checks, including missing explicit names.
 
 This measure loads the selected modifier from a sibling directory, so the `modify_existing_*` measures from this gem must be installed in the same measures directory.
 

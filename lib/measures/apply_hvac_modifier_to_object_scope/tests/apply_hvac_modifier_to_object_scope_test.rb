@@ -81,9 +81,14 @@ class ApplyHvacModifierToObjectScopeTest < HvacMeasureTest
     assert_rejected_without_changes(dx_cop(4), error: /no objects/)
   end
 
-  def test_rejects_names_with_commas
+  def test_names_with_commas_are_passed_as_json
     add_dx_coil('DX, East')
-    assert_rejected_without_changes(dx_cop(4), error: /commas/)
+    add_dx_coil('DX West')
+    run_measure(dx_cop(4))
+    assert_in_delta(4.0, named(:getCoilCoolingDXSingleSpeeds, 'DX, East').ratedCOP, 1e-9)
+    run_measure(dx_cop(4.5).merge('object_scope' => 'explicit_object_names', 'object_names_json' => '["DX, East"]'))
+    assert_in_delta(4.5, named(:getCoilCoolingDXSingleSpeeds, 'DX, East').ratedCOP, 1e-9)
+    assert_in_delta(4.0, named(:getCoilCoolingDXSingleSpeeds, 'DX West').ratedCOP, 1e-9)
   end
 
   def test_rejects_bad_modifier_arguments

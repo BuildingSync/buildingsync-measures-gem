@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>apply_standard_hvac_sizing_and_efficiency</name>
   <uid>c1c9a22b-aff6-4292-9b2f-f424dbbb1af6</uid>
-  <version_id>bfa6a27f-0df6-4e58-9b70-2757985b9106</version_id>
-  <version_modified>2026-11-12T22:04:13Z</version_modified>
+  <version_id>a5d44101-6298-4a73-bddc-c3826e37ad96</version_id>
+  <version_modified>2026-11-13T07:38:45Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ApplyStandardHvacSizingAndEfficiency</class_name>
   <display_name>Apply Standard HVAC Sizing And Efficiency</display_name>
@@ -75,6 +75,12 @@
       <filetype>md</filetype>
       <usage_type>license</usage_type>
       <checksum>04FF669B</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>D1B2B29D</checksum>
     </file>
     <file>
       <version>
