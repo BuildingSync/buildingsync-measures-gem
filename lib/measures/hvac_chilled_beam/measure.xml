@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_chilled_beam</name>
   <uid>0baa3922-45a2-4e21-99c2-5ecc64e23481</uid>
-  <version_id>ee84f16c-9ed7-4a3e-95ec-0e5fc123db99</version_id>
-  <version_modified>2026-11-12T23:34:14Z</version_modified>
+  <version_id>b08fd435-e0df-4bd4-a65b-5c8b8a98e756</version_id>
+  <version_modified>2026-11-13T22:00:11Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacChilledBeam</class_name>
   <display_name>Chilled-Beam HVAC</display_name>
@@ -47,6 +47,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -101,7 +121,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>13ADB856</checksum>
+      <checksum>5EE457BC</checksum>
     </file>
     <file>
       <filename>hvac_chilled_beam_test.rb</filename>

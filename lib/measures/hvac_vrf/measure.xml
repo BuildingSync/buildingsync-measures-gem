@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_vrf</name>
   <uid>cf86564e-7812-46d5-8bf4-58485f8aa68a</uid>
-  <version_id>74e932b8-afc3-4abf-9ff8-d13b557da9ea</version_id>
-  <version_modified>2026-11-12T23:34:41Z</version_modified>
+  <version_id>d0d6b2e4-d272-4a31-b961-8b6cd2a4c348</version_id>
+  <version_modified>2026-11-13T22:00:35Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVrf</class_name>
   <display_name>VRF HVAC</display_name>
@@ -46,6 +46,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -100,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>0525E730</checksum>
+      <checksum>0AF0F243</checksum>
     </file>
     <file>
       <filename>hvac_vrf_test.rb</filename>

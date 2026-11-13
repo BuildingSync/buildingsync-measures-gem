@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>apply_standard_hvac_sizing_and_efficiency</name>
   <uid>c1c9a22b-aff6-4292-9b2f-f424dbbb1af6</uid>
-  <version_id>a5d44101-6298-4a73-bddc-c3826e37ad96</version_id>
-  <version_modified>2026-11-13T07:38:45Z</version_modified>
+  <version_id>0a4079f0-a737-4c34-895d-30f2ddb38d9d</version_id>
+  <version_modified>2026-11-13T22:00:10Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ApplyStandardHvacSizingAndEfficiency</class_name>
   <display_name>Apply Standard HVAC Sizing And Efficiency</display_name>
@@ -19,6 +19,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -91,7 +111,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>A01D1F41</checksum>
+      <checksum>6EEA9E5B</checksum>
     </file>
     <file>
       <filename>apply_standard_hvac_sizing_and_efficiency_test.rb</filename>

@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_four_pipe_fan_coil</name>
   <uid>e767eb6b-19ff-492c-a180-3d337d31f4bb</uid>
-  <version_id>0936ac3e-1166-4f2b-a400-a25071256f26</version_id>
-  <version_modified>2026-11-12T23:34:17Z</version_modified>
+  <version_id>48f6fca1-d48b-4095-bdf7-3d68b63fa631</version_id>
+  <version_modified>2026-11-13T22:00:15Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacFourPipeFanCoil</class_name>
   <display_name>Four-Pipe Fan Coil HVAC</display_name>
@@ -46,6 +46,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -100,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>28D288AC</checksum>
+      <checksum>8541A38B</checksum>
     </file>
     <file>
       <filename>hvac_four_pipe_fan_coil_test.rb</filename>

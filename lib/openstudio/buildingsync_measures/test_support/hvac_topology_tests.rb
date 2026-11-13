@@ -14,8 +14,17 @@ module HvacTopologyTests
     assert_equal(%w[create replace], arguments[0].choiceValues.to_a)
     assert_equal('create', arguments[0].defaultValueAsString)
     assert_equal('', arguments[1].defaultValueAsString)
-    assert_equal(%w[90.1-2013 90.1-2016 90.1-2019], arguments[2].choiceValues.to_a)
+    assert_equal(['DOE Ref Pre-1980', 'DOE Ref 1980-2004', '90.1-2004', '90.1-2007', '90.1-2010',
+                  '90.1-2013', '90.1-2016', '90.1-2019'], arguments[2].choiceValues.to_a)
     assert_equal('90.1-2019', arguments[2].defaultValueAsString)
+  end
+
+  def test_create_with_each_older_template
+    ['DOE Ref Pre-1980', 'DOE Ref 1980-2004', '90.1-2004', '90.1-2007', '90.1-2010'].each do |template|
+      setup
+      run_measure('standards_template' => template)
+      assert_system(@model, ZONE_NAMES)
+    end
   end
 
   def test_default_create_and_forward_translation

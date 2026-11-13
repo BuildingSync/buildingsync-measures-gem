@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_heat_pump</name>
   <uid>af755ce8-9fe4-4ccb-93aa-a820e424d82c</uid>
-  <version_id>dc1b8b7f-e6de-48c7-bca0-7e67b3564197</version_id>
-  <version_modified>2026-11-13T08:17:26Z</version_modified>
+  <version_id>68a04b81-1640-4a57-ad34-d7b6195c52ca</version_id>
+  <version_modified>2026-11-13T22:00:20Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopHeatPump</class_name>
   <display_name>Packaged Rooftop Heat Pump HVAC</display_name>
@@ -46,6 +46,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -108,7 +128,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>9ED57F2D</checksum>
+      <checksum>B3DFAB4E</checksum>
     </file>
     <file>
       <version>
@@ -119,7 +139,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>C0E244AE</checksum>
+      <checksum>A3493B86</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_heat_pump_test.rb</filename>

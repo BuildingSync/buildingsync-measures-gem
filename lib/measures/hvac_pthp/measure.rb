@@ -18,7 +18,8 @@ class HvacPthp < OpenStudio::Measure::ModelMeasure
     names.setDefaultValue('')
     args << names
     templates = OpenStudio::StringVector.new
-    %w[90.1-2013 90.1-2016 90.1-2019].each { |value| templates << value }
+    ['DOE Ref Pre-1980', 'DOE Ref 1980-2004', '90.1-2004', '90.1-2007', '90.1-2010', '90.1-2013', '90.1-2016', '90.1-2019']
+      .each { |value| templates << value }
     template = OpenStudio::Measure::OSArgument.makeChoiceArgument('standards_template', templates, true)
     template.setDisplayName('Standards Template')
     template.setDefaultValue('90.1-2019')

@@ -33,7 +33,9 @@ class ApplyHvacTopologyToZoneScope < OpenStudio::Measure::ModelMeasure
     names.setDescription('JSON array of exact thermal-zone names, e.g. ["Zone A","Office, East"]. Used only when zone_scope is explicit_zone_names.')
     names.setDefaultValue('')
     args << names
-    args << choice('standards_template', 'Standards Template', %w[90.1-2013 90.1-2016 90.1-2019], '90.1-2019')
+    args << choice('standards_template', 'Standards Template',
+                   ['DOE Ref Pre-1980', 'DOE Ref 1980-2004', '90.1-2004', '90.1-2007', '90.1-2010',
+                    '90.1-2013', '90.1-2016', '90.1-2019'], '90.1-2019')
     extra = OpenStudio::Measure::OSArgument.makeStringArgument('topology_arguments_json', false)
     extra.setDisplayName('Topology Arguments (JSON)')
     extra.setDescription('JSON object of other topology-measure arguments, e.g. {"supplemental_heating_fuel":"NaturalGas"}. ' \

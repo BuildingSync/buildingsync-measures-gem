@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>apply_hvac_topology_to_zone_scope</name>
   <uid>7e3f9b2c-4d1a-4c8e-9f6b-2a5d8e1c3b47</uid>
-  <version_id>726105ff-9ad7-43d1-b41c-41782d773da3</version_id>
-  <version_modified>2026-11-13T09:15:33Z</version_modified>
+  <version_id>e24fe25f-bbdb-43f7-9249-396e953ec97e</version_id>
+  <version_modified>2026-11-13T22:00:08Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ApplyHvacTopologyToZoneScope</class_name>
   <display_name>Apply HVAC Topology To Zone Scope</display_name>
@@ -142,6 +142,26 @@
       <default_value>90.1-2019</default_value>
       <choices>
         <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
+        <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
         </choice>
@@ -193,7 +213,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>76E865B0</checksum>
+      <checksum>7D2BF58C</checksum>
     </file>
     <file>
       <version>
@@ -204,7 +224,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>C040F376</checksum>
+      <checksum>6EF85D27</checksum>
     </file>
     <file>
       <filename>apply_hvac_topology_to_zone_scope_test.rb</filename>
