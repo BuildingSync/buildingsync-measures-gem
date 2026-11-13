@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_vav_electric_reheat</name>
   <uid>e2190e14-8ac9-4d22-b683-8be3039475ec</uid>
-  <version_id>4384e1e2-927c-45b6-b5e8-7b8399652991</version_id>
-  <version_modified>2026-11-12T23:34:25Z</version_modified>
+  <version_id>c12130c0-b70d-4d9e-af52-3a5322b654f9</version_id>
+  <version_modified>2026-11-13T22:00:22Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopVavElectricReheat</class_name>
   <display_name>Packaged Rooftop VAV with Electric Reheat HVAC</display_name>
@@ -46,6 +46,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -100,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>76AB79EB</checksum>
+      <checksum>649297D7</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_vav_electric_reheat_test.rb</filename>

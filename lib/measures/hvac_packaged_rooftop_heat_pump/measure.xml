@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_heat_pump</name>
   <uid>af755ce8-9fe4-4ccb-93aa-a820e424d82c</uid>
-  <version_id>b951d0b0-be7e-497c-9943-4ec5dd5735cd</version_id>
-  <version_modified>2026-11-12T23:34:23Z</version_modified>
+  <version_id>68a04b81-1640-4a57-ad34-d7b6195c52ca</version_id>
+  <version_modified>2026-11-13T22:00:20Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopHeatPump</class_name>
   <display_name>Packaged Rooftop Heat Pump HVAC</display_name>
@@ -47,6 +47,26 @@
       <default_value>90.1-2019</default_value>
       <choices>
         <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
+        <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
         </choice>
@@ -57,6 +77,25 @@
         <choice>
           <value>90.1-2019</value>
           <display_name>90.1-2019</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>supplemental_heating_fuel</name>
+      <display_name>Supplemental Heating Fuel</display_name>
+      <description>Fuel of the backup heating coil; maps BuildingSync HeatPumpBackupSystemFuel "Electricity" or "Natural gas".</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Electricity</default_value>
+      <choices>
+        <choice>
+          <value>Electricity</value>
+          <display_name>Electricity</display_name>
+        </choice>
+        <choice>
+          <value>NaturalGas</value>
+          <display_name>NaturalGas</display_name>
         </choice>
       </choices>
     </argument>
@@ -89,7 +128,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>9ED57F2D</checksum>
+      <checksum>B3DFAB4E</checksum>
     </file>
     <file>
       <version>
@@ -100,13 +139,13 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>E37A6AAD</checksum>
+      <checksum>A3493B86</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_heat_pump_test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>AAAF3002</checksum>
+      <checksum>B97C11B0</checksum>
     </file>
     <file>
       <filename>test_model.osm</filename>

@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_pthp</name>
   <uid>bcf29e4b-1e31-4d59-a391-531db14b114c</uid>
-  <version_id>5189af4f-679c-4608-8cb2-81e28150dab0</version_id>
-  <version_modified>2026-11-12T23:34:30Z</version_modified>
+  <version_id>71a4faf2-26db-4f04-81ee-5f75b9ce888f</version_id>
+  <version_modified>2026-11-13T22:00:27Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPthp</class_name>
   <display_name>PTHP HVAC</display_name>
@@ -47,6 +47,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -101,7 +121,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>34963F77</checksum>
+      <checksum>74AFC5C9</checksum>
     </file>
     <file>
       <filename>hvac_pthp_test.rb</filename>

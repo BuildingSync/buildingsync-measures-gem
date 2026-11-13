@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_ventilation_only</name>
   <uid>0c502511-f1aa-4c77-ba09-e9edf98e713b</uid>
-  <version_id>13c823d9-072e-45d2-8372-28bd02acf43f</version_id>
-  <version_modified>2026-11-12T23:34:39Z</version_modified>
+  <version_id>5d60c4d4-8c7b-40a4-a39f-e840bfbeaafd</version_id>
+  <version_modified>2026-11-13T22:00:33Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVentilationOnly</class_name>
   <display_name>Ventilation-Only HVAC</display_name>
@@ -47,6 +47,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -101,7 +121,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>6937BD93</checksum>
+      <checksum>884B075E</checksum>
     </file>
     <file>
       <filename>hvac_ventilation_only_test.rb</filename>
