@@ -22,6 +22,13 @@ class HvacPackagedRooftopHeatPump < OpenStudio::Measure::ModelMeasure
     template.setDisplayName('Standards Template')
     template.setDefaultValue('90.1-2019')
     args << template
+    fuels = OpenStudio::StringVector.new
+    %w[Electricity NaturalGas].each { |value| fuels << value }
+    backup = OpenStudio::Measure::OSArgument.makeChoiceArgument('supplemental_heating_fuel', fuels, true)
+    backup.setDisplayName('Supplemental Heating Fuel')
+    backup.setDescription('Fuel of the backup heating coil; maps BuildingSync HeatPumpBackupSystemFuel "Electricity" or "Natural gas".')
+    backup.setDefaultValue('Electricity')
+    args << backup
     args
   end
 
@@ -92,8 +99,13 @@ class HvacPackagedRooftopHeatPump < OpenStudio::Measure::ModelMeasure
       before = model.getAirLoopHVACs.map { |air_loop| air_loop.handle.to_s }
       template = runner.getStringArgumentValue('standards_template', user_arguments)
       standard = Standard.build(template)
+      backup_fuel = runner.getStringArgumentValue('supplemental_heating_fuel', user_arguments)
       synthesized = with_standards_log(runner, "'PSZ-HP' #{operation}") do
-        standard.model_add_hvac_system(model, 'PSZ-HP', 'NaturalGas', nil, 'Electricity', zones)
+        # Same arguments as the standards 'PSZ-HP' dispatcher, except the selectable backup fuel.
+        standard.model_add_psz_ac(model, zones, system_name: 'PSZ-HP', cooling_type: 'Single Speed Heat Pump',
+                                               heating_type: 'Single Speed Heat Pump',
+                                               supplemental_heating_type: backup_fuel,
+                                               fan_location: 'DrawThrough', fan_type: 'ConstantVolume')
       end
       unless synthesized
         runner.registerError("openstudio-standards failed to add 'PSZ-HP' for #{operation}.")
@@ -107,7 +119,7 @@ class HvacPackagedRooftopHeatPump < OpenStudio::Measure::ModelMeasure
       end
       orphaned_plants = operation == 'replace' ? remove_orphaned_plant_loops(model, loaded_plants) : []
       plants = model.getPlantLoops.reject { |plant_loop| plant_handles.include?(plant_loop.handle.to_s) }
-      summary = "Created #{created.size} PSZ-HP loops and #{plants.size} plant loops for #{zones.size} zones using #{template}."
+      summary = "Created #{created.size} PSZ-HP loops (#{backup_fuel} supplemental heat) and #{plants.size} plant loops for #{zones.size} zones using #{template}."
       summary = "Removed #{affected.size} air loops and #{removed} zone HVAC objects; #{summary} #{plant_note(model, plant_handles, orphaned_plants)}" if operation == 'replace'
       runner.registerFinalCondition(summary)
       true

@@ -10,7 +10,7 @@ module HvacTopologyTests
 
   def test_argument_contract
     arguments = @measure.arguments(@model)
-    assert_equal(%w[operation target_zone_names standards_template], arguments.map(&:name))
+    assert_equal(%w[operation target_zone_names standards_template], arguments.first(3).map(&:name))
     assert_equal(%w[create replace], arguments[0].choiceValues.to_a)
     assert_equal('create', arguments[0].defaultValueAsString)
     assert_equal('', arguments[1].defaultValueAsString)

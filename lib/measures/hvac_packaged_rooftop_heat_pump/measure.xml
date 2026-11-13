@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_heat_pump</name>
   <uid>af755ce8-9fe4-4ccb-93aa-a820e424d82c</uid>
-  <version_id>b951d0b0-be7e-497c-9943-4ec5dd5735cd</version_id>
-  <version_modified>2026-11-12T23:34:23Z</version_modified>
+  <version_id>dc1b8b7f-e6de-48c7-bca0-7e67b3564197</version_id>
+  <version_modified>2026-11-13T08:17:26Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopHeatPump</class_name>
   <display_name>Packaged Rooftop Heat Pump HVAC</display_name>
@@ -60,6 +60,25 @@
         </choice>
       </choices>
     </argument>
+    <argument>
+      <name>supplemental_heating_fuel</name>
+      <display_name>Supplemental Heating Fuel</display_name>
+      <description>Fuel of the backup heating coil; maps BuildingSync HeatPumpBackupSystemFuel "Electricity" or "Natural gas".</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Electricity</default_value>
+      <choices>
+        <choice>
+          <value>Electricity</value>
+          <display_name>Electricity</display_name>
+        </choice>
+        <choice>
+          <value>NaturalGas</value>
+          <display_name>NaturalGas</display_name>
+        </choice>
+      </choices>
+    </argument>
   </arguments>
   <outputs />
   <provenances />
@@ -100,13 +119,13 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>E37A6AAD</checksum>
+      <checksum>C0E244AE</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_heat_pump_test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>AAAF3002</checksum>
+      <checksum>B97C11B0</checksum>
     </file>
     <file>
       <filename>test_model.osm</filename>
