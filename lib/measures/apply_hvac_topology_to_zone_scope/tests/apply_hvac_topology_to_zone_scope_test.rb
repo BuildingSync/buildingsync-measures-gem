@@ -14,7 +14,7 @@ class ApplyHvacTopologyToZoneScopeTest < HvacMeasureTest
 
   def test_arguments
     arguments = @measure.arguments(@model).map(&:name)
-    assert_equal(%w[topology_measure operation zone_scope zone_names_json standards_template], arguments)
+    assert_equal(%w[topology_measure operation zone_scope zone_names_json standards_template topology_arguments_json], arguments)
     topology_dirs = Dir.glob(File.join(__dir__, '..', '..', 'hvac_*')).map { |dir| File.basename(dir) }.sort
     assert_equal(topology_dirs, MEASURE_CLASS::TOPOLOGY_MEASURES.sort)
   end
@@ -59,6 +59,20 @@ class ApplyHvacTopologyToZoneScopeTest < HvacMeasureTest
     ['', '[]', 'Zone One', '["Zone One", 2]', '{"a": "b"}'].each do |text|
       assert_rejected_without_changes(explicit.merge('zone_names_json' => text), error: /JSON array/)
     end
+  end
+
+  def test_topology_arguments_json_forwards_extra_arguments
+    result = run_measure('topology_measure' => 'hvac_packaged_rooftop_heat_pump',
+                         'topology_arguments_json' => '{"supplemental_heating_fuel":"NaturalGas"}')
+    assert_includes(result.finalCondition.get.logMessage, 'NaturalGas supplemental heat')
+  end
+
+  def test_topology_arguments_json_rejects_invalid_reserved_and_unknown_arguments
+    base = { 'topology_measure' => 'hvac_ptac' }
+    ['[]', '{"a": 1}', 'not json', '{"operation":"replace"}', '{"target_zone_names":"[]"}'].each do |text|
+      assert_rejected_without_changes(base.merge('topology_arguments_json' => text), error: /topology_arguments_json/)
+    end
+    assert_rejected_without_changes(base.merge('topology_arguments_json' => '{"no_such_argument":"x"}'), error: /Unknown argument/)
   end
 
   def test_model_without_zones_fails

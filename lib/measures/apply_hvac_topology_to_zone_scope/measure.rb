@@ -14,6 +14,8 @@ class ApplyHvacTopologyToZoneScope < OpenStudio::Measure::ModelMeasure
     hvac_vav_hw_reheat hvac_ventilation_only hvac_vrf hvac_warm_air_furnace hvac_water_loop_heat_pump
   ].freeze
   ZONE_SCOPES = %w[all_model_zones explicit_zone_names].freeze
+  # Set by this measure; topology_arguments_json must not override them.
+  RESERVED_ARGUMENTS = %w[operation target_zone_names standards_template].freeze
 
   def name = 'Apply HVAC Topology To Zone Scope'
   def description = 'Runs one split HVAC topology measure on thermal-zone names resolved from the model at run time.'
@@ -32,6 +34,12 @@ class ApplyHvacTopologyToZoneScope < OpenStudio::Measure::ModelMeasure
     names.setDefaultValue('')
     args << names
     args << choice('standards_template', 'Standards Template', %w[90.1-2013 90.1-2016 90.1-2019], '90.1-2019')
+    extra = OpenStudio::Measure::OSArgument.makeStringArgument('topology_arguments_json', false)
+    extra.setDisplayName('Topology Arguments (JSON)')
+    extra.setDescription('JSON object of other topology-measure arguments, e.g. {"supplemental_heating_fuel":"NaturalGas"}. ' \
+                         'Must not set operation, target_zone_names, or standards_template.')
+    extra.setDefaultValue('')
+    args << extra
     args
   end
 
@@ -41,6 +49,12 @@ class ApplyHvacTopologyToZoneScope < OpenStudio::Measure::ModelMeasure
 
     topology = runner.getStringArgumentValue('topology_measure', user_arguments)
     scope = runner.getStringArgumentValue('zone_scope', user_arguments)
+    extra = parse_topology_arguments(runner.getStringArgumentValue('topology_arguments_json', user_arguments))
+    unless extra
+      runner.registerError('topology_arguments_json must be empty or a JSON object of string values that does not set ' \
+                           "#{RESERVED_ARGUMENTS.join(', ')}.")
+      return false
+    end
     model_names = model.getThermalZones.map(&:nameString).sort
     if model_names.empty?
       runner.registerError('The model has no thermal zones to bind.')
@@ -77,7 +91,7 @@ class ApplyHvacTopologyToZoneScope < OpenStudio::Measure::ModelMeasure
         # JSON keeps exact names, including names containing commas.
         'target_zone_names' => JSON.generate(zone_names),
         'standards_template' => runner.getStringArgumentValue('standards_template', user_arguments)
-      }
+      }.merge(extra)
       arguments = argument_map(measure, model, values)
     rescue StandardError, LoadError => e
       runner.registerError("Could not prepare topology measure '#{topology}': #{e.message}")
@@ -107,6 +121,18 @@ class ApplyHvacTopologyToZoneScope < OpenStudio::Measure::ModelMeasure
     nil
   end
 
+  # Returns a Hash, or nil when the text is not empty or a JSON object of string values without reserved keys.
+  def parse_topology_arguments(text)
+    return {} if text.strip.empty?
+
+    values = JSON.parse(text)
+    return nil unless values.is_a?(Hash) && values.values.all?(String) && (values.keys & RESERVED_ARGUMENTS).empty?
+
+    values
+  rescue JSON::ParserError
+    nil
+  end
+
   def load_topology_measure(measure_dir)
     class_name = REXML::Document.new(File.read(File.join(measure_dir, 'measure.xml'))).elements['measure/class_name'].text
     require File.join(measure_dir, 'measure.rb')
@@ -116,6 +142,8 @@ class ApplyHvacTopologyToZoneScope < OpenStudio::Measure::ModelMeasure
   def argument_map(measure, model, values)
     map = OpenStudio::Measure.convertOSArgumentVectorToMap(measure.arguments(model))
     values.each do |key, value|
+      raise ArgumentError, "Unknown argument #{key}" if map[key].nil?
+
       argument = map[key].clone
       raise ArgumentError, "Cannot set #{key}=#{value}" unless argument.setValue(value)
 
