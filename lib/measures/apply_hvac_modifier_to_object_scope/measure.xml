@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>apply_hvac_modifier_to_object_scope</name>
+  <uid>0b53b4a2-b6cc-48d9-91de-1baaac3a6b1a</uid>
+  <version_id>40ff4af0-09c4-4c30-95ce-3b5c8172d3c3</version_id>
+  <version_modified>2026-11-13T05:47:27Z</version_modified>
+  <xml_checksum>15E96FC1</xml_checksum>
+  <class_name>ApplyHvacModifierToObjectScope</class_name>
+  <display_name>Apply HVAC Modifier To Object Scope</display_name>
+  <description>Runs one modify_existing_* HVAC measure on object names resolved from the model at run time.</description>
+  <modeler_description>object_scope all_matching_objects passes every model object the selected modifier and setting can change, by exact name; explicit_object_names passes the exact names in object_names_json. The modifier keeps its own checks.</modeler_description>
+  <arguments>
+    <argument>
+      <name>modifier_measure</name>
+      <display_name>Modifier Measure</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <choices>
+        <choice>
+          <value>modify_existing_air_loop_controls</value>
+          <display_name>modify_existing_air_loop_controls</display_name>
+        </choice>
+        <choice>
+          <value>modify_existing_heat_recovery</value>
+          <display_name>modify_existing_heat_recovery</display_name>
+        </choice>
+        <choice>
+          <value>modify_existing_hvac_equipment_efficiencies</value>
+          <display_name>modify_existing_hvac_equipment_efficiencies</display_name>
+        </choice>
+        <choice>
+          <value>modify_existing_plant_equipment</value>
+          <display_name>modify_existing_plant_equipment</display_name>
+        </choice>
+        <choice>
+          <value>modify_existing_plant_loop_temperatures</value>
+          <display_name>modify_existing_plant_loop_temperatures</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>object_scope</name>
+      <display_name>Object Scope</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>all_matching_objects</default_value>
+      <choices>
+        <choice>
+          <value>all_matching_objects</value>
+          <display_name>all_matching_objects</display_name>
+        </choice>
+        <choice>
+          <value>explicit_object_names</value>
+          <display_name>explicit_object_names</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>object_names_json</name>
+      <display_name>Object Names (JSON)</display_name>
+      <description>JSON array of exact OpenStudio object names. Used only when object_scope is explicit_object_names.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>plant_loop_type</name>
+      <display_name>Plant Loop Type</display_name>
+      <description>Sizing:Plant loop type for modify_existing_plant_loop_temperatures with all_matching_objects; required there.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>any</default_value>
+      <choices>
+        <choice>
+          <value>any</value>
+          <display_name>any</display_name>
+        </choice>
+        <choice>
+          <value>Heating</value>
+          <display_name>Heating</display_name>
+        </choice>
+        <choice>
+          <value>Cooling</value>
+          <display_name>Cooling</display_name>
+        </choice>
+        <choice>
+          <value>Condenser</value>
+          <display_name>Condenser</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>modifier_arguments_json</name>
+      <display_name>Modifier Arguments (JSON)</display_name>
+      <description>JSON object of the modifier's other arguments, e.g. {"efficiency_metric":"dx_cooling_cop","efficiency_value":4.0}.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>{}</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Systems</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>04FF669B</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>A29DF7D4</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>4B0B0571</checksum>
+    </file>
+    <file>
+      <filename>apply_hvac_modifier_to_object_scope_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>A7E257BB</checksum>
+    </file>
+  </files>
+</measure>
