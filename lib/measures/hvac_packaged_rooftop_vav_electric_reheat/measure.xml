@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_vav_electric_reheat</name>
   <uid>e2190e14-8ac9-4d22-b683-8be3039475ec</uid>
-  <version_id>23aea7db-7335-4f4a-b778-4728b11c8f2f</version_id>
-  <version_modified>2026-11-10T05:41:07Z</version_modified>
+  <version_id>4384e1e2-927c-45b6-b5e8-7b8399652991</version_id>
+  <version_modified>2026-11-12T23:34:25Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopVavElectricReheat</class_name>
   <display_name>Packaged Rooftop VAV with Electric Reheat HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -100,7 +100,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>E53E9138</checksum>
+      <checksum>76AB79EB</checksum>
+    </file>
+    <file>
+      <filename>hvac_packaged_rooftop_vav_electric_reheat_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>57A7A102</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>1BE33FD2</checksum>
     </file>
   </files>
 </measure>

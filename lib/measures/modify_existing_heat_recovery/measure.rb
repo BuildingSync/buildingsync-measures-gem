@@ -16,7 +16,7 @@ class ModifyExistingHeatRecovery < OpenStudio::Measure::ModelMeasure
 
     names = OpenStudio::Measure::OSArgument.makeStringArgument('target_heat_exchanger_names', true)
     names.setDisplayName('Target Heat Exchanger Names')
-    names.setDescription('Comma-separated exact HeatExchangerAirToAirSensibleAndLatent names.')
+    names.setDescription('Comma-separated exact HeatExchangerAirToAirSensibleAndLatent names, or a JSON array of exact names (for names containing commas).')
     args << names
 
     metrics = OpenStudio::StringVector.new
@@ -39,8 +39,18 @@ class ModifyExistingHeatRecovery < OpenStudio::Measure::ModelMeasure
     super(model, runner, user_arguments)
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
-    names = runner.getStringArgumentValue('target_heat_exchanger_names', user_arguments)
-                  .split(',').map(&:strip).reject(&:empty?).uniq
+    require 'json'
+    text = runner.getStringArgumentValue('target_heat_exchanger_names', user_arguments).strip
+    begin
+      names = text.start_with?('[') ? JSON.parse(text) : text.split(',')
+    rescue JSON::ParserError
+      names = nil
+    end
+    unless names.is_a?(Array) && names.all? { |value| value.is_a?(String) }
+      runner.registerError('target_heat_exchanger_names must be comma-separated names or a JSON array of strings.')
+      return false
+    end
+    names = names.map(&:strip).reject(&:empty?).uniq
     metric = runner.getStringArgumentValue('effectiveness_metric', user_arguments)
     value = runner.getDoubleArgumentValue('effectiveness', user_arguments)
     if names.empty? || !value.between?(0.0, 1.0)

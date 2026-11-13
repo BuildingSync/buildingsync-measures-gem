@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_four_pipe_fan_coil</name>
   <uid>e767eb6b-19ff-492c-a180-3d337d31f4bb</uid>
-  <version_id>48b97c87-11b6-40c2-87b7-d720c846085e</version_id>
-  <version_modified>2026-11-10T05:41:07Z</version_modified>
+  <version_id>0936ac3e-1166-4f2b-a400-a25071256f26</version_id>
+  <version_modified>2026-11-12T23:34:17Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacFourPipeFanCoil</class_name>
   <display_name>Four-Pipe Fan Coil HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -100,7 +100,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>B313D7D2</checksum>
+      <checksum>28D288AC</checksum>
+    </file>
+    <file>
+      <filename>hvac_four_pipe_fan_coil_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>3AB29B4D</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>CD60FCF9</checksum>
     </file>
   </files>
 </measure>

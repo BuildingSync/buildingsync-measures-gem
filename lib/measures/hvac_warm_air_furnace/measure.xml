@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_warm_air_furnace</name>
   <uid>0cac8d7e-3e9d-4157-9bb1-0371fcdcdc52</uid>
-  <version_id>29b605bf-4a9b-4647-a1f6-59f00979fc18</version_id>
-  <version_modified>2026-11-10T05:41:09Z</version_modified>
+  <version_id>c462ec09-9fa7-4deb-8c2d-03e6070bf423</version_id>
+  <version_modified>2026-11-12T23:34:43Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacWarmAirFurnace</class_name>
   <display_name>Warm-Air Furnace HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -100,7 +100,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>75736A5E</checksum>
+      <checksum>3161DAE9</checksum>
+    </file>
+    <file>
+      <filename>hvac_warm_air_furnace_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>CB96C20D</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>8AAA11CE</checksum>
     </file>
   </files>
 </measure>

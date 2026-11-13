@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_chilled_beam</name>
   <uid>0baa3922-45a2-4e21-99c2-5ecc64e23481</uid>
-  <version_id>b2828ae5-97bb-43e2-8504-f54d417cf68b</version_id>
-  <version_modified>2026-11-10T05:41:07Z</version_modified>
+  <version_id>ee84f16c-9ed7-4a3e-95ec-0e5fc123db99</version_id>
+  <version_modified>2026-11-12T23:34:14Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacChilledBeam</class_name>
   <display_name>Chilled-Beam HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -101,7 +101,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>14272D67</checksum>
+      <checksum>13ADB856</checksum>
+    </file>
+    <file>
+      <filename>hvac_chilled_beam_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>A0386793</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>1BFBFE42</checksum>
     </file>
   </files>
 </measure>

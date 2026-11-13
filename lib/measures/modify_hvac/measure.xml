@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_hvac</name>
   <uid>c85512f5-3394-4bbc-b40d-6a57903c32a7</uid>
-  <version_id>09449c04-c4b0-48bb-b70e-416979fd9ff9</version_id>
-  <version_modified>2026-08-26T19:58:17Z</version_modified>
+  <version_id>b08a79cc-7b6d-4ecc-b303-08dbf98146fa</version_id>
+  <version_modified>2026-11-13T07:38:57Z</version_modified>
   <xml_checksum>F732B557</xml_checksum>
   <class_name>ModifyHvac</class_name>
   <display_name>Modify Hvac</display_name>
@@ -517,16 +517,22 @@
       <checksum>5B3F6693</checksum>
     </file>
     <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>D3396247</checksum>
+    </file>
+    <file>
       <filename>.gitkeep</filename>
       <filetype>gitkeep</filetype>
       <usage_type>doc</usage_type>
       <checksum>00000000</checksum>
     </file>
     <file>
-      <filename>ASHRAE_211_L2_SEMANTIC_MAPPING.md</filename>
+      <filename>ashrae-211-l2-semantic-mapping.md</filename>
       <filetype>md</filetype>
       <usage_type>doc</usage_type>
-      <checksum>2D4D3685</checksum>
+      <checksum>F900AC64</checksum>
     </file>
     <file>
       <filename>l2-hvac-audit-translation-plan.md</filename>

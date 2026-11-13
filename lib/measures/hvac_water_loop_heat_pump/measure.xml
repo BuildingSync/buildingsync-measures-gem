@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_water_loop_heat_pump</name>
   <uid>e7ab679a-f29c-44ef-be3e-e978d7e4b142</uid>
-  <version_id>4db5daec-4bd5-4629-93b4-f66b7f83da66</version_id>
-  <version_modified>2026-11-10T05:41:09Z</version_modified>
+  <version_id>17c8a682-f98b-401d-9439-e9f84f7034da</version_id>
+  <version_modified>2026-11-12T23:34:45Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacWaterLoopHeatPump</class_name>
   <display_name>Water-Loop Heat Pump HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -100,7 +100,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>A331E064</checksum>
+      <checksum>0B1DC627</checksum>
+    </file>
+    <file>
+      <filename>hvac_water_loop_heat_pump_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>1B8C359A</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>74F863E4</checksum>
     </file>
   </files>
 </measure>

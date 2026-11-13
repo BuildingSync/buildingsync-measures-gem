@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_ventilation_only</name>
   <uid>0c502511-f1aa-4c77-ba09-e9edf98e713b</uid>
-  <version_id>ee9b55b1-270c-4d82-93ba-b3367e4bce34</version_id>
-  <version_modified>2026-11-10T05:41:08Z</version_modified>
+  <version_id>13c823d9-072e-45d2-8372-28bd02acf43f</version_id>
+  <version_modified>2026-11-12T23:34:39Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVentilationOnly</class_name>
   <display_name>Ventilation-Only HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -90,7 +90,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>92E00A04</checksum>
+      <checksum>A71BE906</checksum>
     </file>
     <file>
       <version>
@@ -101,7 +101,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>29862120</checksum>
+      <checksum>6937BD93</checksum>
+    </file>
+    <file>
+      <filename>hvac_ventilation_only_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>5CF0DEE5</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>9EBEBC20</checksum>
     </file>
   </files>
 </measure>

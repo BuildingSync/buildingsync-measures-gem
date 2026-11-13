@@ -13,7 +13,7 @@ class HvacPackagedRooftopVavHwReheat < OpenStudio::Measure::ModelMeasure
     args << operation
     names = OpenStudio::Measure::OSArgument.makeStringArgument('target_zone_names', false)
     names.setDisplayName('Target Zone Names')
-    names.setDescription('Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.')
+    names.setDescription('Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.')
     names.setDefaultValue('')
     args << names
     choices = OpenStudio::StringVector.new
@@ -30,7 +30,18 @@ class HvacPackagedRooftopVavHwReheat < OpenStudio::Measure::ModelMeasure
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
     operation = runner.getStringArgumentValue('operation', user_arguments)
-    requested = runner.getStringArgumentValue('target_zone_names', user_arguments).split(',').map(&:strip).reject(&:empty?).uniq
+    require 'json'
+    text = runner.getStringArgumentValue('target_zone_names', user_arguments).strip
+    begin
+      requested = text.start_with?('[') ? JSON.parse(text) : text.split(',').map(&:strip)
+    rescue JSON::ParserError
+      requested = nil
+    end
+    unless requested.is_a?(Array) && requested.all? { |zone_name| zone_name.is_a?(String) }
+      runner.registerError('target_zone_names must be comma-separated names or a JSON array of strings.')
+      return false
+    end
+    requested = requested.reject { |zone_name| zone_name.strip.empty? }.uniq
     if operation == 'replace' && requested.empty?
       runner.registerError('Replace requires at least one exact target_zone_names value.')
       return false

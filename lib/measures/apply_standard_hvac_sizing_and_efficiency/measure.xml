@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>apply_standard_hvac_sizing_and_efficiency</name>
+  <uid>c1c9a22b-aff6-4292-9b2f-f424dbbb1af6</uid>
+  <version_id>a5d44101-6298-4a73-bddc-c3826e37ad96</version_id>
+  <version_modified>2026-11-13T07:38:45Z</version_modified>
+  <xml_checksum>AC2EC58F</xml_checksum>
+  <class_name>ApplyStandardHvacSizingAndEfficiency</class_name>
+  <display_name>Apply Standard HVAC Sizing And Efficiency</display_name>
+  <description>Sizes existing HVAC with a sizing run and applies prototype assumptions and 90.1 efficiencies.</description>
+  <modeler_description>Mirrors the add_hvac tail of OpenstudioStandards::CreateTypical.create_typical_building_from_model (openstudio-standards 0.8.x): PRM sizing parameters, sizing run, multizone VAV outdoor-air sizing, prototype HVAC assumptions, HVAC efficiency standard, NIST infiltration schedules, and thermostat night-cycle control. Requires the building standards type and climate zone that create_typical_building_from_model sets.</modeler_description>
+  <arguments>
+    <argument>
+      <name>standards_template</name>
+      <display_name>Standards Template</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>90.1-2019</default_value>
+      <choices>
+        <choice>
+          <value>90.1-2013</value>
+          <display_name>90.1-2013</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2016</value>
+          <display_name>90.1-2016</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2019</value>
+          <display_name>90.1-2019</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>add_infiltration_schedules</name>
+      <display_name>Apply NIST Infiltration Schedules</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Systems</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>04FF669B</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>D1B2B29D</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>A01D1F41</checksum>
+    </file>
+    <file>
+      <filename>apply_standard_hvac_sizing_and_efficiency_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>4C33AF11</checksum>
+    </file>
+  </files>
+</measure>

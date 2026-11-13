@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_vrf</name>
   <uid>cf86564e-7812-46d5-8bf4-58485f8aa68a</uid>
-  <version_id>55a514bb-4a42-4567-8194-6dff04398235</version_id>
-  <version_modified>2026-11-10T05:41:08Z</version_modified>
+  <version_id>74e932b8-afc3-4abf-9ff8-d13b557da9ea</version_id>
+  <version_modified>2026-11-12T23:34:41Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVrf</class_name>
   <display_name>VRF HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -100,7 +100,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>75A5030C</checksum>
+      <checksum>0525E730</checksum>
+    </file>
+    <file>
+      <filename>hvac_vrf_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>37E310DC</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>52CB2D36</checksum>
     </file>
   </files>
 </measure>

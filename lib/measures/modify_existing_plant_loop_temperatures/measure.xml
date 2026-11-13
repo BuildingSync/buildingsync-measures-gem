@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_plant_loop_temperatures</name>
   <uid>58029619-3597-4155-bcb1-fc230e7b4f2e</uid>
-  <version_id>acc68027-ab99-4c89-99c7-53b38f0a2b74</version_id>
-  <version_modified>2026-11-10T05:41:10Z</version_modified>
+  <version_id>01351beb-6e78-4896-8f7f-8fe55456db6a</version_id>
+  <version_modified>2026-11-13T07:33:44Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingPlantLoopTemperatures</class_name>
   <display_name>Modify Existing Plant Loop Temperatures</display_name>
@@ -14,7 +14,7 @@
     <argument>
       <name>target_plant_loop_names</name>
       <display_name>Target Plant Loop Names</display_name>
-      <description>Comma-separated exact OpenStudio plant-loop names.</description>
+      <description>Comma-separated exact OpenStudio plant-loop names, or a JSON array of exact names (for names containing commas).</description>
       <type>String</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
@@ -67,7 +67,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>A75FD1F9</checksum>
+      <checksum>C379DA55</checksum>
+    </file>
+    <file>
+      <filename>modify_existing_plant_loop_temperatures_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>5CB2F65F</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>B94819E2</checksum>
     </file>
   </files>
 </measure>

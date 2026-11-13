@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_hvac_equipment_efficiencies</name>
   <uid>d54dbd7f-5ccb-4ad7-a969-d8a90c9e0532</uid>
-  <version_id>8086c2f9-04fd-4495-98ce-05dbb1385335</version_id>
-  <version_modified>2026-11-10T05:41:09Z</version_modified>
+  <version_id>e72cc9f8-c187-4381-bd76-af64da27e5fa</version_id>
+  <version_modified>2026-11-13T07:33:41Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingHvacEquipmentEfficiencies</class_name>
   <display_name>Modify Existing HVAC Equipment Efficiencies</display_name>
@@ -14,7 +14,7 @@
     <argument>
       <name>target_object_names</name>
       <display_name>Target Object Names</display_name>
-      <description>Comma-separated exact OpenStudio component or equipment names.</description>
+      <description>Comma-separated exact OpenStudio component or equipment names, or a JSON array of exact names (for names containing commas).</description>
       <type>String</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
@@ -110,7 +110,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>2C7FF31B</checksum>
+      <checksum>6D44E074</checksum>
+    </file>
+    <file>
+      <filename>modify_existing_hvac_equipment_efficiencies_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>303D5A03</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>A3D50AA9</checksum>
     </file>
   </files>
 </measure>

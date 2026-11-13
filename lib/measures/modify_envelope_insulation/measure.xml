@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_envelope_insulation</name>
   <uid>db94103e-ac4a-4135-8745-c866fc7c64df</uid>
-  <version_id>a1dc0974-a166-4b28-a49a-4e0e51509d99</version_id>
-  <version_modified>2026-08-26T19:58:16Z</version_modified>
+  <version_id>0aafe7c5-5962-467d-af47-07228657effe</version_id>
+  <version_modified>2026-11-13T07:38:53Z</version_modified>
   <xml_checksum>F732B557</xml_checksum>
   <class_name>ModifyEnvelopeInsulation</class_name>
   <display_name>Set Envelope Construction R-Values and U-Values</display_name>
@@ -104,6 +104,12 @@
       <filetype>md</filetype>
       <usage_type>license</usage_type>
       <checksum>5B3F6693</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>AF2E84A8</checksum>
     </file>
     <file>
       <filename>.gitkeep</filename>

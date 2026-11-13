@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_doas</name>
   <uid>17f3b675-a3bc-4aba-8f34-824ffd389ff7</uid>
-  <version_id>0917b262-f32c-4d07-882f-5f134a1fff17</version_id>
-  <version_modified>2026-11-10T05:41:07Z</version_modified>
+  <version_id>1417fecb-ab82-4a00-ad12-427a806873fb</version_id>
+  <version_modified>2026-11-12T23:34:15Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacDoas</class_name>
   <display_name>Dedicated Outdoor Air System HVAC</display_name>
@@ -32,7 +32,7 @@
     <argument>
       <name>target_zone_names</name>
       <display_name>Target Zone Names</display_name>
-      <description>Comma-separated exact thermal-zone names. Blank selects all zones for create; replace requires explicit names.</description>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones for create; replace requires explicit names.</description>
       <type>String</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
@@ -90,7 +90,7 @@
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>8DFA1E44</checksum>
+      <checksum>CAA2753E</checksum>
     </file>
     <file>
       <version>
@@ -101,7 +101,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>6711151C</checksum>
+      <checksum>BAA6557D</checksum>
+    </file>
+    <file>
+      <filename>hvac_doas_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>9D960E9A</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>995FC88E</checksum>
     </file>
   </files>
 </measure>

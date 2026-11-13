@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>set_infiltration_by_ach</name>
   <uid>b5d31eab-55a3-44cc-a3bf-5822f1ba294c</uid>
-  <version_id>fd6c3bcd-8a4d-4f43-8915-54df1eccc188</version_id>
-  <version_modified>2026-08-26T19:58:17Z</version_modified>
+  <version_id>61b54c57-259a-4e3a-90a7-85bda34b4208</version_id>
+  <version_modified>2026-11-13T07:38:58Z</version_modified>
   <xml_checksum>6AB3F3A1</xml_checksum>
   <class_name>SetInfiltrationByAch</class_name>
   <display_name>Set Infiltration By Ach</display_name>
@@ -87,6 +87,12 @@
       <filetype>md</filetype>
       <usage_type>license</usage_type>
       <checksum>5B3F6693</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>88083406</checksum>
     </file>
     <file>
       <filename>.gitkeep</filename>
