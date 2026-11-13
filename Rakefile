@@ -5,7 +5,7 @@ RSpec::Core::RakeTask.new(:spec)
 
 Rake::TestTask.new(:test_hvac) do |test|
 	test.description = 'Run all per-measure HVAC unit tests (or select one with TEST=path/to/test.rb)'
-  test.pattern = 'lib/measures/{hvac_*,modify_existing_*,apply_hvac_topology_to_zone_scope,apply_standard_hvac_sizing_and_efficiency}/tests/*_test.rb'
+  test.pattern = 'lib/measures/{hvac_*,modify_existing_*,apply_hvac_topology_to_zone_scope,apply_hvac_modifier_to_object_scope,apply_standard_hvac_sizing_and_efficiency}/tests/*_test.rb'
 	test.warning = false
 end
 
