@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>apply_standard_hvac_sizing_and_efficiency</name>
   <uid>c1c9a22b-aff6-4292-9b2f-f424dbbb1af6</uid>
-  <version_id>a5d44101-6298-4a73-bddc-c3826e37ad96</version_id>
-  <version_modified>2026-11-13T07:38:45Z</version_modified>
+  <version_id>801e08d5-6581-48d0-bf0f-cc6080840db3</version_id>
+  <version_modified>2026-11-17T23:13:12Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ApplyStandardHvacSizingAndEfficiency</class_name>
   <display_name>Apply Standard HVAC Sizing And Efficiency</display_name>
@@ -91,13 +91,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>A01D1F41</checksum>
+      <checksum>EEFB4690</checksum>
     </file>
     <file>
       <filename>apply_standard_hvac_sizing_and_efficiency_test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>4C33AF11</checksum>
+      <checksum>5DD6F1BF</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>B8EA05A1</checksum>
     </file>
   </files>
 </measure>

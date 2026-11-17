@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_schedules</name>
   <uid>07afe5e0-73f2-4161-bb9e-05e5744d7f83</uid>
-  <version_id>3f8d91c5-8f46-481d-8b2a-741ad63443eb</version_id>
-  <version_modified>2026-11-13T07:38:58Z</version_modified>
+  <version_id>0820da8f-b9cc-48a0-a80c-11bb42d9371b</version_id>
+  <version_modified>2026-11-17T23:14:01Z</version_modified>
   <xml_checksum>F732B557</xml_checksum>
   <class_name>ModifySchedules</class_name>
   <display_name>Modify Schedules</display_name>
@@ -138,7 +138,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>1161E7A2</checksum>
+      <checksum>A2532270</checksum>
     </file>
     <file>
       <filename>example_model.osm</filename>

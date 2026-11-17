@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_vav_electric_reheat</name>
   <uid>e2190e14-8ac9-4d22-b683-8be3039475ec</uid>
-  <version_id>4384e1e2-927c-45b6-b5e8-7b8399652991</version_id>
-  <version_modified>2026-11-12T23:34:25Z</version_modified>
+  <version_id>4ec25e6f-43cb-41d2-b022-db9e09e65668</version_id>
+  <version_modified>2026-11-17T23:13:28Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopVavElectricReheat</class_name>
   <display_name>Packaged Rooftop VAV with Electric Reheat HVAC</display_name>
@@ -100,7 +100,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>76AB79EB</checksum>
+      <checksum>6851C39B</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_vav_electric_reheat_test.rb</filename>

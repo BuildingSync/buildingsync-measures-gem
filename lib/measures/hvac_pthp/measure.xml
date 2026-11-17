@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_pthp</name>
   <uid>bcf29e4b-1e31-4d59-a391-531db14b114c</uid>
-  <version_id>5189af4f-679c-4608-8cb2-81e28150dab0</version_id>
-  <version_modified>2026-11-12T23:34:30Z</version_modified>
+  <version_id>8fede116-9c31-48a5-b253-4592b89503a0</version_id>
+  <version_modified>2026-11-17T23:13:34Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPthp</class_name>
   <display_name>PTHP HVAC</display_name>
@@ -101,7 +101,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>34963F77</checksum>
+      <checksum>8933A8A6</checksum>
     </file>
     <file>
       <filename>hvac_pthp_test.rb</filename>

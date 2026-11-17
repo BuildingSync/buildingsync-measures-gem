@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_radiant</name>
   <uid>0c4c0044-9db8-4260-be1a-bdbfa9247342</uid>
-  <version_id>91c8d63a-1db9-4483-bc0d-b7782a9ee8cd</version_id>
-  <version_modified>2026-11-12T23:34:32Z</version_modified>
+  <version_id>f5e95dbd-f998-4608-b85a-43353e00739e</version_id>
+  <version_modified>2026-11-17T23:13:36Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacRadiant</class_name>
   <display_name>Low-Temperature Radiant HVAC</display_name>
@@ -100,7 +100,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>8D22AF61</checksum>
+      <checksum>9E2D9525</checksum>
     </file>
     <file>
       <filename>hvac_radiant_test.rb</filename>

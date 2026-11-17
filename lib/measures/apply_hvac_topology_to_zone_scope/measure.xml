@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>apply_hvac_topology_to_zone_scope</name>
   <uid>7e3f9b2c-4d1a-4c8e-9f6b-2a5d8e1c3b47</uid>
-  <version_id>8b8ddc35-b012-4e4d-b430-b4ee1cbb0504</version_id>
-  <version_modified>2026-11-13T07:38:44Z</version_modified>
+  <version_id>6b860780-6301-4c73-968d-5b3f31fd1cfb</version_id>
+  <version_modified>2026-11-17T23:13:12Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ApplyHvacTopologyToZoneScope</class_name>
   <display_name>Apply HVAC Topology To Zone Scope</display_name>
@@ -201,7 +201,13 @@
       <filename>apply_hvac_topology_to_zone_scope_test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>8E0B3427</checksum>
+      <checksum>E4549E7C</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>B8EA05A1</checksum>
     </file>
   </files>
 </measure>

@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_four_pipe_fan_coil</name>
   <uid>e767eb6b-19ff-492c-a180-3d337d31f4bb</uid>
-  <version_id>0936ac3e-1166-4f2b-a400-a25071256f26</version_id>
-  <version_modified>2026-11-12T23:34:17Z</version_modified>
+  <version_id>0424e230-1024-4628-aafb-7a9edc225672</version_id>
+  <version_modified>2026-11-17T23:13:20Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacFourPipeFanCoil</class_name>
   <display_name>Four-Pipe Fan Coil HVAC</display_name>
@@ -100,7 +100,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>28D288AC</checksum>
+      <checksum>B9592718</checksum>
     </file>
     <file>
       <filename>hvac_four_pipe_fan_coil_test.rb</filename>
