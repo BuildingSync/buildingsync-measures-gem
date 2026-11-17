@@ -1,3 +1,5 @@
+require 'json'
+
 class ModifyExistingHvacEquipmentEfficiencies < OpenStudio::Measure::ModelMeasure
   METRICS = %w[
     dx_cooling_cop dx_heating_cop gas_burner_efficiency electric_heating_efficiency
@@ -44,7 +46,6 @@ class ModifyExistingHvacEquipmentEfficiencies < OpenStudio::Measure::ModelMeasur
     super(model, runner, user_arguments)
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
-    require 'json'
     text = runner.getStringArgumentValue('target_object_names', user_arguments).strip
     begin
       names = text.start_with?('[') ? JSON.parse(text) : text.split(',')

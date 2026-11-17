@@ -1,3 +1,5 @@
+require 'json'
+
 class ModifySchedules < OpenStudio::Measure::ModelMeasure
   def name
     return "Modify Schedules"
@@ -58,7 +60,6 @@ class ModifySchedules < OpenStudio::Measure::ModelMeasure
     hvac_availability_schedule_json = runner.getStringArgumentValue("hvac_availability_schedule_json", user_arguments)
     additional_schedules_json = runner.getStringArgumentValue("additional_schedules_json", user_arguments)
     # --- begin user logic ---
-    require 'json'
 
     normalize_hash = lambda do |object|
       return {} unless object.is_a?(Hash)

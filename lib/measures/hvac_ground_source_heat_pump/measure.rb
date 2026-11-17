@@ -1,3 +1,5 @@
+require 'json'
+
 class HvacGroundSourceHeatPump < OpenStudio::Measure::ModelMeasure
   def name = 'Ground-Source Heat Pump HVAC'
   def description = 'Creates ground-source heat pumps in unserved zones or replaces HVAC dedicated to selected zones.'
@@ -30,7 +32,6 @@ class HvacGroundSourceHeatPump < OpenStudio::Measure::ModelMeasure
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
     operation = runner.getStringArgumentValue('operation', user_arguments)
-    require 'json'
     text = runner.getStringArgumentValue('target_zone_names', user_arguments).strip
     begin
       requested = text.start_with?('[') ? JSON.parse(text) : text.split(',').map(&:strip)

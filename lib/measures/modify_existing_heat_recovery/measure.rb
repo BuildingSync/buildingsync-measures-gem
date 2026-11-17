@@ -1,3 +1,5 @@
+require 'json'
+
 class ModifyExistingHeatRecovery < OpenStudio::Measure::ModelMeasure
   def name
     'Modify Existing Heat Recovery'
@@ -39,7 +41,6 @@ class ModifyExistingHeatRecovery < OpenStudio::Measure::ModelMeasure
     super(model, runner, user_arguments)
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
-    require 'json'
     text = runner.getStringArgumentValue('target_heat_exchanger_names', user_arguments).strip
     begin
       names = text.start_with?('[') ? JSON.parse(text) : text.split(',')

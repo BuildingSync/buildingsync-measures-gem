@@ -1,3 +1,5 @@
+require 'json'
+
 class ModifyExistingPlantLoopTemperatures < OpenStudio::Measure::ModelMeasure
   def name
     'Modify Existing Plant Loop Temperatures'
@@ -31,7 +33,6 @@ class ModifyExistingPlantLoopTemperatures < OpenStudio::Measure::ModelMeasure
     super(model, runner, user_arguments)
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
-    require 'json'
     text = runner.getStringArgumentValue('target_plant_loop_names', user_arguments).strip
     begin
       names = text.start_with?('[') ? JSON.parse(text) : text.split(',')

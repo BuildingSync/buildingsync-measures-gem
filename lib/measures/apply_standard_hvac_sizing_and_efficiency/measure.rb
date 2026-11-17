@@ -48,16 +48,26 @@ class ApplyStandardHvacSizingAndEfficiency < OpenStudio::Measure::ModelMeasure
       return false
     end
 
-    standard.model_apply_prm_sizing_parameters(model)
-    unless standard.model_run_sizing_run(model, File.join(Dir.pwd, 'apply_standard_hvac_sizing_SR'))
+    sized = with_standards_log(runner, 'sizing run') do
+      standard.model_apply_prm_sizing_parameters(model)
+      standard.model_run_sizing_run(model, File.join(Dir.pwd, 'apply_standard_hvac_sizing_SR'))
+    end
+    unless sized
       runner.registerError('The sizing run failed.')
       return false
     end
-    standard.model_apply_multizone_vav_outdoor_air_sizing(model)
-    standard.model_apply_prototype_hvac_assumptions(model, building_type.get, climate_zone)
-    standard.model_apply_hvac_efficiency_standard(model, climate_zone)
-    if runner.getBoolArgumentValue('add_infiltration_schedules', user_arguments)
-      OpenstudioStandards::Infiltration.model_set_nist_infiltration_schedules(model)
+    applied = with_standards_log(runner, 'efficiency') do
+      standard.model_apply_multizone_vav_outdoor_air_sizing(model)
+      standard.model_apply_prototype_hvac_assumptions(model, building_type.get, climate_zone)
+      standard.model_apply_hvac_efficiency_standard(model, climate_zone)
+      if runner.getBoolArgumentValue('add_infiltration_schedules', user_arguments)
+        OpenstudioStandards::Infiltration.model_set_nist_infiltration_schedules(model)
+      end
+      true
+    end
+    unless applied
+      runner.registerError('openstudio-standards reported errors while applying HVAC assumptions and efficiencies.')
+      return false
     end
     model.getAvailabilityManagerNightCycles.each do |night_cycle|
       night_cycle.setThermostatTolerance(1.9999)
@@ -69,6 +79,39 @@ class ApplyStandardHvacSizingAndEfficiency < OpenStudio::Measure::ModelMeasure
   rescue StandardError => e
     runner.registerError("HVAC sizing and efficiency failed: #{e.message}")
     false
+  end
+
+  # Log messages that openstudio-standards itself treats as noise when forwarding its log to a runner.
+  STANDARDS_LOG_NOISE = ['UseWeatherFile', 'Skipping layer', 'has multiple parents', 'Successive data points',
+                         'does not have an Output', 'Prior to OpenStudio 2.6.2'].freeze
+
+  private
+
+  # openstudio-standards logs skipped equipment (for example, a failed efficiency lookup) without raising.
+  # Capture the log while the block runs, forward warnings to the runner, and report errors, in which case
+  # the step counts as failed.
+  def with_standards_log(runner, label)
+    sink = OpenStudio::StringStreamLogSink.new
+    sink.setLogLevel(OpenStudio::Warn)
+    result = yield
+    errors, warnings = sink.logMessages.partition { |message| message.logLevel >= OpenStudio::Error }
+    errors.reject! do |message|
+      (message.logChannel == 'openstudio.measure.OSRunner' && message.logMessage.include?('Cannot find current Workflow Step')) ||
+        (message.logChannel == 'openstudio.model.YearDescription' && message.logMessage.include?('UseWeatherFile'))
+    end
+    warnings.reject! do |message|
+      message.logChannel.match?(/openstudio\.(measure|Workflow)|runmanager|Translator|setFileExtension/) ||
+        STANDARDS_LOG_NOISE.any? { |noise| message.logMessage.include?(noise) }
+    end
+    warnings.map { |message| "[#{message.logChannel}] #{message.logMessage}" }.uniq.each do |text|
+      runner.registerWarning("openstudio-standards #{label}: #{text}")
+    end
+    errors.map { |message| "[#{message.logChannel}] #{message.logMessage}" }.uniq.each do |text|
+      runner.registerError("openstudio-standards #{label}: #{text}")
+    end
+    result && errors.empty?
+  ensure
+    sink&.disable
   end
 end
 
