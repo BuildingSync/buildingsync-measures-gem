@@ -12,4 +12,15 @@ class HvacPackagedRooftopHeatPumpTest < HvacMeasureTest
     assert_equal(zone_names.size, model.getCoilCoolingDXSingleSpeeds.size)
     assert_no_new_plants(model)
   end
+
+  def test_supplemental_heating_fuel
+    arguments = @measure.arguments(@model)
+    assert_equal('supplemental_heating_fuel', arguments[3].name)
+    assert_equal(%w[Electricity NaturalGas], arguments[3].choiceValues.to_a)
+    assert_equal('Electricity', arguments[3].defaultValueAsString)
+    run_measure('supplemental_heating_fuel' => 'NaturalGas')
+    assert_system(@model, ZONE_NAMES)
+    assert_equal(ZONE_NAMES.size, @model.getCoilHeatingGass.size)
+    assert_empty(@model.getCoilHeatingElectrics)
+  end
 end

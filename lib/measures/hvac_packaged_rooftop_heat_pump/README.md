@@ -9,6 +9,7 @@ Creates single-zone packaged rooftop heat pumps or replaces HVAC dedicated to se
 | `operation` | `create` or `replace` | `create` |
 | `target_zone_names` | Exact comma-separated model zones; blank selects all only for `create` | Blank |
 | `standards_template` | Construction template | `90.1-2019` |
+| `supplemental_heating_fuel` | Backup heating coil fuel: `Electricity` or `NaturalGas` | `Electricity` |
 
 ## BuildingSync mapping
 
@@ -19,5 +20,6 @@ Creates single-zone packaged rooftop heat pumps or replaces HVAC dedicated to se
 | MANUAL CHECK | Proposed status is unclear, packaged-unitary cooling and heating are not linked, zoning/delivery is missing, or furnace heating is also indicated | Distinguish PSZ-HP from PSZ-AC and verify replacement scope | Required if any condition applies |
 | `target_zone_names` | HVAC/source/delivery `LinkedPremises/ThermalZone/LinkedThermalZoneID/@IDref`; alternatives `LinkedSpaceID/@IDref` and `LinkedSectionID/@IDref` | Resolve all premises and complete shared-loop scope | Consumer owns ID resolution |
 | `standards_template` | No direct field | Workflow policy | Not audit data |
+| `supplemental_heating_fuel` | `HeatingSourceType/HeatPump/HeatPumpBackupSystemFuel` | `"Electricity"` → `Electricity`; `"Natural gas"` → `NaturalGas`; other fuels are not mappeable in this gem | High when supplied |
 
 Creation requires unserved zones. Replacement keeps pre-existing plant loops that still serve loads, removes those left without loads, and rejects partial shared-loop removal.

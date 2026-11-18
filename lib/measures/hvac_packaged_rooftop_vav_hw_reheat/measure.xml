@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_vav_hw_reheat</name>
   <uid>e759ea7b-d1a6-4841-a7a5-f6ea83f33cbc</uid>
-  <version_id>6fe2d186-f521-40e2-b868-cc6047339a9d</version_id>
-  <version_modified>2026-11-17T23:13:30Z</version_modified>
+  <version_id>7fa76665-671d-4dcb-b472-a0921c61658b</version_id>
+  <version_modified>2026-11-18T16:20:53Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopVavHwReheat</class_name>
   <display_name>Packaged Rooftop VAV with Hot Water Reheat HVAC</display_name>
@@ -46,6 +46,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -100,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>30A037F5</checksum>
+      <checksum>361BAF44</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_vav_hw_reheat_test.rb</filename>

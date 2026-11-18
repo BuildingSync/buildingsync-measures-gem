@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_vav_hw_reheat</name>
   <uid>316dfc28-7872-4ae6-b89f-2ef1de8a73d1</uid>
-  <version_id>f64edf99-e40f-4673-9dd2-819fdde1c8ff</version_id>
-  <version_modified>2026-11-17T23:13:41Z</version_modified>
+  <version_id>5bc8335c-bb65-41a6-9001-da4396309e21</version_id>
+  <version_modified>2026-11-18T16:21:04Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVavHwReheat</class_name>
   <display_name>VAV with Hot Water Reheat HVAC</display_name>
@@ -46,6 +46,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -100,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>2923DB5C</checksum>
+      <checksum>86227363</checksum>
     </file>
     <file>
       <filename>hvac_vav_hw_reheat_test.rb</filename>

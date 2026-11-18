@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_ac</name>
   <uid>d44119a8-26be-4f60-8f3f-8a4ec01804a2</uid>
-  <version_id>dd4981b7-de81-463f-b51d-ac3f6f8f1899</version_id>
-  <version_modified>2026-11-17T23:13:24Z</version_modified>
+  <version_id>fc6bc44a-22cd-4753-824c-b80f0f83703b</version_id>
+  <version_modified>2026-11-18T16:20:46Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopAc</class_name>
   <display_name>Packaged Rooftop AC HVAC</display_name>
@@ -46,6 +46,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -100,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>9B2A917E</checksum>
+      <checksum>D1DDE501</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_ac_test.rb</filename>

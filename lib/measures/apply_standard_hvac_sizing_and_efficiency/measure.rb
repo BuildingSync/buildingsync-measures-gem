@@ -13,7 +13,8 @@ class ApplyStandardHvacSizingAndEfficiency < OpenStudio::Measure::ModelMeasure
   def arguments(_model)
     args = OpenStudio::Measure::OSArgumentVector.new
     choices = OpenStudio::StringVector.new
-    %w[90.1-2013 90.1-2016 90.1-2019].each { |value| choices << value }
+    ['DOE Ref Pre-1980', 'DOE Ref 1980-2004', '90.1-2004', '90.1-2007', '90.1-2010', '90.1-2013', '90.1-2016', '90.1-2019']
+      .each { |value| choices << value }
     template = OpenStudio::Measure::OSArgument.makeChoiceArgument('standards_template', choices, true)
     template.setDisplayName('Standards Template')
     template.setDefaultValue('90.1-2019')

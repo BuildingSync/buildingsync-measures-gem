@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_ptac</name>
   <uid>f0fa4e41-9824-4470-aab5-3cf50b6a93fb</uid>
-  <version_id>64043006-1b1b-4f18-b884-b6804132ae7a</version_id>
-  <version_modified>2026-11-17T23:13:32Z</version_modified>
+  <version_id>6c6dfcf2-6cfd-4d04-8aff-d9eb21df2f0f</version_id>
+  <version_modified>2026-11-18T16:20:55Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPtac</class_name>
   <display_name>PTAC HVAC</display_name>
@@ -47,6 +47,26 @@
       <model_dependent>false</model_dependent>
       <default_value>90.1-2019</default_value>
       <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
         <choice>
           <value>90.1-2013</value>
           <display_name>90.1-2013</display_name>
@@ -101,7 +121,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>BB1AA536</checksum>
+      <checksum>4C317E86</checksum>
     </file>
     <file>
       <filename>hvac_ptac_test.rb</filename>
