@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_ventilation_only</name>
   <uid>0c502511-f1aa-4c77-ba09-e9edf98e713b</uid>
-  <version_id>5d60c4d4-8c7b-40a4-a39f-e840bfbeaafd</version_id>
-  <version_modified>2026-11-13T22:00:33Z</version_modified>
+  <version_id>e4194cdc-f47f-4339-a38a-2f8544d4d1fe</version_id>
+  <version_modified>2026-11-18T16:21:06Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVentilationOnly</class_name>
   <display_name>Ventilation-Only HVAC</display_name>
@@ -121,7 +121,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>884B075E</checksum>
+      <checksum>4AFF2A5C</checksum>
     </file>
     <file>
       <filename>hvac_ventilation_only_test.rb</filename>

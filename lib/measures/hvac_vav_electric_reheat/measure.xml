@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_vav_electric_reheat</name>
   <uid>7f30383b-0314-4914-879d-d6defe064446</uid>
-  <version_id>98e5c3aa-3c28-482d-8112-34fba6fd59db</version_id>
-  <version_modified>2026-11-13T22:00:30Z</version_modified>
+  <version_id>25e1dfb6-4eff-439e-b68e-b01b33ba2e61</version_id>
+  <version_modified>2026-11-18T16:21:01Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVavElectricReheat</class_name>
   <display_name>VAV with Electric Reheat HVAC</display_name>
@@ -120,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>124EBD54</checksum>
+      <checksum>974931FF</checksum>
     </file>
     <file>
       <filename>hvac_vav_electric_reheat_test.rb</filename>

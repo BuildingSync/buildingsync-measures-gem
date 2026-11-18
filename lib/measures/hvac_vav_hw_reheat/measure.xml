@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_vav_hw_reheat</name>
   <uid>316dfc28-7872-4ae6-b89f-2ef1de8a73d1</uid>
-  <version_id>8085fc19-5931-429f-8057-ad19a27e8b8b</version_id>
-  <version_modified>2026-11-13T22:00:32Z</version_modified>
+  <version_id>5bc8335c-bb65-41a6-9001-da4396309e21</version_id>
+  <version_modified>2026-11-18T16:21:04Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacVavHwReheat</class_name>
   <display_name>VAV with Hot Water Reheat HVAC</display_name>
@@ -120,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>59A2D5F9</checksum>
+      <checksum>86227363</checksum>
     </file>
     <file>
       <filename>hvac_vav_hw_reheat_test.rb</filename>

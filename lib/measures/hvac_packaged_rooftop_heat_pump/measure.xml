@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_heat_pump</name>
   <uid>af755ce8-9fe4-4ccb-93aa-a820e424d82c</uid>
-  <version_id>68a04b81-1640-4a57-ad34-d7b6195c52ca</version_id>
-  <version_modified>2026-11-13T22:00:20Z</version_modified>
+  <version_id>0877f755-0f73-42bd-b2b2-2109d72b2ea2</version_id>
+  <version_modified>2026-11-18T16:20:48Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopHeatPump</class_name>
   <display_name>Packaged Rooftop Heat Pump HVAC</display_name>
@@ -139,7 +139,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>A3493B86</checksum>
+      <checksum>3BC349DE</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_heat_pump_test.rb</filename>

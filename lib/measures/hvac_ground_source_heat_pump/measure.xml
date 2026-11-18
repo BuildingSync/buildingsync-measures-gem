@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_ground_source_heat_pump</name>
   <uid>2fd1d318-3f7b-4983-8b10-1f205f733f87</uid>
-  <version_id>89c10503-476d-4882-aba0-75b5bd475c0b</version_id>
-  <version_modified>2026-11-13T22:00:16Z</version_modified>
+  <version_id>3c1bd901-33d7-45f8-a681-8a77bb7a0f2b</version_id>
+  <version_modified>2026-11-18T16:20:44Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacGroundSourceHeatPump</class_name>
   <display_name>Ground-Source Heat Pump HVAC</display_name>
@@ -120,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>2E5126FE</checksum>
+      <checksum>81946DC6</checksum>
     </file>
     <file>
       <filename>hvac_ground_source_heat_pump_test.rb</filename>

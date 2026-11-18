@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_water_loop_heat_pump</name>
   <uid>e7ab679a-f29c-44ef-be3e-e978d7e4b142</uid>
-  <version_id>1e228442-f199-4d65-a35f-d8de488df993</version_id>
-  <version_modified>2026-11-13T22:00:39Z</version_modified>
+  <version_id>cba9d1a9-4405-49c1-ad2c-1142688f114e</version_id>
+  <version_modified>2026-11-18T16:21:13Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacWaterLoopHeatPump</class_name>
   <display_name>Water-Loop Heat Pump HVAC</display_name>
@@ -120,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>E8888404</checksum>
+      <checksum>7156803A</checksum>
     </file>
     <file>
       <filename>hvac_water_loop_heat_pump_test.rb</filename>

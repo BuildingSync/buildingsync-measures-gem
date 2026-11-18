@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_doas</name>
   <uid>17f3b675-a3bc-4aba-8f34-824ffd389ff7</uid>
-  <version_id>a9857d30-eb28-45aa-8264-d63b2205db13</version_id>
-  <version_modified>2026-11-13T22:00:13Z</version_modified>
+  <version_id>377891e7-a29a-469a-b57b-9f57d3fc7850</version_id>
+  <version_modified>2026-11-18T16:20:39Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacDoas</class_name>
   <display_name>Dedicated Outdoor Air System HVAC</display_name>
@@ -121,7 +121,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>8D11890C</checksum>
+      <checksum>20F56173</checksum>
     </file>
     <file>
       <filename>hvac_doas_test.rb</filename>

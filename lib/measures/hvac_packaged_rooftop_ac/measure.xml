@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>hvac_packaged_rooftop_ac</name>
   <uid>d44119a8-26be-4f60-8f3f-8a4ec01804a2</uid>
-  <version_id>f6fc58cf-aa6b-4815-93e7-7626b328a983</version_id>
-  <version_modified>2026-11-13T22:00:18Z</version_modified>
+  <version_id>fc6bc44a-22cd-4753-824c-b80f0f83703b</version_id>
+  <version_modified>2026-11-18T16:20:46Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>HvacPackagedRooftopAc</class_name>
   <display_name>Packaged Rooftop AC HVAC</display_name>
@@ -120,7 +120,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>EE017976</checksum>
+      <checksum>D1DDE501</checksum>
     </file>
     <file>
       <filename>hvac_packaged_rooftop_ac_test.rb</filename>
