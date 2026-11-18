@@ -1,3 +1,5 @@
+require 'json'
+
 class ModifyExistingPlantLoopTemperatures < OpenStudio::Measure::ModelMeasure
   def name
     'Modify Existing Plant Loop Temperatures'
@@ -16,7 +18,7 @@ class ModifyExistingPlantLoopTemperatures < OpenStudio::Measure::ModelMeasure
 
     names = OpenStudio::Measure::OSArgument.makeStringArgument('target_plant_loop_names', true)
     names.setDisplayName('Target Plant Loop Names')
-    names.setDescription('Comma-separated exact OpenStudio plant-loop names.')
+    names.setDescription('Comma-separated exact OpenStudio plant-loop names, or a JSON array of exact names (for names containing commas).')
     args << names
 
     temperature = OpenStudio::Measure::OSArgument.makeDoubleArgument('design_loop_exit_temperature_c', true)
@@ -31,8 +33,17 @@ class ModifyExistingPlantLoopTemperatures < OpenStudio::Measure::ModelMeasure
     super(model, runner, user_arguments)
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
-    names = runner.getStringArgumentValue('target_plant_loop_names', user_arguments)
-                  .split(',').map(&:strip).reject(&:empty?).uniq
+    text = runner.getStringArgumentValue('target_plant_loop_names', user_arguments).strip
+    begin
+      names = text.start_with?('[') ? JSON.parse(text) : text.split(',')
+    rescue JSON::ParserError
+      names = nil
+    end
+    unless names.is_a?(Array) && names.all? { |value| value.is_a?(String) }
+      runner.registerError('target_plant_loop_names must be comma-separated names or a JSON array of strings.')
+      return false
+    end
+    names = names.map(&:strip).reject(&:empty?).uniq
     if names.empty?
       runner.registerError('At least one target_plant_loop_names value is required.')
       return false

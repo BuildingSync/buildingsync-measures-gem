@@ -70,6 +70,19 @@ module HvacTopologyTests
                                     error: /partially remove shared air loops/i)
   end
 
+  def test_json_scope_binds_names_containing_commas
+    zone('Zone One').setName('Zone One, East')
+    run_measure('target_zone_names' => '["Zone One, East", "Zone Two", "Zone Two"]')
+    assert_system(@model, ['Zone One, East', 'Zone Two'])
+    assert(zone('Zone Three').airLoopHVAC.empty?)
+  end
+
+  def test_rejects_invalid_json_scope
+    ['["Zone One"', '["Zone One", 2]'].each do |text|
+      assert_rejected_without_changes({'target_zone_names' => text}, error: /JSON array of strings/)
+    end
+  end
+
   def test_rejects_missing_zone_before_changes
     assert_rejected_without_changes({'target_zone_names' => 'Zone One, Missing Zone'}, error: /not found.*Missing Zone/i)
   end

@@ -1,3 +1,5 @@
+require 'json'
+
 class ModifyExistingPlantEquipment < OpenStudio::Measure::ModelMeasure
   PROPERTIES = %w[boiler_capacity_kw boiler_thermal_efficiency chiller_capacity_tons chiller_reference_cop].freeze
   TON_TO_WATT = 3516.85284
@@ -19,7 +21,7 @@ class ModifyExistingPlantEquipment < OpenStudio::Measure::ModelMeasure
 
     names = OpenStudio::Measure::OSArgument.makeStringArgument('target_plant_equipment_names', true)
     names.setDisplayName('Target Plant Equipment Names')
-    names.setDescription('Comma-separated exact OpenStudio boiler or chiller names.')
+    names.setDescription('Comma-separated exact OpenStudio boiler or chiller names, or a JSON array of exact names (for names containing commas).')
     args << names
 
     properties = OpenStudio::StringVector.new
@@ -42,8 +44,17 @@ class ModifyExistingPlantEquipment < OpenStudio::Measure::ModelMeasure
     super(model, runner, user_arguments)
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
-    names = runner.getStringArgumentValue('target_plant_equipment_names', user_arguments)
-                  .split(',').map(&:strip).reject(&:empty?).uniq
+    text = runner.getStringArgumentValue('target_plant_equipment_names', user_arguments).strip
+    begin
+      names = text.start_with?('[') ? JSON.parse(text) : text.split(',')
+    rescue JSON::ParserError
+      names = nil
+    end
+    unless names.is_a?(Array) && names.all? { |value| value.is_a?(String) }
+      runner.registerError('target_plant_equipment_names must be comma-separated names or a JSON array of strings.')
+      return false
+    end
+    names = names.map(&:strip).reject(&:empty?).uniq
     property = runner.getStringArgumentValue('property', user_arguments)
     value = runner.getDoubleArgumentValue('value', user_arguments)
     if names.empty? || value <= 0.0
