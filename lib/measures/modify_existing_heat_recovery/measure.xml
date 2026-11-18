@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_heat_recovery</name>
   <uid>ef1de350-f353-477a-b782-7d0c6a3a4b42</uid>
-  <version_id>95b60a3d-1598-43da-9dc0-fd48f7aa9f69</version_id>
-  <version_modified>2026-11-13T07:33:39Z</version_modified>
+  <version_id>d32433fe-e23b-42ae-a87d-4257de41ffc7</version_id>
+  <version_modified>2026-11-17T23:13:51Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingHeatRecovery</class_name>
   <display_name>Modify Existing Heat Recovery</display_name>
@@ -86,7 +86,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>340DEF1E</checksum>
+      <checksum>27E76F75</checksum>
     </file>
     <file>
       <filename>modify_existing_heat_recovery_test.rb</filename>

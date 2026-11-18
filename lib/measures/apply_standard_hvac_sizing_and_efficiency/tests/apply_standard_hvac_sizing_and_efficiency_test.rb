@@ -1,16 +1,30 @@
-require_relative '../../../openstudio/buildingsync_measures/test_support/hvac_measure_test'
+require 'openstudio'
+require 'minitest/autorun'
 require_relative '../measure'
 
 # The success path needs a sizing run (EnergyPlus and design days); it is covered by BOSS
 # baseline simulations. These tests cover arguments and the input checks.
-class ApplyStandardHvacSizingAndEfficiencyTest < HvacMeasureTest
-  MEASURE_CLASS = ApplyStandardHvacSizingAndEfficiency
-  TEST_DIR = __dir__
-
+class ApplyStandardHvacSizingAndEfficiencyTest < Minitest::Test
   def setup
-    @measure = MEASURE_CLASS.new
-    @model = load_model(File.join(__dir__, '..', '..', 'hvac_ptac', 'tests', 'test_model.osm'))
-    @run_number = 0
+    @measure = ApplyStandardHvacSizingAndEfficiency.new
+    translated = OpenStudio::OSVersion::VersionTranslator.new.loadModel(OpenStudio::Path.new(File.join(__dir__, 'test_model.osm')))
+    assert(translated.is_initialized, 'Cannot load test_model.osm')
+    @model = translated.get
+  end
+
+  def run_measure(_values, expected:, error:)
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
+    arguments = OpenStudio::Measure.convertOSArgumentVectorToMap(@measure.arguments(@model))
+    returned = @measure.run(@model, runner, arguments)
+    result = runner.result
+    assert_equal(expected, result.value.valueName)
+    refute(returned)
+    assert_match(error, result.errors.map(&:logMessage).join("\n"))
+  end
+
+  def add_baseboard(zone_name)
+    baseboard = OpenStudio::Model::ZoneHVACBaseboardConvectiveElectric.new(@model)
+    assert(baseboard.addToThermalZone(@model.getThermalZoneByName(zone_name).get))
   end
 
   def test_arguments

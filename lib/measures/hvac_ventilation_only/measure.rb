@@ -1,3 +1,5 @@
+require 'json'
+
 class HvacVentilationOnly < OpenStudio::Measure::ModelMeasure
   def name = 'Ventilation-Only HVAC'
   def description = 'Adds a ventilation-only air system to zones without air-loop service, or replaces the air loops serving selected zones. Zone equipment is kept.'
@@ -32,7 +34,6 @@ class HvacVentilationOnly < OpenStudio::Measure::ModelMeasure
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
     operation = runner.getStringArgumentValue('operation', user_arguments)
-    require 'json'
     text = runner.getStringArgumentValue('target_zone_names', user_arguments).strip
     begin
       requested = text.start_with?('[') ? JSON.parse(text) : text.split(',').map(&:strip)

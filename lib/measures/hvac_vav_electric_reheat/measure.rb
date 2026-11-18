@@ -1,3 +1,5 @@
+require 'json'
+
 class HvacVavElectricReheat < OpenStudio::Measure::ModelMeasure
   def name = 'VAV with Electric Reheat HVAC'
   def description = 'Creates built-up VAV with electric reheat or replaces HVAC dedicated to selected zones.'
@@ -31,7 +33,6 @@ class HvacVavElectricReheat < OpenStudio::Measure::ModelMeasure
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
     operation = runner.getStringArgumentValue('operation', user_arguments)
-    require 'json'
     text = runner.getStringArgumentValue('target_zone_names', user_arguments).strip
     begin
       requested = text.start_with?('[') ? JSON.parse(text) : text.split(',').map(&:strip)

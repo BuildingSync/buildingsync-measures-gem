@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_hvac_equipment_efficiencies</name>
   <uid>d54dbd7f-5ccb-4ad7-a969-d8a90c9e0532</uid>
-  <version_id>e72cc9f8-c187-4381-bd76-af64da27e5fa</version_id>
-  <version_modified>2026-11-13T07:33:41Z</version_modified>
+  <version_id>abcdc41a-f7b9-42c2-8836-98273fef2914</version_id>
+  <version_modified>2026-11-17T23:13:53Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingHvacEquipmentEfficiencies</class_name>
   <display_name>Modify Existing HVAC Equipment Efficiencies</display_name>
@@ -110,7 +110,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>6D44E074</checksum>
+      <checksum>44A2777D</checksum>
     </file>
     <file>
       <filename>modify_existing_hvac_equipment_efficiencies_test.rb</filename>

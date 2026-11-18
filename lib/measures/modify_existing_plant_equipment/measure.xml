@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_plant_equipment</name>
   <uid>ff1cfd30-e11f-4409-a19c-2e7377c356f4</uid>
-  <version_id>6f4eb044-10ed-4037-99ee-2547bd177c61</version_id>
-  <version_modified>2026-11-13T07:33:43Z</version_modified>
+  <version_id>bde49595-9cb6-46d6-b038-e30e7f1b3667</version_id>
+  <version_modified>2026-11-17T23:13:55Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingPlantEquipment</class_name>
   <display_name>Modify Existing Plant Equipment</display_name>
@@ -94,7 +94,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>9E822081</checksum>
+      <checksum>E6CFBF45</checksum>
     </file>
     <file>
       <filename>modify_existing_plant_equipment_test.rb</filename>

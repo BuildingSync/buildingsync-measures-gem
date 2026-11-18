@@ -1,15 +1,52 @@
-require_relative '../../../openstudio/buildingsync_measures/test_support/hvac_measure_test'
+require 'openstudio'
+require 'minitest/autorun'
+require 'json'
 require_relative '../measure'
 
-class ApplyHvacModifierToObjectScopeTest < HvacMeasureTest
+# Self-contained so the tests run from a standalone copy of this measure. Running the modifier
+# itself still requires the modify_existing_* measures in the same measures directory.
+class ApplyHvacModifierToObjectScopeTest < Minitest::Test
   MEASURE_CLASS = ApplyHvacModifierToObjectScope
-  TEST_DIR = __dir__
 
-  # Reuse the three-zone topology fixture instead of checking in a copy.
   def setup
     @measure = MEASURE_CLASS.new
-    @model = load_model(File.join(__dir__, '..', '..', 'hvac_ptac', 'tests', 'test_model.osm'))
-    @run_number = 0
+    translated = OpenStudio::OSVersion::VersionTranslator.new.loadModel(OpenStudio::Path.new(File.join(__dir__, 'test_model.osm')))
+    assert(translated.is_initialized, 'Cannot load test_model.osm')
+    @model = translated.get
+  end
+
+  def run_measure(values = {}, expected: 'Success', error: nil, **argument_values)
+    values = values.merge(argument_values)
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
+    arguments = OpenStudio::Measure.convertOSArgumentVectorToMap(@measure.arguments(@model))
+    values.each do |key, value|
+      argument = arguments[key].clone
+      assert(argument.setValue(value), "Cannot set #{key}=#{value.inspect}")
+      arguments[key] = argument
+    end
+    returned = @measure.run(@model, runner, arguments)
+    result = runner.result
+    errors = result.errors.map(&:logMessage).join("\n")
+    assert_equal(expected, result.value.valueName, errors)
+    assert_equal(expected != 'Fail', returned, errors)
+    assert_match(error, errors) if error
+    result
+  end
+
+  def named(getter, object_name)
+    object = @model.public_send(getter).find { |item| item.nameString == object_name }
+    refute_nil(object, "Missing #{object_name} in #{getter}")
+    object
+  end
+
+  def snapshot
+    @model.getModelObjects.map(&:to_s).sort
+  end
+
+  def assert_rejected_without_changes(values, error:)
+    before = snapshot
+    run_measure(values, expected: 'Fail', error: error)
+    assert_equal(before, snapshot, 'Rejected input must not partially modify the model')
   end
 
   def add_dx_coil(name)
@@ -99,6 +136,13 @@ class ApplyHvacModifierToObjectScopeTest < HvacMeasureTest
                                     error: /target_object_names/)
     assert_rejected_without_changes(
       base.merge('modifier_arguments_json' => '{"efficiency_metric":"dx_cooling_cop","bogus":1}'), error: /bogus/
+    )
+    assert_rejected_without_changes(
+      base.merge('modifier_arguments_json' => '{"efficiency_metric":"dx_cooling_cop","efficiency_value":"4.5"}'),
+      error: /JSON number/
+    )
+    assert_rejected_without_changes(
+      base.merge('modifier_arguments_json' => '{"efficiency_metric":4,"efficiency_value":4.5}'), error: /efficiency_metric/
     )
     assert_rejected_without_changes(
       { 'modifier_measure' => 'modify_existing_hvac_equipment_efficiencies', 'modifier_arguments_json' => '{}' },

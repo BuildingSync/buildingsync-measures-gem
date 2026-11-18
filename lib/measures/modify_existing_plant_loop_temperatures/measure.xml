@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_plant_loop_temperatures</name>
   <uid>58029619-3597-4155-bcb1-fc230e7b4f2e</uid>
-  <version_id>01351beb-6e78-4896-8f7f-8fe55456db6a</version_id>
-  <version_modified>2026-11-13T07:33:44Z</version_modified>
+  <version_id>1df1c3a3-64cf-471d-958b-c29b6d94bd22</version_id>
+  <version_modified>2026-11-17T23:13:57Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingPlantLoopTemperatures</class_name>
   <display_name>Modify Existing Plant Loop Temperatures</display_name>
@@ -67,7 +67,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>C379DA55</checksum>
+      <checksum>4C440343</checksum>
     </file>
     <file>
       <filename>modify_existing_plant_loop_temperatures_test.rb</filename>

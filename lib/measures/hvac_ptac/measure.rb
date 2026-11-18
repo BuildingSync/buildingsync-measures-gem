@@ -1,3 +1,5 @@
+require 'json'
+
 class HvacPtac < OpenStudio::Measure::ModelMeasure
   def name = 'PTAC HVAC'
   def description = 'Creates PTAC equipment (DX cooling, electric-resistance heating) in unserved zones or replaces HVAC dedicated to selected zones.'
@@ -32,7 +34,6 @@ class HvacPtac < OpenStudio::Measure::ModelMeasure
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
     operation = runner.getStringArgumentValue('operation', user_arguments)
-    require 'json'
     text = runner.getStringArgumentValue('target_zone_names', user_arguments).strip
     begin
       requested = text.start_with?('[') ? JSON.parse(text) : text.split(',').map(&:strip)

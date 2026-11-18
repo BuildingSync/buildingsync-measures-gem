@@ -1,3 +1,5 @@
+require 'json'
+
 class HvacRadiant < OpenStudio::Measure::ModelMeasure
   def name = 'Low-Temperature Radiant HVAC'
   def description = 'Creates hydronic radiant systems in unserved zones or replaces HVAC dedicated to selected zones.'
@@ -31,7 +33,6 @@ class HvacRadiant < OpenStudio::Measure::ModelMeasure
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
     operation = runner.getStringArgumentValue('operation', user_arguments)
-    require 'json'
     text = runner.getStringArgumentValue('target_zone_names', user_arguments).strip
     begin
       requested = text.start_with?('[') ? JSON.parse(text) : text.split(',').map(&:strip)

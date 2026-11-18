@@ -188,13 +188,22 @@ class ApplyHvacModifierToObjectScope < OpenStudio::Measure::ModelMeasure
 
   def typed(argument, value)
     case argument.type.valueName
-    when 'Double' then Float(value)
-    when 'Integer' then Integer(value)
+    when 'Double'
+      raise ArgumentError, "#{argument.name} must be a JSON number" unless value.is_a?(Numeric)
+
+      Float(value)
+    when 'Integer'
+      raise ArgumentError, "#{argument.name} must be a JSON integer" unless value.is_a?(Integer)
+
+      value
     when 'Boolean'
       raise ArgumentError, "#{argument.name} must be true or false" unless [true, false].include?(value)
 
       value
-    else value.to_s
+    else
+      raise ArgumentError, "#{argument.name} must be a JSON string" unless value.is_a?(String)
+
+      value
     end
   end
 end

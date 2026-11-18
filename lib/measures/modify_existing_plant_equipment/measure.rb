@@ -1,3 +1,5 @@
+require 'json'
+
 class ModifyExistingPlantEquipment < OpenStudio::Measure::ModelMeasure
   PROPERTIES = %w[boiler_capacity_kw boiler_thermal_efficiency chiller_capacity_tons chiller_reference_cop].freeze
   TON_TO_WATT = 3516.85284
@@ -42,7 +44,6 @@ class ModifyExistingPlantEquipment < OpenStudio::Measure::ModelMeasure
     super(model, runner, user_arguments)
     return false unless runner.validateUserArguments(arguments(model), user_arguments)
 
-    require 'json'
     text = runner.getStringArgumentValue('target_plant_equipment_names', user_arguments).strip
     begin
       names = text.start_with?('[') ? JSON.parse(text) : text.split(',')
