@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>modify_existing_heat_recovery</name>
   <uid>ef1de350-f353-477a-b782-7d0c6a3a4b42</uid>
-  <version_id>d32433fe-e23b-42ae-a87d-4257de41ffc7</version_id>
-  <version_modified>2026-11-17T23:13:51Z</version_modified>
+  <version_id>fd4e591f-b849-4388-90a7-9bdc942c7c63</version_id>
+  <version_modified>2026-11-19T00:25:23Z</version_modified>
   <xml_checksum>AC2EC58F</xml_checksum>
   <class_name>ModifyExistingHeatRecovery</class_name>
   <display_name>Modify Existing Heat Recovery</display_name>
@@ -14,7 +14,7 @@
     <argument>
       <name>target_heat_exchanger_names</name>
       <display_name>Target Heat Exchanger Names</display_name>
-      <description>Comma-separated exact HeatExchangerAirToAirSensibleAndLatent names, or a JSON array of exact names (for names containing commas).</description>
+      <description>Comma-separated exact HeatExchangerAirToAirSensibleAndLatent names, a JSON array of exact names (for names containing commas), or '*' for every heat exchanger in the model.</description>
       <type>String</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
@@ -22,6 +22,7 @@
     <argument>
       <name>effectiveness_metric</name>
       <display_name>Effectiveness Metric</display_name>
+      <description>comstock_erv sets all sensible and latent fields to the ComStock ERV values and ignores Effectiveness.</description>
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
@@ -34,6 +35,10 @@
         <choice>
           <value>latent_effectiveness</value>
           <display_name>latent_effectiveness</display_name>
+        </choice>
+        <choice>
+          <value>comstock_erv</value>
+          <display_name>comstock_erv</display_name>
         </choice>
       </choices>
     </argument>
@@ -86,13 +91,13 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>27E76F75</checksum>
+      <checksum>73188A3C</checksum>
     </file>
     <file>
       <filename>modify_existing_heat_recovery_test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>4666C0FA</checksum>
+      <checksum>27069766</checksum>
     </file>
     <file>
       <filename>test_model.osm</filename>

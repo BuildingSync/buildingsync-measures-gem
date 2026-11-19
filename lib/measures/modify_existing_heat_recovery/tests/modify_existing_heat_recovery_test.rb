@@ -45,6 +45,26 @@ class ModifyExistingHeatRecoveryTest < HvacMeasureTest
     end
   end
 
+  def test_comstock_erv_on_all_exchangers
+    # Start from an HRV-like state with zero latent effectiveness.
+    run_measure(SCOPE_ARGUMENT => '*', 'effectiveness_metric' => 'latent_effectiveness', 'effectiveness' => 0.0)
+    run_measure(valid_arguments.merge(SCOPE_ARGUMENT => '*', 'effectiveness_metric' => 'comstock_erv'))
+    exchangers = @model.getHeatExchangerAirToAirSensibleAndLatents
+    assert_equal(2, exchangers.size)
+    exchangers.each do |exchanger|
+      ModifyExistingHeatRecovery::COMSTOCK_ERV.each do |prefix, values|
+        values.each do |suffix, value|
+          assert_in_delta(value, exchanger.public_send("#{prefix.downcase}Effectivenessat#{suffix}AirFlow"), 1e-9)
+        end
+      end
+    end
+  end
+
+  def test_all_targets_requires_an_exchanger
+    @model.getHeatExchangerAirToAirSensibleAndLatents.each(&:remove)
+    assert_rejected_without_changes(valid_arguments.merge(SCOPE_ARGUMENT => '*'), error: /no heat exchangers/)
+  end
+
   def test_rejects_out_of_range_effectiveness
     [-0.01, 1.01].each do |value|
       assert_rejected_without_changes(valid_arguments.merge('effectiveness' => value), error: /effectiveness in/)
