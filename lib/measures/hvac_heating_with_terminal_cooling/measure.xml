@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>hvac_heating_with_terminal_cooling</name>
+  <uid>5d3f2a8e-6b1c-4e47-9a0d-2f7c8b9e1a44</uid>
+  <version_id>3a28ef59-ef38-4d07-9c6b-0bced216fa51</version_id>
+  <version_modified>2026-11-24T22:36:27Z</version_modified>
+  <xml_checksum>AC2EC58F</xml_checksum>
+  <class_name>HvacHeatingWithTerminalCooling</class_name>
+  <display_name>Heating With Terminal Cooling HVAC</display_name>
+  <description>Creates a heating source and cooling-only PTACs (single-speed DX) together in unserved zones.</description>
+  <modeler_description>heating_source central_gas_furnace adds one shared constant-volume gas-furnace air loop that also supplies outdoor air, with PTACs that do not ventilate; hot_water_baseboard and electric_baseboard add a baseboard per zone; hot_water_ptac_coil puts a hot-water coil in each PTAC. Hot-water options add one boiler loop. Otherwise each PTAC heating coil is a zero-capacity, always-off placeholder.</modeler_description>
+  <arguments>
+    <argument>
+      <name>operation</name>
+      <display_name>Operation</display_name>
+      <description>Only create is supported; the zones must be unserved apart from dedicated outdoor-air systems.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>create</default_value>
+      <choices>
+        <choice>
+          <value>create</value>
+          <display_name>create</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>target_zone_names</name>
+      <display_name>Target Zone Names</display_name>
+      <description>Comma-separated exact thermal-zone names, or a JSON array of exact names (for names containing commas). Blank selects all zones.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>standards_template</name>
+      <display_name>Standards Template</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>90.1-2019</default_value>
+      <choices>
+        <choice>
+          <value>DOE Ref Pre-1980</value>
+          <display_name>DOE Ref Pre-1980</display_name>
+        </choice>
+        <choice>
+          <value>DOE Ref 1980-2004</value>
+          <display_name>DOE Ref 1980-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2004</value>
+          <display_name>90.1-2004</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2007</value>
+          <display_name>90.1-2007</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2010</value>
+          <display_name>90.1-2010</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2013</value>
+          <display_name>90.1-2013</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2016</value>
+          <display_name>90.1-2016</display_name>
+        </choice>
+        <choice>
+          <value>90.1-2019</value>
+          <display_name>90.1-2019</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>heating_source</name>
+      <display_name>Heating Source</display_name>
+      <description>Heating that serves the zones alongside the cooling-only PTACs.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>central_gas_furnace</default_value>
+      <choices>
+        <choice>
+          <value>central_gas_furnace</value>
+          <display_name>central_gas_furnace</display_name>
+        </choice>
+        <choice>
+          <value>hot_water_baseboard</value>
+          <display_name>hot_water_baseboard</display_name>
+        </choice>
+        <choice>
+          <value>electric_baseboard</value>
+          <display_name>electric_baseboard</display_name>
+        </choice>
+        <choice>
+          <value>hot_water_ptac_coil</value>
+          <display_name>hot_water_ptac_coil</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>boiler_fuel</name>
+      <display_name>Boiler Fuel</display_name>
+      <description>Boiler fuel for hot_water_baseboard and hot_water_ptac_coil; ignored otherwise.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>NaturalGas</default_value>
+      <choices>
+        <choice>
+          <value>NaturalGas</value>
+          <display_name>NaturalGas</display_name>
+        </choice>
+        <choice>
+          <value>Electricity</value>
+          <display_name>Electricity</display_name>
+        </choice>
+        <choice>
+          <value>FuelOilNo2</value>
+          <display_name>FuelOilNo2</display_name>
+        </choice>
+        <choice>
+          <value>Propane</value>
+          <display_name>Propane</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>HVAC.HVAC Systems</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>04FF669B</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>50A531E8</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.10.0</identifier>
+        <min_compatible>3.10.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>E20229AC</checksum>
+    </file>
+    <file>
+      <filename>hvac_heating_with_terminal_cooling_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>C6035C79</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>B8EA05A1</checksum>
+    </file>
+  </files>
+</measure>

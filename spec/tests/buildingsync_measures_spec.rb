@@ -24,6 +24,7 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
       hvac_doas
       hvac_four_pipe_fan_coil
       hvac_ground_source_heat_pump
+      hvac_heating_with_terminal_cooling
       hvac_packaged_rooftop_ac
       hvac_packaged_rooftop_heat_pump
       hvac_packaged_rooftop_vav_electric_reheat
@@ -74,7 +75,7 @@ RSpec.describe OpenStudio::BuildingsyncMeasures do
     instance = OpenStudio::BuildingsyncMeasures::BuildingsyncMeasures.new
     topology_names = %w[
       hvac_chilled_beam hvac_doas hvac_four_pipe_fan_coil hvac_ground_source_heat_pump
-      hvac_packaged_rooftop_ac hvac_packaged_rooftop_heat_pump
+      hvac_heating_with_terminal_cooling hvac_packaged_rooftop_ac hvac_packaged_rooftop_heat_pump
       hvac_packaged_rooftop_vav_electric_reheat hvac_packaged_rooftop_vav_hw_reheat
       hvac_ptac hvac_pthp hvac_radiant hvac_vav_electric_reheat hvac_vav_hw_reheat
       hvac_ventilation_only hvac_vrf hvac_warm_air_furnace hvac_water_loop_heat_pump
