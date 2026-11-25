@@ -56,7 +56,8 @@ This is a **short overview**, not the complete selection contract. Field names a
 
 | HVAC type / configuration | BuildingSync configuration — summary only | Measure / fixed output | Notes / development gaps |
 |---|---|---|---|
-| Packaged Terminal Air Conditioner | `ZoneEquipment`; PTAC DX source, electric resistance, air-cooled condenser | [hvac_ptac](lib/measures/hvac_ptac/README.md): DX cooling + electric heat, one unit/zone | No gas/hot-water PTAC variant. |
+| Packaged Terminal Air Conditioner | `ZoneEquipment`; PTAC DX source, electric resistance, air-cooled condenser | [hvac_ptac](lib/measures/hvac_ptac/README.md): DX cooling + electric heat, one unit/zone | Hot-water PTAC coils: see the next row. |
+| Separate heating + cooling-only PTAC | PTAC DX source without heating, plus a furnace, boiler, or electric heating source on the same premises | [hvac_heating_with_terminal_cooling](lib/measures/hvac_heating_with_terminal_cooling/README.md): central gas furnace, hot-water or electric baseboard, or hot-water PTAC coil, with cooling-only PTACs | Create only. |
 | Four Pipe Fan Coil Unit | `FanCoilType = "Fan coil 4 pipe"`; hot-water boiler + chilled-water plant | [hvac_four_pipe_fan_coil](lib/measures/hvac_four_pipe_fan_coil/README.md): four-pipe units, gas boiler, water-cooled electric chiller | Exact plant IDs/grouping matter; no two-pipe changeover. |
 | Packaged Terminal Heat Pump | `ZoneEquipment`; packaged-terminal HP + PTHP DX source, electric backup, air-cooled condenser | [hvac_pthp](lib/measures/hvac_pthp/README.md): DX heating/cooling + electric backup, one unit/zone | Backup is electric, not gas. |
 | Packaged Rooftop Air Conditioner | Single-zone central air, CAV no-reheat terminal; packaged DX + gas furnace | [hvac_packaged_rooftop_ac](lib/measures/hvac_packaged_rooftop_ac/README.md): one packaged AC loop/zone | Gas heat + electric supplemental heat. |
